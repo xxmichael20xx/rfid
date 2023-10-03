@@ -114,7 +114,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link on-dev" href="#">
+                            <a class="nav-link {{ isRouteActive(['payments.list']) }}" href="{{ route('payments.list') }}">
 								<i class="fa fa-dollar"></i>
                                 <span class="nav-link-text">Payments</span>
                             </a>
@@ -145,6 +145,12 @@
                             <a class="nav-link on-dev" href="#">
 								<i class="fa fa-walking"></i>
                                 <span class="nav-link-text">Visitor Monitoring</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ isRouteActive(['user-management.index']) }}" href="{{ route('user-management.index') }}">
+								<i class="fa fa-users"></i>
+                                <span class="nav-link-text">User Management</span>
                             </a>
                         </li>
                     </ul>
@@ -214,6 +220,12 @@
                     }))
                 })
             }
+
+            /** Initialize Livewire event listener - show profile update modal */
+            Livewire.on('show.profile-update', () => {
+                const updateProfileModal = new bootstrap.Modal('#updateProfileModal', {})
+                updateProfileModal.show()
+            })
         })
     </script>
 </body>

@@ -10,11 +10,15 @@ use App\Http\Livewire\Activity\ActivityCreate;
 use App\Http\Livewire\Activity\ActivityUpdate;
 use App\Http\Livewire\BlockManagement\BlockManagementList;
 use App\Http\Livewire\BlockManagement\BlockManagementCreate;
+use App\Http\Livewire\Guard\Rfid\GuardRfidMonitoring;
 use App\Http\Livewire\Homeowner\HomeownerCreate;
 use App\Http\Livewire\Homeowner\HomeownerUpdate;
 use App\Http\Livewire\Homeowner\HomeownerView;
+use App\Http\Livewire\Payments\PaymentsList;
 use App\Http\Livewire\Profile\ProfileList;
 use App\Http\Livewire\Rfid\RfidList;
+use App\Http\Livewire\Rfid\RfidMonitoring;
+use App\Http\Livewire\UserManagement\UserManagement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -88,4 +92,29 @@ Route::name('rfid.')
     ->prefix('rfid')
     ->group(function() {
         Route::get('/', RfidList::class)->name('list');
+        Route::get('/monitoring', RfidMonitoring::class)->name('monitoring');
+    });
+
+/** Define Payments pages */
+Route::name('payments.')
+    ->prefix('payments')
+    ->group(function() {
+        Route::get('/', PaymentsList::class)->name('list');
+    });
+
+/** Define User Management pages */
+Route::name('user-management.')
+    ->prefix('user-management')
+    ->group(function() {
+        Route::get('/', UserManagement::class)->name('index');
+    });
+
+/** Define Guard route */
+Route::name('guard.')
+    ->prefix('guard')
+    ->group(function() {
+        Route::name('rfid-monitoring.')
+            ->group(function() {
+                Route::get('/rfid-monitoring', GuardRfidMonitoring::class)->name('index');
+            });
     });

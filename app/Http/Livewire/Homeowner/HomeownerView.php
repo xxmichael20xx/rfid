@@ -33,8 +33,10 @@ class HomeownerView extends Component
             'createForm.last_name' => ['required', 'string', 'min:2', 'max:30'],
             'createForm.middle_name' => ['nullable', 'string', 'min:2', 'max:30'],
             'createForm.date_of_birth' => ['required', 'date', new NotFutureDate],
-            'createForm.contact_no' => ['nullable', 'regex:/^(09|\+639)\d{9}$/', Rule::unique('profiles', 'contact_no')],
+            'createForm.contact_no' => ['nullable', 'regex:/^09\d{9}$/', Rule::unique('profiles', 'contact_no')],
             'createForm.notes' => ['nullable']
+        ], [
+            'createForm.contact_no.regex' => 'Contact number format is invalid, valid format is: 09123456789'
         ]);
 
         // create a new profile
@@ -74,7 +76,7 @@ class HomeownerView extends Component
             ->only(['id', 'first_name', 'last_name', 'middle_name', 'date_of_birth', 'contact_no', 'notes']);
 
         // event an event to show update modal
-        $this->emit('show.update-modal');
+        $this->emit('show.profile-update');
     }
 
     // update a profile
@@ -88,10 +90,12 @@ class HomeownerView extends Component
             'updateForm.date_of_birth' => ['required', 'date', new NotFutureDate],
             'updateForm.contact_no' => [
                 'nullable',
-                'regex:/^(09|\+639)\d{9}$/',
+                'regex:/^09\d{9}$/',
                 Rule::unique('profiles', 'contact_no')->ignore($this->updateForm['id'])
             ],
             'updateForm.notes' => ['nullable']
+        ], [
+            'updateForm.contact_no.regex' => 'Contact number format is invalid, valid format is: 09123456789'
         ]);
 
         // update the profile

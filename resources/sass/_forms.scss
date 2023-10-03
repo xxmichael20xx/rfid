@@ -1,0 +1,11 @@
+.form-floating {
+    .form-control,
+    .form-select {
+        background-color: #edfdf6;
+        color: rgb(33, 37, 41);
+    }
+
+    label::after {
+        background-color: transparent !important;
+    }
+}

@@ -12,7 +12,7 @@ class RfidList extends Component
     public $rfids;
     public $unassignedHomeOwners;
 
-    protected $listeners = ['delete-rfid' => 'deleteRfid'];
+    protected $listeners = ['deleteRfid', 'setRfid'];
 
     public $rfidForm = [
         'home_owner_id' => '',
@@ -67,6 +67,11 @@ class RfidList extends Component
                 'reload' => true
             ]);
         }
+    }
+
+    public function setRfid($id)
+    {
+        $this->rfidForm['rfid'] = $id;
     }
 
     public function mount()

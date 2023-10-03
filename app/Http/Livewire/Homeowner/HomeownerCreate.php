@@ -39,7 +39,7 @@ class HomeownerCreate extends Component
             'form.middle_name' => ['string', 'min:2', 'max:30'],
             'form.block' => ['required'],
             'form.lot' => ['required'],
-            'form.contact_no' => ['required', 'regex:/^(09|\+639)\d{9}$/', Rule::unique('home_owners', 'contact_no')]
+            'form.contact_no' => ['required', 'regex:/^09\d{9}$/', Rule::unique('home_owners', 'contact_no')]
         ];
     }
 
@@ -49,7 +49,7 @@ class HomeownerCreate extends Component
     public function create()
     {
         // validate the form data
-        $this->validate();
+        $this->validate($this->rules(), ['form.contact_no.regex' => 'Contact number format is invalid, valid format is: 09123456789']);
 
         // create a new home owner if validation is passed
         // and if new home owner is created

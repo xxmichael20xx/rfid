@@ -18,9 +18,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'middle_name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -41,4 +44,28 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $appends = [
+        'full_name'
+    ];
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name.' '.$this->middle_name.' '.$this->last_name;
+    }
+
+    public function isAdmin()
+    {
+        return $this->role == 'Admin';
+    }
+
+    public function isGuard()
+    {
+        return $this->role == 'Guard';
+    }
+
+    public function isTreasurer()
+    {
+        return $this->role == 'Treasurer';
+    }
 }

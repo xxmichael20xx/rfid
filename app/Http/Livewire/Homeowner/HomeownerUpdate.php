@@ -33,7 +33,7 @@ class HomeownerUpdate extends Component
             'modelSelectedLot' => ['required'],
             'model.contact_no' => [
                 'required',
-                'regex:/^(09|\+639)\d{9}$/',
+                'regex:/^09\d{9}$/',
                 Rule::unique('home_owners', 'contact_no')->ignore($this->model->id)
             ]
         ];
@@ -46,7 +46,7 @@ class HomeownerUpdate extends Component
     public function update()
     {
         // validate the form data
-        $this->validate();
+        $this->validate($this->rules(), ['model.contact_no.regex' => 'Contact number format is invalid, valid format is: 09123456789']);
 
         // update new home owner if validation is passed
         // and if home owner exists

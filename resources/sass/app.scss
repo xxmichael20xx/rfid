@@ -4,6 +4,9 @@
 // Variables
 @import 'variables';
 
+// Fonts
+@import 'fonts';
+
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
 
@@ -12,3 +15,6 @@
 
 // Import custom css
 @import 'custom';
+
+// Import form css
+@import 'forms';
