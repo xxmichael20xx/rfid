@@ -14,8 +14,12 @@ class ActivitiesController extends Controller
      */
     public function list(Request $request)
     {
+        $today = Carbon::today()->format('Y-m-d');
+
         // get all home owners data from database
-        $activities = Activity::orderBy('created_at', 'DESC')->get();
+        $activities = Activity::where('end_date', '>=', $today)
+            ->orderBy('created_at', 'DESC')
+            ->get();
 
         // check if URL has "?search=keyword"
         if ($search = data_get($_GET, 'search')) {
@@ -29,12 +33,13 @@ class ActivitiesController extends Controller
         // check if URL has "?filter=today"
         if ($filter = data_get($_GET, 'filter')) {
             if ($filter == 'today') {
-                $today = Carbon::today()->format('Y-m-d');
                 $activities = Activity::whereDate('start_date', $today)
                     ->orWhereDate('end_date', $today)
                     ->orWhere(function($query) use($today) {
                         $query->where('start_date', '<=', $today)->where('end_date', '>=', $today);
                     })->get();
+            } elseif ($filter == 'archived') {
+                $activities = Activity::where('end_date', '<', $today)->get();
             }
         }
 

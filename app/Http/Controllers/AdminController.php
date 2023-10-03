@@ -38,7 +38,7 @@ class AdminController extends Controller
         ];
 
         // create a dummy date for activities
-        $activities = Activity::latest()->get();
+        $activities = Activity::latest()->limit(5)->get();
         $today = Carbon::today()->format('Y-m-d');
         $activitiesToday = Activity::whereDate('start_date', $today)
             ->orWhereDate('end_date', $today)

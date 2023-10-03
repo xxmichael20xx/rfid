@@ -24,7 +24,7 @@ const pushLastLine = () => {
   rl.on('line', (line) => lastLine = line)
 
   rl.on('close', () => {
-    pusher.trigger('my-channel', 'scan-rfid', { 'id': lastLine })
+    pusher.trigger('my-channel', 'scan-id', { 'id': lastLine })
     console.log('Scanned ID: ' + lastLine)
   })
 }

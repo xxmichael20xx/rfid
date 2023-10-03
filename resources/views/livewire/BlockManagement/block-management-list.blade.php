@@ -12,42 +12,48 @@
 
     <div class="row g-4 mb-4">
         <div class="col-12">
-            <div class="app-card app-card-chart h-100 shadow-sm">
-                <div class="app-card-body px-3 pb-3">
-                    <div class="table-responsive">
-                        <table class="table app-table-hover mb-0 text-left visitors-table">
-                            <thead class="bg-portal-green">
-                                <tr>
-                                    <th class="cell">Block</th>
-                                    <th class="cell">Number of Lots</th>
-                                    <th class="cell">Available Lots</th>
-                                    <th class="cell">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($blocks as $data)
-                                    <tr>
-                                        <td class="cell">{{ $data->block }}</td>
-                                        <td class="cell">{{ $data->lots->count() }}</td>
-                                        <td class="cell">{{ $data->available_lots->count() }}</td>
-                                        <td class="cell d-flex">
-                                            <button
-                                                type="button"
-                                                class="btn btn-info text-white p-2"
-                                                wire:click="setActiveBlock({{ $data->id }})"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-title="View Block Lots">
-                                                <i class="fa fa-list clickable"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td class="cell text-center" colspan="4">No result(s)</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table class="table app-table-hover mb-0 text-left visitors-table">
+                                        <thead class="bg-portal-green">
+                                            <tr>
+                                                <th class="cell">Block</th>
+                                                <th class="cell">Number of Lots</th>
+                                                <th class="cell">Available Lots</th>
+                                                <th class="cell">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($blocks as $data)
+                                                <tr>
+                                                    <td class="cell">{{ $data->block }}</td>
+                                                    <td class="cell">{{ $data->lots->count() }}</td>
+                                                    <td class="cell">{{ $data->available_lots->count() }}</td>
+                                                    <td class="cell d-flex">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-info text-white p-2"
+                                                            wire:click="setActiveBlock({{ $data->id }})"
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-title="View Block Lots">
+                                                            <i class="fa fa-list clickable"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td class="cell text-center" colspan="4">No result(s)</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

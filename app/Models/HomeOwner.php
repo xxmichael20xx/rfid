@@ -65,4 +65,14 @@ class HomeOwner extends Model
     {
         return $this->hasOne(Rfid::class, 'home_owner_id', 'id');
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'home_owner_id', 'id');
+    }
+
+    public function rfidMonitorings()
+    {
+        return $this->hasMany(RfidMonitoring::class, 'home_owner_id', 'id');
+    }
 }

@@ -2,7 +2,7 @@
 
 @section('content')
 <h1 class="app-page-title">Dashboard</h1>
-<div class="row g-4 mb-4">
+<div class="row mb-5">
     <div class="col-6 col-lg-3">
         <div class="app-card app-card-stat shadow-sm h-100">
             <div class="app-card-body p-3 p-lg-4 d-flex justify-content-center">
@@ -41,7 +41,7 @@
     </div>
 </div>
 
-<div class="row g-4 mb-4">
+<div class="row mb-5">
     <div class="col-8">
         @livewire('chart.total-residence-chart')
     </div>
@@ -63,83 +63,96 @@
 
 <div class="row g-4 mb-4">
     <div class="col-6">
-        <div class="app-card app-card-chart h-100 shadow-sm">
-            <div class="app-card-header p-3">
-                <div class="row text-center">
-                    <h4 class="app-card-title">Recent Visitors</h4>
-                </div>
-            </div>
-            <div class="app-card-body p-3 p-lg-4">
-                <div class="table-responsive">
-                    <table class="table app-table-hover mb-0 text-left visitors-table">
-                        <thead class="bg-portal-green">
-                            <tr>
-                                <th class="cell">Visitor</th>
-                                <th class="cell">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($dummyVisitors as $dummyVisitor)
-                                <tr>
-                                    <td class="cell">
-                                        <img
-                                            class="visitors-table--image rounded-circle me-3"
-                                            src="{{ asset(data_get($dummyVisitor, 'image')) }}"
-                                            alt="visitor-image" />
-                                        {{ data_get($dummyVisitor, 'name') }}
-                                    </td>
-                                    <td class="cell">{{ data_get($dummyVisitor, 'date') }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td class="cell" colspan="2">No recent visitor</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+        <div class="card shadow-lg border-0">
+            <div class="card-body">
+                <div class="container">
+                    <div class="row mb-3">
+                        <div class="col-12 text-center">
+                            <p class="card-title h5">Recent Visitors</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table app-table-hover mb-0 text-left visitors-table">
+                                    <thead class="bg-portal-green">
+                                        <tr>
+                                            <th class="cell">Visitor</th>
+                                            <th class="cell">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($dummyVisitors as $dummyVisitor)
+                                            <tr>
+                                                <td class="cell">
+                                                    <img
+                                                        class="visitors-table--image rounded-circle me-3"
+                                                        src="{{ asset(data_get($dummyVisitor, 'image')) }}"
+                                                        alt="visitor-image" />
+                                                    {{ data_get($dummyVisitor, 'name') }}
+                                                </td>
+                                                <td class="cell">{{ data_get($dummyVisitor, 'date') }}</td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td class="cell" colspan="2">No recent visitor</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-6">
-        <div class="app-card app-card-chart h-100 shadow-sm">
-            <div class="app-card-header p-3">
-                <div class="row text-center">
-                    <h4 class="app-card-title">Recent Activities</h4>
-                </div>
-            </div>
-            <div class="app-card-body p-3 p-lg-4">
-                <div class="table-responsive">
-                    <table class="table app-table-hover mb-0 text-left visitors-table">
-                        <thead class="bg-portal-green">
-                            <tr>
-                                <th class="cell">Activity</th>
-                                <th class="cell">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($activities as $data)
-                                <tr>
-                                    <td class="cell">
-                                        {{ $data->title }}
-                                        <br>
-                                        Location: {{ $data->location }}
-                                    </td>
-                                    <td class="cell">
-                                        @if ($data->start_date === $data->end_date)
-                                            {{ \Carbon\Carbon::parse($data->start_date)->format('M d, Y') }}
-                                        @else
-                                            {{ \Carbon\Carbon::parse($data->start_date)->format('M d') }} - {{ \Carbon\Carbon::parse($data->end_date)->format('M d, Y') }}
-                                        @endif    
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td class="cell" colspan="2">No activity yet</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+        <div class="card shadow-lg border-0">
+            <div class="card-body">
+                <div class="container">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <p class="card-title h5">Recent Activities</p>
+                            <hr class="theme-separator">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table app-table-hover mb-0 text-left visitors-table">
+                                    <thead class="bg-portal-green">
+                                        <tr>
+                                            <th class="cell">Activity</th>
+                                            <th class="cell">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($activities as $data)
+                                            <tr>
+                                                <td class="cell">
+                                                    {{ $data->title }}
+                                                    <br>
+                                                    Location: {{ $data->location }}
+                                                </td>
+                                                <td class="cell">
+                                                    @if ($data->start_date === $data->end_date)
+                                                        {{ \Carbon\Carbon::parse($data->start_date)->format('M d, Y') }}
+                                                    @else
+                                                        {{ \Carbon\Carbon::parse($data->start_date)->format('M d') }} - {{ \Carbon\Carbon::parse($data->end_date)->format('M d, Y') }}
+                                                    @endif    
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td class="cell" colspan="2">No activity yet</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

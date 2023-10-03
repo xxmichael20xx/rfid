@@ -15,6 +15,7 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
+        // Admin account
         $email = 'admin@admin.com';
         $password = 'Password1';
 
@@ -22,9 +23,26 @@ class AdminSeeder extends Seeder
         if (! User::where('email', $email)->first()) {
             // create a new admin user
             $user = new User;
-            $user->name = 'Admin';
+            $user->first_name = 'Admin';
+            $user->last_name = 'Admin';
             $user->email = $email;
             $user->password = bcrypt($password);
+            $user->save();
+        }
+
+        // Guard account
+        $email = 'guard1@test.com';
+        $password = 'Password1';
+
+        // check if admin account exists
+        if (! User::where('email', $email)->first()) {
+            // create a new admin user
+            $user = new User;
+            $user->first_name = 'Guard';
+            $user->last_name = 'One';
+            $user->email = $email;
+            $user->password = bcrypt($password);
+            $user->role = 'Guard';
             $user->save();
         }
     }
