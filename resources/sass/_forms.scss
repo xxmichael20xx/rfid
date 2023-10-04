@@ -9,3 +9,9 @@
         background-color: transparent !important;
     }
 }
+
+#my_camera,
+#my_camera video {
+    width: 100% !important;
+    height: auto !important;
+}
