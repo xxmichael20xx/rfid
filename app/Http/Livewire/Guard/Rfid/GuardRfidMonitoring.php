@@ -5,6 +5,11 @@ namespace App\Http\Livewire\Guard\Rfid;
 use App\Models\Rfid;
 use App\Models\RfidMonitoring;
 use Carbon\Carbon;
+use Illuminate\Http\File;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
 class GuardRfidMonitoring extends Component
@@ -12,10 +17,12 @@ class GuardRfidMonitoring extends Component
     protected $listeners = [
         'logEntry',
         'validateEntry',
+        'updateCapture'
     ];
 
     public $monitorings;
     public $homeOwner;
+    public $captureImage;
 
     public function logEntry()
     {
@@ -28,11 +35,14 @@ class GuardRfidMonitoring extends Component
             ->where('time_out', '=', 'N/A')
             ->first();
 
+            
+        $captureUrl = $this->uploadCapture();
         if (! $monitoring) {
             $newMonitoring = RfidMonitoring::create([
                 'rfid' => $id,
                 'date' => $currentDate,
-                'time_in' => $currentTime
+                'time_in' => $currentTime,
+                'capture_in' => $captureUrl
             ]);
 
             if ($newMonitoring) {
@@ -41,9 +51,12 @@ class GuardRfidMonitoring extends Component
                     'time' => $currentTime
                 ]);
             }
+
+            $this->captureImage = null;
         } else {
             $monitoring->update([
-                'time_out' => $currentTime
+                'time_out' => $currentTime,
+                'capture_out' => $captureUrl
             ]);
 
             $this->emit('updated-entry', [
@@ -53,6 +66,32 @@ class GuardRfidMonitoring extends Component
         }
 
         $this->fetchLatest();
+    }
+
+    public function uploadCapture()
+    {
+        // Decode the base64 data
+        $fileData = base64_decode($this->captureImage);
+
+        // save it to temporary dir first.
+        $tmpFilePath = sys_get_temp_dir() . '/' . Str::uuid()->toString();
+        file_put_contents($tmpFilePath, $fileData);
+
+        // this just to help us get file info.
+        $tmpFile = new File($tmpFilePath);
+
+        // convert data to actual file
+        $file = new UploadedFile(
+            $tmpFile->getPathname(),
+            $tmpFile->getFilename(),
+            $tmpFile->getMimeType(),
+            0,
+            true
+        );
+
+        // set file name
+        $fileName = $this->homeOwner->rfid->rfid . '_' . now()->format('Y_m_d-H_i_s') . '.jpg';
+        return Storage::putFileAs('images/monitoring', $file, $fileName);
     }
 
     /**
@@ -69,6 +108,14 @@ class GuardRfidMonitoring extends Component
 
         $this->homeOwner = $rfidExists->homeOwner;
         $this->emit('homeowner-data');
+    }
+
+    /**
+     * Start the camera
+     */
+    public function updateCapture($value)
+    {
+        $this->captureImage = Str::replace('data:image/jpeg;base64,', '', $value);
     }
 
     protected function fetchLatest()
