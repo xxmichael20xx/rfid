@@ -37,10 +37,15 @@
                                                         <button
                                                             type="button"
                                                             class="btn btn-info text-white p-2"
-                                                            wire:click="setActiveBlock({{ $data->id }})"
-                                                            data-bs-toggle="tooltip"
-                                                            data-bs-title="View Block Lots">
+                                                            wire:click="setActiveBlock({{ $data->id }})">
                                                             <i class="fa fa-list clickable"></i>
+                                                        </button>
+
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-success text-white p-2 ms-2"
+                                                            wire:click="prepareBlock({{ $data->id }})">
+                                                            <i class="fa fa-square-plus clickable"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -60,8 +65,6 @@
         </div>
     </div>
 
-    {{-- Modals --}}
-    <!-- blockLotsModal Modal -->
     <div class="modal fade" id="blockLotsModal" tabindex="-1" aria-labelledby="blockLotsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             @if ($activeBlock)
@@ -92,9 +95,7 @@
                                                     <button
                                                         type="button"
                                                         class="btn btn-danger text-white p-2 lot-confirm-delete"
-                                                        data-id="{{ $lotId }}"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-title="Delete Lot">
+                                                        data-id="{{ $lotId }}">
                                                         <i class="fa fa-trash clickable"></i>
                                                     </button>
                                                     <button
@@ -112,6 +113,14 @@
                                                         <i class="fa fa-trash clickable"></i>
                                                     </button>
                                                 @endif
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-success text-white p-2 ms-2"
+                                                    data-bs-dismiss="modal"
+                                                    wire:click="prepareEditLot({{ $data->id }})">
+                                                    <i class="fa fa-pencil clickable"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @empty
@@ -128,6 +137,123 @@
                     </div>
                 </div>
             @endif
+        </div>
+    </div>
+
+    <div class="modal fade" id="blockLotFormModal" tabindex="-1" aria-labelledby="blockLotFormModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog">
+            <form method="POST" wire:submit.prevent="createLots">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="blockLotFormModalLabel">Block - Lot Form</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <label>Lots*</label>
+                            </div>
+                            @foreach ($lotForm['lots'] as $lotFormKey => $item)
+                                <div class="col-12 mb-5 @if($lotFormKey > 0) border-top pt-5 @endif">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="form-floating">
+                                            <input
+                                                type="text"
+                                                class="form-control @error('lotForm.lots.'.$lotFormKey.'.lot') is-invalid @enderror"
+                                                placeholder="Ex. Block XYZ"
+                                                wire:model="lotForm.lots.{{ $lotFormKey }}.lot">
+                                            <label>Lot #{{ $lotFormKey + 1 }} name</label>
+                                        </div>
+                                        @if ($lotFormKey > 0)
+                                            <button type="button" class="btn btn-danger text-white ms-3" wire:click="removeLot({{ $lotFormKey }})">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        @endif
+                                    </div>
+                                    @error('lotForm.lots.'.$lotFormKey.'.lot')
+                                        <span class="invalid-feedback d-block" role="alert">
+                                            <strong>Duplicate value for lot fields. Each lot should be unique</strong>
+                                        </span>
+                                    @enderror
+
+                                    <div class="form-floating">
+                                        <textarea
+                                            type="text"
+                                            class="form-control form-control--textarea mt-2 @error('lotForm.lots.'.$lotFormKey.'.details') is-invalid @enderror"
+                                            wire:model="lotForm.lots.{{ $lotFormKey }}.details"
+                                            placeholder="Lot #{{ $lotFormKey + 1 }} details"></textarea>
+                                        <label>Lot #{{ $lotFormKey + 1 }} details</label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-12 d-flex justify-content-between">
+                                <button type="button" class="btn btn-info text-white" wire:click="addLot">Add Lot</button>
+                                <div>
+                                    <button type="button" class="btn btn-danger me-2 text-white" data-bs-dismiss="modal" wire:click="cancelCreate">Cancel</button>
+                                    <button type="submit" class="btn btn-primary text-white">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="lotEditModal" tabindex="-1" aria-labelledby="lotEditModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog">
+            <form method="POST" wire:submit.prevent="updateLot">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="lotEditModalLabel">Edit - Lot Form</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <div class="form-floating mb-3">
+                                    <input
+                                        id="lot"
+                                        name="lot"
+                                        type="text"
+                                        class="form-control @error('editLotForm.lot') is-invalid @enderror"
+                                        wire:model="editLotForm.lot">
+                                    <label for="lot">Lot</label>
+        
+                                    @error('editLotForm.lot')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('edit lot form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea
+                                        type="text"
+                                        class="form-control form-control--textarea mt-2 @error('editLotForm.details') is-invalid @enderror"
+                                        wire:model="editLotForm.details"
+                                        placeholder="Lot details"></textarea>
+                                    <label>Lot details</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-12 text-end">
+                                <button type="button" class="btn btn-danger me-2 text-white" data-bs-dismiss="modal" wire:click="cancelEditLot">Cancel</button>
+                                <button type="submit" class="btn btn-primary text-white">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -179,12 +305,34 @@
                     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
                 })
     
+                /** Notification for not block data */
                 Livewire.on('block-management.no-data', () => {
                     Swal.fire({
                         icon: 'info',
                         title: 'Data not found',
                         text: 'Data of the block is not found'
                     })
+                })
+
+                /** Prepare modal for new lot */
+                const blockLotFormModal = new bootstrap.Modal('#blockLotFormModal', {})
+                Livewire.on('block.prepared', () => {
+                    blockLotFormModal.show()
+                })
+
+                /** Notification for create failed with no data */
+                Livewire.on('create.failed.no-data', () => {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Failed to add lots',
+                        text: 'Block data is not found'
+                    })
+                })
+
+                /** Prepare modal for edit lot */
+                const lotEditModal = new bootstrap.Modal('#lotEditModal', {})
+                Livewire.on('lot.prepared', () => {
+                    lotEditModal.show()
                 })
             })
         </script>

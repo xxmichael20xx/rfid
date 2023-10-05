@@ -111,7 +111,7 @@ class GuardRfidMonitoring extends Component
     }
 
     /**
-     * Start the camera
+     * Convert string image to actual image
      */
     public function updateCapture($value)
     {

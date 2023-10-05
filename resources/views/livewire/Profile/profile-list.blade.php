@@ -34,6 +34,9 @@
                                                     <td class="cell">{{ $profile->contact_no ?? 'No contact number' }}</td>
                                                     <td class="cell d-flex">
                                                         @livewire('profile.profile-view', ['profileId' => $profile->id])
+                                                        <a href="{{ route('homeowners.view', ['id' => $profile->homeOwner->id]) }}" class="btn btn-info text-white p-2 ms-2">
+                                                            <i class="fa fa-house"></i>
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             @empty

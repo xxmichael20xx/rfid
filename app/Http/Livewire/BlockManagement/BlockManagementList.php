@@ -4,6 +4,8 @@ namespace App\Http\Livewire\BlockManagement;
 
 use App\Models\Block;
 use App\Models\Lot;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 use Livewire\Component;
 
 class BlockManagementList extends Component
@@ -13,6 +15,132 @@ class BlockManagementList extends Component
      */
     public $blocks;
     public $activeBlock;
+
+    public $lotForm = [
+        'block' => '',
+        'lots' => [
+            [
+                'lot' => '',
+                'details' => ''
+            ]
+        ]
+    ];
+    public $editLotForm = [
+        'id' => '',
+        'lot' => '',
+        'details' => ''
+    ];
+
+    /**
+     * Prepare the block lot form via block id
+     */
+    public function prepareBlock($id)
+    {
+        data_set($this->lotForm, 'block', $id);
+
+        $this->emit('block.prepared');
+    }
+
+    public function addLot() {
+        $this->lotForm['lots'][] = [
+            'lot' => '',
+            'details' => ''
+        ];
+    }
+
+    public function removeLot($key)
+    {
+        unset($this->lotForm['lots'][$key]);
+        $this->lotForm['lots'] = array_values($this->lotForm['lots']); // Re-index the array
+    }
+
+    public function cancelCreate()
+    {
+        $this->lotForm = [
+            'block' => '',
+            'lots' => [
+                [
+                    'lot' => '',
+                    'details' => ''
+                ]
+            ]
+        ];
+    }
+
+    public function createLots()
+    {
+        $this->validate([
+            'lotForm.lots.*.lot' => ['required', 'distinct']
+        ]);
+
+        $block = Block::find(data_get($this->lotForm, 'block'));
+
+        if (! $block) {
+            $this->emit('create.failed.no-data');
+            return false;
+        }
+
+        // add the lots of the block
+        foreach ($this->lotForm['lots'] as $newLot) {
+            Lot::create([
+                'block_id' => $block->id,
+                'lot' => $newLot['lot'],
+                'details' => $newLot['details'],
+            ]);
+        }
+
+        // dispatch a javacript event to trigger the notification
+        $this->emit('show.dialog', [
+            'icon' => 'success',
+            'title' => 'Create Success',
+            'message' => 'New lots has been successfully created!',
+            'reload' => true
+        ]);
+    }
+
+    public function prepareEditLot($id)
+    {
+        $lot = Lot::find($id);
+        $this->editLotForm = [
+            'id' => $id,
+            'lot' => $lot->lot,
+            'details' => $lot->details
+        ];
+
+        $this->emit('lot.prepared');
+    }
+
+    public function updateLot()
+    {
+        $lotId = data_get($this->editLotForm, 'id');
+        $this->validate([
+            'editLotForm.id' => ['required', Rule::exists('lots', 'id')],
+            'editLotForm.lot' => ['required', Rule::unique('lots', 'lot')->ignore($lotId)],
+            'editLotForm.details' => ['nullable'],
+        ]);
+
+        $lot = Lot::find($lotId);
+        $lot->update([
+            'lot' => data_get($this->editLotForm, 'lot'),
+            'details' => data_get($this->editLotForm, 'details'),
+        ]);
+
+        // dispatch a javacript event to trigger the notification
+        $this->emit('show.dialog', [
+            'icon' => 'success',
+            'title' => 'Update Success',
+            'message' => 'Lots has been successfully updated!',
+            'reload' => true
+        ]);
+    }
+
+    public function cancelEditLot()
+    {
+        $this->editLotForm = [
+            'id' => '',
+            'lot' => ''
+        ];
+    }
 
     public function setActiveBlock($id)
     {

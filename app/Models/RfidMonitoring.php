@@ -36,7 +36,10 @@ class RfidMonitoring extends Model
     protected function captureOut(): Attribute
     {
         return Attribute::make(
-            get: fn (string $value) => asset('uploads/' . $value)
+            get: function($value) {
+                $value ??= '';
+                return asset('uploads/' . $value);
+            }
         );
     }
 
