@@ -1,0 +1,33 @@
+<?php
+
+return [
+    'Toyota Camry',
+    'Honda Accord',
+    'Ford Explorer',
+    'Chevrolet Malibu',
+    'Nissan Altima',
+    'Hyundai Sonata',
+    'Volkswagen Jetta',
+    'Subaru Outback',
+    'Mazda CX-5',
+    'Kia Sorento',
+    'Jeep Grand Cherokee',
+    'Chrysler 300',
+    'Dodge Challenger',
+    'Audi A4',
+    'BMW X5',
+    'Mercedes-Benz C-Class',
+    'Lexus RX',
+    'Volvo XC90',
+    'Porsche 911',
+    'Tesla Model 3',
+    'Ferrari 488',
+    'Lamborghini Huracán',
+    'McLaren 720S',
+    'Aston Martin DB11',
+    'Rolls-Royce Phantom',
+    'Jaguar F-Type',
+    'Land Rover Range Rover',
+    'Maserati GranTurismo',
+    'Bentley Continental GT'
+];

@@ -14,7 +14,7 @@ class HomeOwnerController extends Controller
     public function list(Request $request)
     {
         // get all home owners data from database
-        $homeOwners = HomeOwner::with(['myBlock', 'myLot', 'rfid'])->orderBy('created_at', 'DESC')->get();
+        $homeOwners = HomeOwner::with(['blockLots', 'blockLots.block', 'blockLots.lot', 'rfid'])->orderBy('created_at', 'DESC')->get();
 
         // check if URL has "?search=keyword"
         if ($search = data_get($_GET, 'search')) {
@@ -22,8 +22,6 @@ class HomeOwnerController extends Controller
             $homeOwners = HomeOwner::where('first_name', 'LIKE', $likeSearch)
                 ->orWhere('last_name', 'LIKE', $likeSearch)
                 ->orWhere('middle_name', 'LIKE', $likeSearch)
-                ->orWhere('block', 'LIKE', $likeSearch)
-                ->orWhere('lot', 'LIKE', $likeSearch)
                 ->orWhere('contact_no', 'LIKE', $likeSearch)
                 ->orderBy('created_at', 'DESC')
                 ->get();

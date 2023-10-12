@@ -74,7 +74,7 @@
                                                 name="home_owner_id"
                                                 id="home_owner_id"
                                                 class="form-select @error('rfidForm.home_owner_id') is-invalid @enderror"
-                                                wire:model="rfidForm.home_owner_id">
+                                                wire:model.lazy="rfidForm.home_owner_id">
                                                 <option value="" disabled selected>Select home owner</option>
                                                 @forelse ($unassignedHomeOwners as $item)
                                                     <option value="{{ $item->id }}">{{ $item->full_name }}</option>
@@ -101,7 +101,7 @@
                                                 id="rfid"
                                                 class="form-control @error('rfidForm.rfid') is-invalid @enderror"
                                                 type="text"
-                                                wire:model="rfidForm.rfid">
+                                                wire:model.lazy="rfidForm.rfid">
                                             <label for="rfid">RFID*</label>
         
                                             @error('rfidForm.rfid')

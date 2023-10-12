@@ -28,6 +28,10 @@
     &--textarea {
         min-height: 10em !important;
     }
+
+    &--textarea-sm {
+        min-height: 3em !important;
+    }
 }
 
 .disabled,
@@ -40,6 +44,10 @@
 .modal-dialog {
     &--md {
         max-width: 40vw;
+    }
+
+    &--md-max {
+        max-width: 50vw;
     }
 
     &--lg {

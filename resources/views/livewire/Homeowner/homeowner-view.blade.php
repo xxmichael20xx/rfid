@@ -1,6 +1,6 @@
 <div>
     <h1 class="app-page-title">Manage Home Owner Details</h1>
-    <div class="row g-4 mb-4">
+    <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <div class="col-auto">
                 <a href="{{ route('homeowners.list') }}" class="btn btn-success text-white">
@@ -12,7 +12,7 @@
             </div>
         </div>
     </div>
-    <div class="row g-4 mb-4">
+    <div class="row mb-4">
         <div class="col-6">
             <div class="card shadow border-0">
                 <div class="card-body">
@@ -22,26 +22,32 @@
                                 @if ($data->profile)
                                     <img
                                         src="{{ $data->profile }}"
-                                        alt="Image Preview"
+                                        alt="Home-Owner-Avatar"
                                         class="img-fluid mb-3 rounded shadow"
                                         style="width: 250px;"
                                     />
                                 @endif
                             </div>
                             <div class="col-12">
-                                <p class="card-title h5">Home Owner: {{ $data->full_name }}</p>
+                                <p class="card-title h5">Home Owner: {{ $data->last_full_name }}</p>
                                 <hr class="theme-separator">
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <p class="text-dark"><b>Block:</b> {{ $data->myBlock->block }}</p>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <p class="text-dark"><b>Date of Birth:</b> {{ $data->date_of_birth }}</p>
                             </div>
-                            <div class="col-6">
-                                <p class="text-dark"><b>Lot:</b> {{ $data->myLot->lot }}</p>
+                            <div class="col-6 mb-3">
+                                <p class="text-dark"><b>Age:</b> {{ $data->age }} year(s) old</p>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <p class="text-dark"><b>Gender:</b> {{ ucfirst($data->gender) }}</p>
                             </div>
                         </div>
                         <div class="row mb-3">
+                            <div class="col-6">
+                                <p class="text-dark"><b>Email:</b> {{ $data->email ?? 'N/A' }}</p>
+                            </div>
                             <div class="col-6">
                                 <p class="text-dark"><b>Contact Number:</b> {{ $data->contact_no }}</p>
                             </div>
@@ -50,8 +56,6 @@
                             <div class="col-6">
                                 <p class="text-dark"><b>Member Since:</b> {{ \Carbon\Carbon::parse($data->created_at)->format('M y, Y') }}</p>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-6">
                                 @php
                                     $rfid = ($data->rfid) ? $data->rfid->rfid : 'No assigned RFID';
@@ -64,70 +68,236 @@
             </div>
         </div>
     </div>
-    <div class="row g-4 mb-4">
-        <div class="col-12">
-            <div class="card shadow-lg border-0">
-                <div class="card-body">
-                    <div class="container">
-                        <div class="row mb-3">
-                            <div class="col-12 d-flex justify-content-between mb-3">
-                                <p class="card-title h5">List of profiles</p>
-                                <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#newProfileModal">
-                                    <i class="fa fa-user-plus"></i> Add New
-                                </button>
-                            </div>
-                            <hr class="theme-separator">
-                        </div>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="table-responsive">
-                                    <table class="table app-table-hover mb-0 text-left visitors-table">
-                                        <thead class="bg-portal-green">
+    <div class="accordion mb-5" id="accordionHomeOwner" wire:ignore>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingListOfProfiles">
+                <button
+                    class="accordion-button text-dark"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseLiftOfProfiles"
+                    aria-expanded="true"
+                    aria-controls="collapseLiftOfProfiles"
+                >
+                    <i class="fa fa-users me-2"></i> Profiles
+                </button>
+            </h2>
+            <div id="collapseLiftOfProfiles" class="accordion-collapse collapse show" aria-labelledby="headingListOfProfiles" data-bs-parent="#accordionHomeOwner">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-12 d-flex justify-content-between mb-3">
+                            <p class="card-title h5">Manage Profiles</p>
+                            <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#newProfileModal">
+                                <i class="fa fa-user-plus"></i> Add New
+                            </button>
+                        </div>
+                        <hr class="theme-separator">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table app-table-hover mb-0 text-left visitors-table">
+                                    <thead class="bg-portal-green">
+                                        <tr>
+                                            <th class="cell">Name</th>
+                                            <th class="cell">Date of Birth</th>
+                                            <th class="cell">Contact No</th>
+                                            <th class="cell">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($data->profiles as $profile)
                                             <tr>
-                                                <th class="cell">Id</th>
-                                                <th class="cell">Name</th>
-                                                <th class="cell">Date of Birth</th>
-                                                <th class="cell">Contact No</th>
-                                                <th class="cell">Actions</th>
+                                                <td class="cell">{{ $profile->full_name }}</td>
+                                                <td class="cell">{{ \Carbon\Carbon::parse($profile->date_of_borth)->format('M d, Y') }}</td>
+                                                <td class="cell">{{ $profile->contact_no ?? 'No contact number' }}</td>
+                                                <td class="cell d-flex">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-danger text-white p-2 confirm-delete-profile"
+                                                        data-id="{{ $profile->id }}"
+                                                        data-name="{{ $profile->full_name }}">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+        
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-info text-white p-2 ms-2"
+                                                        wire:click="setUpdate({{ $profile->id }})">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+        
+                                                    <div wire:ignore>
+                                                        @livewire('profile.profile-view', ['profileId' => $profile->id])
+                                                    </div>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($data->profiles as $profile)
-                                                <tr>
-                                                    <td class="cell">{{ $profile->id }}</td>
-                                                    <td class="cell">{{ $profile->full_name }}</td>
-                                                    <td class="cell">{{ \Carbon\Carbon::parse($profile->date_of_borth)->format('M d, Y') }}</td>
-                                                    <td class="cell">{{ $profile->contact_no ?? 'No contact number' }}</td>
-                                                    <td class="cell d-flex">
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-danger text-white p-2 confirm-delete-profile"
-                                                            data-id="{{ $profile->id }}"
-                                                            data-name="{{ $profile->full_name }}">
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
-            
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-info text-white p-2 ms-2"
-                                                            wire:click="setUpdate({{ $profile->id }})">
-                                                            <i class="fa fa-pencil"></i>
-                                                        </button>
-            
-                                                        <div wire:ignore>
-                                                            @livewire('profile.profile-view', ['profileId' => $profile->id])
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td class="cell text-center" colspan="5">No result(s)</td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        @empty
+                                            <tr>
+                                                <td class="cell text-center" colspan="4">No result(s)</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingBlockAndLots">
+                <button
+                    class="accordion-button text-dark"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseBlockAndLots"
+                    aria-expanded="false"
+                    aria-controls="collapseBlockAndLots"
+                >
+                    <i class="fa fa-box me-2"></i> Block & Lots
+                </button>
+            </h2>
+            <div id="collapseBlockAndLots" class="accordion-collapse collapse" aria-labelledby="headingBlockAndLots" data-bs-parent="#accordionHomeOwner">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-12 d-flex justify-content-between mb-3">
+                            <p class="card-title h5">Manage Block & Lots</p>
+                            <button type="button" class="btn btn-success text-white" id="newBlockAndLotModalBtn">
+                                <i class="fa fa-plus"></i> Add New
+                            </button>
+                        </div>
+                        <hr class="theme-separator">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table app-table-hover mb-0 text-left visitors-table">
+                                    <thead class="bg-portal-green">
+                                        <tr>
+                                            <th class="cell">Block</th>
+                                            <th class="cell">Lot</th>
+                                            <th class="cell">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($data->grouped_block_lots as $groupedKey => $groupedBlockLots)
+                                            <tr>
+                                                <td class="cell">{{ $groupedKey }}</td>
+                                                <td class="cell">{{ $groupedBlockLots[0]['lotName'] }}</td>
+                                                <td class="cell d-flex">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-danger text-white p-2 delete-lot"
+                                                        data-id="{{ $groupedBlockLots[0]['id'] }}"
+                                                        data-lot="{{ $groupedBlockLots[0]['lotName'] }}"
+                                                    >
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            @foreach ($groupedBlockLots as $groupedBlockLotKey => $groupedBlockLot)
+                                                @if ($groupedBlockLotKey > 0)
+                                                    <tr>
+                                                        <td></td>
+                                                        <td>{{ $groupedBlockLot['lotName'] }}</td>
+                                                        <td class="cell d-flex">
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-danger text-white p-2 delete-lot"
+                                                                data-id="{{ $groupedBlockLot['id'] }}"
+                                                                data-lot="{{ $groupedBlockLot['lotName'] }}"
+                                                            >
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endif
+                                            @endforeach
+                                        @empty
+                                            <tr>
+                                                <td class="cell text-center" colspan="3">No result(s)</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingVehicles">
+                <button
+                    class="accordion-button text-dark"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseVehicles"
+                    aria-expanded="false"
+                    aria-controls="collapseVehicles"
+                >
+                    <i class="fa fa-car me-2"></i> Vehicles
+                </button>
+            </h2>
+            <div id="collapseVehicles" class="accordion-collapse collapse" aria-labelledby="headingVehicles" data-bs-parent="#accordionHomeOwner">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-12 d-flex justify-content-between mb-3">
+                            <p class="card-title h5">Manage Vehicles</p>
+                            <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#newVehicleModal">
+                                <i class="fa fa-plus"></i> Add New
+                            </button>
+                        </div>
+                        <hr class="theme-separator">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table app-table-hover mb-0 text-left visitors-table">
+                                    <thead class="bg-portal-green">
+                                        <tr>
+                                            <th class="cell">Plate Number</th>
+                                            <th class="cell">Car Type (Name)</th>
+                                            <th class="cell">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($data->vehicles as $vehicle)
+                                            <tr>
+                                                <td class="cell">{{ $vehicle->plate_number }}</td>
+                                                <td class="cell">{{ $vehicle->car_type }}</td>
+                                                <td class="cell d-flex">
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-danger text-white p-2 delete-vehicle"
+                                                        data-id="{{ $vehicle->id }}"
+                                                        data-plate="{{ $vehicle->plate_number }}"
+                                                    >
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-info text-white p-2 ms-2"
+                                                        wire:click="prepareUpdateVehicle({{ $vehicle->id }})"
+                                                    >
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td class="cell text-center" colspan="3">No result(s)</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -138,7 +308,7 @@
 
     <!-- Modal for new profile form -->
     <div class="modal fade" id="newProfileModal" tabindex="-1" aria-labelledby="newProfileModalLabel" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-dialog--md">
+        <div class="modal-dialog modal-dialog--md-max">
             <form method="POST" wire:submit.prevent="create">
                 @csrf
                 
@@ -149,35 +319,16 @@
                     </div>
                     <div class="modal-body">
                         <div class="row mb-3">
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
-                                    <input
-                                        id="first_name"
-                                        name="first_name"
-                                        type="text"
-                                        class="form-control @error('createForm.first_name') is-invalid @enderror"
-                                        placeholder="Ex. John"
-                                        wire:model="createForm.first_name"
-                                        autofocus>
-                                    <label for="first_name">First Name*</label>
-        
-                                    @error('createForm.first_name')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('create form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
+                            <div class="col-4">
+                                <div class="input-container mb-3">
+                                    <label for="last_name">Last Name<span class="required">*</span></label>
                                     <input
                                         id="last_name"
                                         name="last_name"
                                         type="text"
                                         class="form-control @error('createForm.last_name') is-invalid @enderror"
-                                        placeholder="Ex. Doe"
-                                        wire:model="createForm.last_name">
-                                    <label for="last_name">Last Name*</label>
+                                        wire:model.lazy="createForm.last_name"
+                                        autofocus>
                                     
                                     @error('createForm.last_name')
                                         <span class="invalid-feedback" role="alert">
@@ -186,16 +337,32 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-6 mt-3">
-                                <div class="form-floating mb-3">
+                            <div class="col-4">
+                                <div class="input-container mb-3">
+                                    <label for="first_name">First Name<span class="required">*</span></label>
+                                    <input
+                                        id="first_name"
+                                        name="first_name"
+                                        type="text"
+                                        class="form-control @error('createForm.first_name') is-invalid @enderror"
+                                        wire:model.lazy="createForm.first_name">
+        
+                                    @error('createForm.first_name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-container mb-3">
+                                    <label for="middle_name">Middle Name</label>
                                     <input
                                         id="middle_name"
                                         name="middle_name"
                                         type="text"
                                         class="form-control @error('createForm.middle_name') is-invalid @enderror"
-                                        placeholder="Ex. Eli"
-                                        wire:model="createForm.middle_name">
-                                    <label for="middle_name">Middle Name</label>
+                                        wire:model.lazy="createForm.middle_name">
         
                                     @error('createForm.middle_name')
                                         <span class="invalid-feedback" role="alert">
@@ -207,15 +374,16 @@
                         </div>
     
                         <div class="row mb-3">
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
+                            <div class="col-4">
+                                <div class="input-container mb-3">
+                                    <label for="date_of_birth">Date of birth<span class="required">*</span></label>
                                     <input
                                         id="date_of_birth"
                                         name="date_of_birth"
                                         type="date"
                                         class="form-control @error('createForm.date_of_birth') is-invalid @enderror"
-                                        wire:model="createForm.date_of_birth">
-                                    <label for="date_of_birth">Date of birth*</label>
+                                        data-age="age"
+                                        wire:model.lazy="createForm.date_of_birth">
         
                                     @error('createForm.date_of_birth')
                                         <span class="invalid-feedback" role="alert">
@@ -224,16 +392,29 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
+                            <div class="col-4">
+                                <div class="input-container">
+                                    <label for="age">Age</label>
+                                    <input
+                                        id="age"
+                                        name="age"
+                                        type="text"
+                                        class="form-control disabled"
+                                        disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <div class="input-container mb-3">
+                                    <label for="contact_no">Contact Number</label>
                                     <input
                                         id="contact_no"
                                         name="contact_no"
                                         type="number"
                                         class="form-control @error('createForm.contact_no') is-invalid @enderror"
-                                        placeholder="Ex. 09123456789"
-                                        wire:model="createForm.contact_no">
-                                    <label for="contact_no">Contact Number</label>
+                                        wire:model.lazy="createForm.contact_no">
         
                                     @error('createForm.contact_no')
                                         <span class="invalid-feedback" role="alert">
@@ -242,18 +423,31 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="col-4">
+                                <div class="input-container">
+                                    <label for="gender">Gender<span class="required">*</span></label>
+                                    <div class="form-check form-check-inline w-100">
+                                        <input class="form-check-input p-2" type="radio" name="gender" wire:model.lazy="createForm.gender" id="gender-male" value="male">
+                                        <label class="form-check-label mb-0 ms-2" for="gender-male">Male</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input p-2" type="radio" name="gender" wire:model.lazy="createForm.gender" id="gender-female" value="female">
+                                        <label class="form-check-label mb-0 ms-2" for="gender-female">Female</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
                             <div class="col-12">
-                                <div class="form-floating mb-3">
+                                <div class="input-container mb-3">
+                                    <label for="notes">Notes</label>
                                     <textarea
                                         id="notes"
                                         name="notes"
                                         class="form-control form-control--textarea @error('createForm.notes') is-invalid @enderror"
-                                        wire:model="createForm.notes"
+                                        wire:model.lazy="createForm.notes"
                                         rows="5"></textarea>
-                                    <label for="notes">Notes</label>
         
                                     @error('createForm.notes')
                                         <span class="invalid-feedback" role="alert">
@@ -275,7 +469,7 @@
 
     <!-- Modal for profile update form -->
     <div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModalLabel" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-dialog--md">
+        <div class="modal-dialog modal-dialog--md-max">
             <form method="POST" wire:submit.prevent="update">
                 @csrf
                 
@@ -286,35 +480,16 @@
                     </div>
                     <div class="modal-body">
                         <div class="row mb-3">
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
-                                    <input
-                                        id="update_first_name"
-                                        name="first_name"
-                                        type="text"
-                                        class="form-control @error('updateForm.first_name') is-invalid @enderror"
-                                        placeholder="Ex. John"
-                                        wire:model="updateForm.first_name"
-                                        autofocus>
-                                    <label for="update_first_name">First Name*</label>
-        
-                                    @error('updateForm.first_name')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('update form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
+                            <div class="col-4">
+                                <div class="input-container mb-3">
+                                    <label for="update_last_name">Last Name<span class="required">*</span></label>
                                     <input
                                         id="update_last_name"
                                         name="last_name"
                                         type="text"
                                         class="form-control @error('updateForm.last_name') is-invalid @enderror"
-                                        placeholder="Ex. Doe"
-                                        wire:model="updateForm.last_name">
-                                    <label for="update_last_name">Last Name*</label>
+                                        wire:model.lazy="updateForm.last_name"
+                                        autofocus>
         
                                     @error('updateForm.last_name')
                                         <span class="invalid-feedback" role="alert">
@@ -323,16 +498,32 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-6 mt-3">
-                                <div class="form-floating mb-3">
+                            <div class="col-4">
+                                <div class="input-container mb-3">
+                                    <label for="update_first_name">First Name<span class="required">*</span></label>
+                                    <input
+                                        id="update_first_name"
+                                        name="first_name"
+                                        type="text"
+                                        class="form-control @error('updateForm.first_name') is-invalid @enderror"
+                                        wire:model.lazy="updateForm.first_name">
+        
+                                    @error('updateForm.first_name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('update form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-container mb-3">
+                                    <label for="update_middle_name">Middle Name</label>
                                     <input
                                         id="update_middle_name"
                                         name="middle_name"
                                         type="text"
                                         class="form-control @error('updateForm.middle_name') is-invalid @enderror"
-                                        placeholder="Ex. Eli"
-                                        wire:model="updateForm.middle_name">
-                                    <label for="update_middle_name">Middle Name</label>
+                                        wire:model.lazy="updateForm.middle_name">
         
                                     @error('updateForm.middle_name')
                                         <span class="invalid-feedback" role="alert">
@@ -344,15 +535,16 @@
                         </div>
     
                         <div class="row mb-3">
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
+                            <div class="col-4">
+                                <div class="input-container mb-3">
+                                    <label for="update_date_of_birth">Date of birth<span class="required">*</span></label>
                                     <input
                                         id="update_date_of_birth"
                                         name="date_of_birth"
                                         type="date"
                                         class="form-control @error('updateForm.date_of_birth') is-invalid @enderror"
-                                        wire:model="updateForm.date_of_birth">
-                                    <label for="update_date_of_birth">Date of birth*</label>
+                                        data-age="update_age"
+                                        wire:model.lazy="updateForm.date_of_birth">
         
                                     @error('updateForm.date_of_birth')
                                         <span class="invalid-feedback" role="alert">
@@ -361,16 +553,29 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="form-floating mb-3">
+                            <div class="col-4">
+                                <div class="input-container">
+                                    <label for="update_age">Age</label>
+                                    <input
+                                        id="update_age"
+                                        name="age"
+                                        type="text"
+                                        class="form-control disabled"
+                                        disabled>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <div class="input-container mb-3">
+                                    <label for="update_contact_no">Contact Number</label>
                                     <input
                                         id="update_contact_no"
                                         name="contact_no"
                                         type="number"
                                         class="form-control @error('updateForm.contact_no') is-invalid @enderror"
-                                        placeholder="Ex. 09123456789"
-                                        wire:model="updateForm.contact_no">
-                                    <label for="update_contact_no">Contact Number</label>
+                                        wire:model.lazy="updateForm.contact_no">
         
                                     @error('updateForm.contact_no')
                                         <span class="invalid-feedback" role="alert">
@@ -379,18 +584,31 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="col-4">
+                                <div class="input-container">
+                                    <label for="gender">Gender<span class="required">*</span></label>
+                                    <div class="form-check form-check-inline w-100">
+                                        <input class="form-check-input p-2" type="radio" name="gender" wire:model.lazy="updateForm.gender" id="update-gender-male" value="male">
+                                        <label class="form-check-label mb-0 ms-2" for="update-gender-male">Male</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input p-2" type="radio" name="gender" wire:model.lazy="updateForm.gender" id="update-gender-female" value="female">
+                                        <label class="form-check-label mb-0 ms-2" for="update-gender-female">Female</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
                             <div class="col-12">
-                                <div class="form-floating mb-3">
+                                <div class="input-container mb-3">
+                                    <label for="update_notes">Notes</label>
                                     <textarea
                                         id="update_notes"
                                         name="notes"
                                         class="form-control form-control--textarea @error('updateForm.notes') is-invalid @enderror"
-                                        wire:model="updateForm.notes"
+                                        wire:model.lazy="updateForm.notes"
                                         rows="5"></textarea>
-                                    <label for="update_notes">Notes</label>
         
                                     @error('updateForm.notes')
                                         <span class="invalid-feedback" role="alert">
@@ -410,7 +628,185 @@
         </div>
     </div>
 
+    <!-- Model for new vehicle -->
+    <div class="modal fade" id="newVehicleModal" tabindex="-1" aria-labelledby="newVehicleModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog">
+            <form method="POST" wire:submit.prevent="createVehicle">
+                @csrf
+                
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="newVehicleModalLabel">New Vehicle</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="plate_number">Plate Number<span class="required">*</span></label>
+                                    <input
+                                        id="plate_number"
+                                        name="plate_number"
+                                        type="text"
+                                        class="form-control @error('createVehicleForm.plate_number') is-invalid @enderror"
+                                        wire:model.lazy="createVehicleForm.plate_number"
+                                        autofocus>
+                                    
+                                    @error('createVehicleForm.plate_number')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="car_type">Cart Type (Name)<span class="required">*</span></label>
+                                    <input
+                                        id="car_type"
+                                        name="car_type"
+                                        type="text"
+                                        class="form-control @error('createVehicleForm.car_type') is-invalid @enderror"
+                                        wire:model.lazy="createVehicleForm.car_type"
+                                        autofocus>
+                                    
+                                    @error('createVehicleForm.car_type')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success text-white">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Model for update vehicle -->
+    <div class="modal fade" id="newBlockAndLotModal" tabindex="-1" aria-labelledby="newBlockAndLotModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog">
+            <form method="POST" wire:submit.prevent="addBlockLot">
+                @csrf
+                
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="newVehicleModalLabel">Assign Block & Lot</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container" wire:ignore>
+                                    <label for="block-lots">Block & Lots</label>
+                                    <select
+                                        id="block-lots"
+                                        multiple="multiple"
+                                        class="form-control @error('blockLotForm') is-invalid @enderror"
+                                        wire:model.lazy="blockLotForm">
+                                        @forelse ($availableLBlockLots as $key => $availableLBlockLot)
+                                            <optgroup label="{{ $key }}">
+                                                @foreach ($availableLBlockLot as $lotKey => $lot)
+                                                    <option value="{{ $lot }}">{{ $lotKey }}</option>
+                                                @endforeach
+                                            </optgroup>
+                                        @empty
+                                            <option value="" disabled>No available Block & Lot</option>
+                                        @endforelse
+                                    </select>
+
+                                    @error('blockLotForm')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('block lot form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success text-white">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Model for update vehicle -->
+    <div class="modal fade" id="updateVehicleModal" tabindex="-1" aria-labelledby="updateVehicleModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog">
+            <form method="POST" wire:submit.prevent="updateVehicle">
+                @csrf
+                
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="newVehicleModalLabel">Update Vehicle</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="update_plate_number">Plate Number<span class="required">*</span></label>
+                                    <input
+                                        id="update_plate_number"
+                                        name="update_plate_number"
+                                        type="text"
+                                        class="form-control @error('updateVehicleForm.plate_number') is-invalid @enderror"
+                                        wire:model.lazy="updateVehicleForm.plate_number"
+                                        autofocus>
+                                    
+                                    @error('updateVehicleForm.plate_number')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="car_type">Cart Type (Name)<span class="required">*</span></label>
+                                    <input
+                                        id="car_type"
+                                        name="car_type"
+                                        type="text"
+                                        class="form-control @error('updateVehicleForm.car_type') is-invalid @enderror"
+                                        wire:model.lazy="updateVehicleForm.car_type"
+                                        autofocus>
+                                    
+                                    @error('updateVehicleForm.car_type')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('update vehicle form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success text-white">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     @section('scripts')
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
             window.addEventListener('DOMContentLoaded', () => {
                 /** Initialize click event for confirm-delete-profile */
@@ -429,13 +825,106 @@
                                 confirmButtonText: 'Yes, delete it!'
                             }).then((e) => {
                                 if (e.isConfirmed) {
-                                    Livewire.emit('delete-profile', { id: id })
+                                    Livewire.emit('deleteProfile', { id: id })
                                 }
                             })
                         })
                     })
                 }
+
+                /** Add delete lot confirmation */
+                $(document).on('click', '.delete-lot', function() {
+                    const id = $(this).data('id')
+                    const lot = $(this).data('lot')
+                    
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Are you sure?',
+                        html: `<p>Lot <b>${lot}</b> will be unassigned!</p>`,
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, confirm'
+                    }).then((e) => {
+                        if (e.isConfirmed) {
+                            Livewire.emit('deleteBlockLot', id)
+                        }
+                    })
+                })
+
+                $(document).on('change', '#date_of_birth, #update_date_of_birth', function() {
+                    const value = $(this).val()
+                    const ageSelector = $(this).data('age')
+                    const today = new Date()
+                    const birthDate = new Date(value)
+
+                    let age = today.getFullYear() - birthDate.getFullYear()
+                    const monthDiff = today.getMonth() - birthDate.getMonth()
+
+                    if (birthDate > today) {
+                        age = 'Invalid selected date'
+                    } else {
+                        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                            age--
+                        }
+                    }
+
+                    $('#' + ageSelector).val(age)
+                })
+
+                /** Add delete vehicle confirmation */
+                $(document).on('click', '.delete-vehicle', function() {
+                    const id = $(this).data('id')
+                    const plate = $(this).data('plate')
+                    const type = $(this).data('type')
+                    
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Are you sure?',
+                        html: `<p>Vehicle <b>${plate}</b> deleted!</p>`,
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, confirm'
+                    }).then((e) => {
+                        if (e.isConfirmed) {
+                            Livewire.emit('deleteVehicle', id)
+                        }
+                    })
+                })
+
+                /** Add event to trigger update modal */
+                Livewire.on('update.vehicle-prepare', () => {
+                    const updateVehicleModal = new bootstrap.Modal('#updateVehicleModal', {})
+                    updateVehicleModal.show()
+                })
+
+                /** Initialize select2 */
+                $(document).on('click', '#newBlockAndLotModalBtn', function() {
+                    const newBlockAndLotModal = new bootstrap.Modal('#newBlockAndLotModal', {})
+                    newBlockAndLotModal.show()
+
+                    setTimeout(function() {
+                        $('#block-lots').select2()
+                    }, 500)
+                })
+                $('#block-lots').on('select2:select', function (e) {
+                    const id = e.params.data.id
+
+                    Livewire.emit('selectLot', id)
+                })
+
+                $('#block-lots').on('select2:unselect', function (e) {
+                    const id = e.params.data.id
+
+                    Livewire.emit('unSelectLot', id)
+                })
             })
         </script>
+    @endsection
+    @section('styles')
+        <style>
+            .select2-dropdown {
+                z-index: 99999 !important;
+            }
+        </style>
     @endsection
 </div>

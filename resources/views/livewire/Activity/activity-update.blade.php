@@ -33,7 +33,7 @@
                                                 type="text"
                                                 class="form-control @error('model.title') is-invalid @enderror"
                                                 placeholder="Ex. Fun Run"
-                                                wire:model="model.title"
+                                                wire:model.lazy="model.title"
                                                 autofocus>
                                             <label for="title">Title*</label>
                 
@@ -51,7 +51,7 @@
                                                 name="end_date"
                                                 type="date"
                                                 class="form-control @error('model.end_date') is-invalid @enderror"
-                                                wire:model="model.end_date">
+                                                wire:model.lazy="model.end_date">
                                             <label for="end_date">End date</label>
                 
                                             @error('model.end_date')
@@ -72,7 +72,7 @@
                                                 type="text"
                                                 class="form-control @error('form.location') is-invalid @enderror"
                                                 placeholder="Ex. Central Gym"
-                                                wire:model="form.location"
+                                                wire:model.lazy="form.location"
                                                 autofocus>
                                             <label for="location">Location*</label>
                 
@@ -92,7 +92,7 @@
                                                 id="description"
                                                 name="description"
                                                 class="form-control form-control--textarea @error('model.title') is-invalid @enderror"
-                                                wire:model="model.description"
+                                                wire:model.lazy="model.description"
                                                 rows="5"></textarea>
                                             <label for="description">Description</label>
                 

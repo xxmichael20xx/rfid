@@ -9,7 +9,7 @@
                         class="form-select"
                         id="visitor-chart-change"
                         name="visitor-chart-change"
-                        wire:model="type">
+                        wire:model.lazy="type">
                         <option value="days" selected>Last 7 Days</option>
                         <option value="weeks">Last 4 Weeks</option>
                         <option value="months">Last 4 Months</option>

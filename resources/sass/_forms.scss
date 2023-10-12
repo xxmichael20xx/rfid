@@ -10,6 +10,37 @@
     }
 }
 
+.input-container {
+    label {
+        font-weight: 300;
+        font-size: 14px;
+        line-height: 18px;
+        color: #212529;
+        margin-bottom: 5px;
+
+        .required {
+            color: #dc3545;
+        }
+    }
+
+    input {
+        border-radius: 5px;
+        border: 1px solid #BABABA;
+        background-color: transparent;
+        color: #212529;
+        padding: 11px 13px;
+        outline: none;
+    }
+
+    textarea {
+        border-radius: 5px;
+        border: 1px solid #BABABA;
+        background-color: transparent;
+        color: #212529;
+        outline: none;
+    }
+}
+
 #my_camera,
 #my_camera video {
     width: 100% !important;

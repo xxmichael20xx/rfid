@@ -97,7 +97,7 @@
                                         type="text"
                                         class="form-control @error('createForm.first_name') is-invalid @enderror"
                                         placeholder="Ex. John"
-                                        wire:model="createForm.first_name"
+                                        wire:model.lazy="createForm.first_name"
                                         autofocus>
                                     <label for="first_name">First Name*</label>
                                     @error('createForm.first_name')
@@ -115,7 +115,7 @@
                                         type="text"
                                         class="form-control @error('createForm.last_name') is-invalid @enderror"
                                         placeholder="Ex. John"
-                                        wire:model="createForm.last_name">
+                                        wire:model.lazy="createForm.last_name">
                                     <label for="last_name">Last Name*</label>
                                     @error('createForm.last_name')
                                         <span class="invalid-feedback" role="alert">
@@ -132,7 +132,7 @@
                                         type="text"
                                         class="form-control @error('createForm.middle_name') is-invalid @enderror"
                                         placeholder="Ex. John"
-                                        wire:model="createForm.middle_name">
+                                        wire:model.lazy="createForm.middle_name">
                                     <label for="middle_name">Middle Name</label>
                                     @error('createForm.middle_name')
                                         <span class="invalid-feedback" role="alert">
@@ -152,7 +152,7 @@
                                         type="email"
                                         class="form-control @error('createForm.email') is-invalid @enderror"
                                         placeholder="Ex. example@john.com"
-                                        wire:model="createForm.email">
+                                        wire:model.lazy="createForm.email">
                                     <label for="email">Email*</label>
                                     @error('createForm.email')
                                         <span class="invalid-feedback" role="alert">
@@ -168,7 +168,7 @@
                                         name="password"
                                         type="password"
                                         class="form-control @error('createForm.password') is-invalid @enderror"
-                                        wire:model="createForm.password">
+                                        wire:model.lazy="createForm.password">
                                     <label for="password">Password*</label>
                                     @error('createForm.password')
                                         <span class="invalid-feedback" role="alert">
@@ -186,7 +186,7 @@
                                         name="role"
                                         id="role"
                                         class="form-select"
-                                        wire:model="createForm.role">
+                                        wire:model.lazy="createForm.role">
                                         <option value="" selected disabled>Select role</option>
                                         @forelse ($roles as $role)
                                             <option value="{{ $role }}">{{ $role }}</option>

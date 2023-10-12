@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class HomeOwner extends Model
 {
@@ -19,9 +21,10 @@ class HomeOwner extends Model
         'first_name',
         'last_name',
         'middle_name',
-        'block',
-        'lot',
+        'date_of_birth',
+        'email',
         'contact_no',
+        'gender',
         'profile',
         'metadata'
     ];
@@ -38,7 +41,10 @@ class HomeOwner extends Model
      */
     protected $appends = [
         'full_name',
-        'profile_path'
+        'last_full_name',
+        'profile_path',
+        'grouped_block_lots',
+        'age'
     ];
 
     /**
@@ -46,7 +52,12 @@ class HomeOwner extends Model
      */
     public function getFullNameAttribute()
     {
-        return $this->first_name.' '.$this->middle_name.' '.$this->last_name;
+        return $this->first_name . ' ' . $this->middle_name . ' ' . $this->last_name;
+    }
+
+    public function getLastFullNameAttribute()
+    {
+        return $this->middle_name . ', ' . $this->first_name . ' ' . $this->last_name;
     }
 
     public function getProfilePathAttribute()
@@ -54,14 +65,40 @@ class HomeOwner extends Model
         return $this->profile;
     }
 
-    public function myBlock()
+    public function getGroupedBlockLotsAttribute()
     {
-        return $this->hasOne(Block::class, 'id', 'block');
+        $groupedBlockLots = [];
+        $blockLots = HomeOwnerBlockLot::where('home_owner_id', $this->id)->get();
+
+        foreach ($blockLots as $blockLot) {
+            $block = Block::find($blockLot->block);
+            $lot = Lot::find($blockLot->lot);
+            
+            $blockName = $block->block;
+
+            if (! isset($groupedBlockLots[$blockName])) {
+                $groupedBlockLots[$blockName] = [];
+            }
+            $groupedBlockLots[$blockName][] = array_merge($blockLot->toArray(), [
+                'lotName' => $lot->lot
+            ]);
+        }
+
+        return $groupedBlockLots;
     }
 
-    public function myLot()
+    public function getAgeAttribute()
     {
-        return $this->hasOne(Lot::class, 'id', 'lot');
+        if ($this->date_of_birth) {
+            return Carbon::parse($this->date_of_birth)->age;
+        }
+
+        return null;
+    }
+
+    public function blockLots()
+    {
+        return $this->hasMany(HomeOwnerBlockLot::class, 'home_owner_id', 'id');
     }
 
     public function profiles()
@@ -82,6 +119,11 @@ class HomeOwner extends Model
     public function rfidMonitorings()
     {
         return $this->hasMany(RfidMonitoring::class, 'home_owner_id', 'id');
+    }
+
+    public function vehicles()
+    {
+        return $this->hasMany(HomeOwnerVehicle::class, 'home_owner_id', 'id');
     }
 
     protected function profile(): Attribute

@@ -2,28 +2,48 @@
 
 namespace App\Http\Livewire\Homeowner;
 
+use App\Models\Block;
 use App\Models\HomeOwner;
+use App\Models\HomeOwnerBlockLot;
+use App\Models\HomeOwnerVehicle;
+use App\Models\Lot;
 use App\Models\Profile;
 use App\Rules\NotFutureDate;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class HomeownerView extends Component
 {
-    protected $listeners = ['delete-profile' => 'deleteProfile'];
+    protected $listeners = [
+        'deleteProfile',
+        'deleteBlockLot',
+        'deleteVehicle',
+        'selectLot',
+        'unSelectLot'
+    ];
 
     public $data;
 
     public $createForm = [
-        'first_name',
-        'last_name',
-        'middle_name',
-        'date_of_birth',
-        'contact_no',
-        'notes',
+        'first_name' => '',
+        'last_name' => '',
+        'middle_name' => '',
+        'date_of_birth' => '',
+        'gender' => 'male',
+        'contact_no' => '',
+        'notes' => '',
     ];
     public $updateForm = null;
     public $toView = null;
+
+    public $createVehicleForm = [
+        'plate_number' => '',
+        'car_type' => ''
+    ];
+    public $updateVehicleForm;
+    public $availableLBlockLots = [];
+    public $blockLotForm = [];
 
     public function create()
     {
@@ -69,11 +89,29 @@ class HomeownerView extends Component
         ]);
     }
 
+    public function deleteBlockLot($payload)
+    {
+        $blockLot = HomeOwnerBlockLot::find($payload);
+        $lotId = $blockLot->lot;
+
+        $blockLot->delete();
+        Lot::find($lotId)->update([
+            'availability' => 'available'
+        ]);
+
+        $this->emit('show.dialog', [
+            'icon' => 'success',
+            'title' => 'Unassign Success',
+            'message' => 'Lot has been successfully unassigned!',
+            'reload' => true
+        ]);
+    }
+
     // Set the profile to update
     public function setUpdate($id)
     {
         $this->updateForm = Profile::find($id)
-            ->only(['id', 'first_name', 'last_name', 'middle_name', 'date_of_birth', 'contact_no', 'notes']);
+            ->only(['id', 'first_name', 'last_name', 'middle_name', 'date_of_birth', 'contact_no', 'notes', 'gender']);
 
         // event an event to show update modal
         $this->emit('show.profile-update');
@@ -88,6 +126,7 @@ class HomeownerView extends Component
             'updateForm.last_name' => ['required', 'string', 'min:2', 'max:30'],
             'updateForm.middle_name' => ['nullable', 'string', 'min:2', 'max:30'],
             'updateForm.date_of_birth' => ['required', 'date', new NotFutureDate],
+            'updateForm.gender' => ['required'],
             'updateForm.contact_no' => [
                 'nullable',
                 'regex:/^09\d{9}$/',
@@ -119,9 +158,137 @@ class HomeownerView extends Component
         $this->emit('show.view-modal');
     }
 
+    public function createVehicle()
+    {
+        // validate the form
+        $this->validate([
+            'createVehicleForm.plate_number' => ['required', Rule::unique('home_owner_vehicles', 'plate_number')],
+            'createVehicleForm.car_type' => ['required'],
+        ]);
+
+        // create new vehicle
+        $newVehicle = HomeOwnerVehicle::create([
+            'home_owner_id' => $this->data->id,
+            'plate_number' => $this->createVehicleForm['plate_number'],
+            'car_type' => $this->createVehicleForm['car_type']
+        ]);
+
+        if ($newVehicle) {
+            $this->emit('show.dialog', [
+                'icon' => 'success',
+                'title' => 'Register Success',
+                'message' => 'New vehicle has been successfully registered!',
+                'reload' => true
+            ]);
+        }
+    }
+
+    public function deleteVehicle($payload)
+    {
+        HomeOwnerVehicle::find($payload)->delete();
+
+        $this->emit('show.dialog', [
+            'icon' => 'success',
+            'title' => 'Delete Success',
+            'message' => 'Hehicle has been successfully deleted!',
+            'reload' => true
+        ]);
+    }
+
+    public function prepareUpdateVehicle($payload)
+    {
+        $this->updateVehicleForm = HomeOwnerVehicle::find($payload)->toArray();
+        
+        $this->emit('update.vehicle-prepare');
+    }
+
+    public function updateVehicle()
+    {
+        $this->validate([
+            'updateVehicleForm.plate_number' => [
+                'required',
+                Rule::unique('home_owner_vehicles', 'plate_number')->ignore($this->updateVehicleForm['id'], 'id')
+            ],
+            'updateVehicleForm.car_type' => ['required'],
+        ]);
+
+        $updateVehicle = HomeOwnerVehicle::find($this->updateVehicleForm['id']);
+        $updateVehicle->update(
+            Arr::only($this->updateVehicleForm, ['plate_number', 'car_type'])
+        );
+
+        $this->emit('show.dialog', [
+            'icon' => 'success',
+            'title' => 'Update Success',
+            'message' => 'Vehicle has been successfully updated!',
+            'reload' => true
+        ]);
+    }
+
+    public function selectLot($id)
+    {
+        $this->blockLotForm[] = $id;
+    }
+
+    public function unSelectLot($id)
+    {
+        // Remove the value 'block' from the array
+        $key = array_search($id, (array) $this->blockLotForm);
+        if ($key !== false) {
+            unset($this->blockLotForm[$key]);
+        }
+
+        // Re-index the array
+        $this->blockLotForm = array_values((array) $this->blockLotForm);
+    }
+
+    public function addBlockLot()
+    {
+        $blockLots = (array) $this->blockLotForm;
+
+        foreach ($blockLots as $blockLot) {
+            $lot = Lot::with('block')->find($blockLot);
+            $block = $lot->block->id;
+
+            HomeOwnerBlockLot::create([
+                'home_owner_id' => $this->data->id,
+                'block' => $block,
+                'lot' => $blockLot
+            ]);
+
+            Lot::find($blockLot)->update([
+                'availability' => 'unavailable'
+            ]);
+        }
+
+        $this->emit('show.dialog', [
+            'icon' => 'success',
+            'title' => 'Assignment Success',
+            'message' => 'Blot & Lot has been successfully assigned!',
+            'reload' => true
+        ]);
+    }
+
     public function mount($id)
     {
-        $this->data = HomeOwner::with(['profiles', 'rfid', 'myBlock', 'myLot'])->findOrFail($id);
+        $this->data = HomeOwner::with([
+            'profiles',
+            'rfid',
+            'blockLots',
+            'blockLots.block',
+            'blockLots.lot',
+            'vehicles'
+        ])->findOrFail($id);
+
+        foreach (Block::all() as $block) {
+            $lots = Lot::where('block_id', $block->id)
+                ->where('availability', 'available')
+                ->pluck('id', 'lot')->toArray();
+
+            if (count($lots) > 0) {
+                $this->availableLBlockLots[$block->block] = $lots;
+            }
+        }
     }
 
     public function render()

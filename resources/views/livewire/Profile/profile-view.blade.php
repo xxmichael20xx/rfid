@@ -8,7 +8,7 @@
     </button>
 
     <div class="modal fade" id="viewProfileModal-{{ $profile->id }}" tabindex="-1" aria-labelledby="viewProfileModalLabel-{{ $profile->id }}" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog--md">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="viewProfileModalLabel-{{ $profile }}">Profile details</h1>
@@ -17,26 +17,35 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <p class="text-dark"><b>Name:</b> {{ $profile->full_name }}</p>
+                            <p class="text-dark"><b>Name:</b> {{ $profile->last_full_name }}</p>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-6">
                             <p class="text-dark"><b>Date of birth:</b> {{ \Carbon\Carbon::parse($profile->date_of_birth)->format('M d, Y') }}</p>
                         </div>
+                        <div class="col-6">
+                            <p class="text-dark"><b>Age:</b> {{ $profile->age }} year(s) old</p>
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-6">
+                            <p class="text-dark"><b>Gener:</b> {{ ucfirst($profile->gender) }}</p>
+                        </div>
+                        <div class="col-6">
                             <p class="text-dark"><b>Contact number:</b> {{ $profile->contact_no ?? 'No contact number' }}</p>
                         </div>
                     </div>
-                    @if ($profile->notes)
-                        <div class="row">
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="text-dark"><b>Date added:</b> {{ $profile->date_joined }}</p>
+                        </div>
+                        @if ($profile->notes)
                             <div class="col-12">
                                 <p class="text-dark"><b>Notes:</b><br>{{ $profile->notes }}</p>
                             </div>
-                        </div>
-                    @endif
+                        @endif
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

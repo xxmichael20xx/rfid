@@ -37,8 +37,7 @@
                                         <tr>
                                             <th class="cell">Name</th>
                                             <th class="cell">RFID</th>
-                                            <th class="cell">Block</th>
-                                            <th class="cell">Lot</th>
+                                            <th class="cell">Lots Owned</th>
                                             <th class="cell">Actions</th>
                                         </tr>
                                     </thead>
@@ -50,8 +49,7 @@
                                             <tr>
                                                 <td class="cell">{{ $data->full_name }}</td>
                                                 <td class="cell">{{ $rfid }}</td>
-                                                <td class="cell">{{ $data->myBlock->block }}</td>
-                                                <td class="cell">{{ $data->myLot->lot }}</td>
+                                                <td class="cell">{{ $data->blockLots->count() }}</td>
                                                 <td class="cell d-flex">
                                                     @livewire('homeowner.homeowner-delete', ['modelId' => $data->id])
                                                     

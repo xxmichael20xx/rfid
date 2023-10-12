@@ -156,12 +156,12 @@
                             @foreach ($lotForm['lots'] as $lotFormKey => $item)
                                 <div class="col-12 mb-5 @if($lotFormKey > 0) border-top pt-5 @endif">
                                     <div class="d-flex justify-content-between">
-                                        <div class="form-floating">
+                                        <div class="input-container">
                                             <input
                                                 type="text"
                                                 class="form-control @error('lotForm.lots.'.$lotFormKey.'.lot') is-invalid @enderror"
                                                 placeholder="Ex. Block XYZ"
-                                                wire:model="lotForm.lots.{{ $lotFormKey }}.lot">
+                                                wire:model.lazy="lotForm.lots.{{ $lotFormKey }}.lot">
                                             <label>Lot #{{ $lotFormKey + 1 }} name</label>
                                         </div>
                                         @if ($lotFormKey > 0)
@@ -176,11 +176,11 @@
                                         </span>
                                     @enderror
 
-                                    <div class="form-floating">
+                                    <div class="input-container">
                                         <textarea
                                             type="text"
                                             class="form-control form-control--textarea mt-2 @error('lotForm.lots.'.$lotFormKey.'.details') is-invalid @enderror"
-                                            wire:model="lotForm.lots.{{ $lotFormKey }}.details"
+                                            wire:model.lazy="lotForm.lots.{{ $lotFormKey }}.details"
                                             placeholder="Lot #{{ $lotFormKey + 1 }} details"></textarea>
                                         <label>Lot #{{ $lotFormKey + 1 }} details</label>
                                     </div>
@@ -214,14 +214,14 @@
                     <div class="modal-body">
                         <div class="row mb-2">
                             <div class="col-12">
-                                <div class="form-floating mb-3">
+                                <div class="input-container mb-3">
+                                    <label for="lot">Lot<span class="required">*</span></label>
                                     <input
                                         id="lot"
                                         name="lot"
                                         type="text"
                                         class="form-control @error('editLotForm.lot') is-invalid @enderror"
-                                        wire:model="editLotForm.lot">
-                                    <label for="lot">Lot</label>
+                                        wire:model.lazy="editLotForm.lot">
         
                                     @error('editLotForm.lot')
                                         <span class="invalid-feedback" role="alert">
@@ -234,13 +234,13 @@
 
                         <div class="row mb-2">
                             <div class="col-12">
-                                <div class="form-floating">
+                                <div class="input-container">
+                                    <label>Lot details</label>
                                     <textarea
                                         type="text"
-                                        class="form-control form-control--textarea mt-2 @error('editLotForm.details') is-invalid @enderror"
-                                        wire:model="editLotForm.details"
+                                        class="form-control form-control--textarea-sm mt-2 @error('editLotForm.details') is-invalid @enderror"
+                                        wire:model.lazy="editLotForm.details"
                                         placeholder="Lot details"></textarea>
-                                    <label>Lot details</label>
                                 </div>
                             </div>
                         </div>

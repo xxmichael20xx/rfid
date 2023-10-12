@@ -13,6 +13,8 @@
     {{-- Styles --}}
     @vite(['resources/sass/app.scss'])
     @livewireStyles
+
+    @yield('styles')
 </head>
 
 <body class="app">
@@ -171,6 +173,8 @@
 
     @vite(['resources/js/app.js'])
     @livewireScripts
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     @yield('scripts')
 
     <script>

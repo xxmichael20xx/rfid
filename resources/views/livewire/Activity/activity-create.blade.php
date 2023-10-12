@@ -33,7 +33,7 @@
                                                 type="text"
                                                 class="form-control @error('form.title') is-invalid @enderror"
                                                 placeholder="Ex. Fun Run"
-                                                wire:model="form.title"
+                                                wire:model.lazy="form.title"
                                                 autofocus>
                                             <label for="title">Title*</label>
                 
@@ -53,7 +53,7 @@
                                                 type="text"
                                                 class="form-control @error('form.location') is-invalid @enderror"
                                                 placeholder="Ex. Central Gym"
-                                                wire:model="form.location"
+                                                wire:model.lazy="form.location"
                                                 autofocus>
                                             <label for="location">Location*</label>
                 
@@ -74,7 +74,7 @@
                                                 name="start_date"
                                                 type="date"
                                                 class="form-control @error('form.start_date') is-invalid @enderror"
-                                                wire:model="form.start_date">
+                                                wire:model.lazy="form.start_date">
                                             <label for="start_date">Start date</label>
                 
                                             @error('form.start_date')
@@ -92,7 +92,7 @@
                                                 name="end_date"
                                                 type="date"
                                                 class="form-control @error('form.end_date') is-invalid @enderror"
-                                                wire:model="form.end_date">
+                                                wire:model.lazy="form.end_date">
                                             <label for="end_date">End date</label>
                 
                                             @error('form.end_date')
@@ -111,7 +111,7 @@
                                                 id="description"
                                                 name="description"
                                                 class="form-control form-control--textarea @error('form.title') is-invalid @enderror"
-                                                wire:model="form.description"
+                                                wire:model.lazy="form.description"
                                                 rows="5"></textarea>
                                             <label for="description">Description</label>
                 

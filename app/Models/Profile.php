@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,6 +20,7 @@ class Profile extends Model
         'last_name',
         'middle_name',
         'date_of_birth',
+        'gender',
         'contact_no',
         'date_joined',
         'notes',
@@ -36,7 +38,9 @@ class Profile extends Model
      * The attributes that should be appended.
      */
     protected $appends = [
-        'full_name'
+        'full_name',
+        'last_full_name',
+        'age'
     ];
 
     /**
@@ -53,5 +57,19 @@ class Profile extends Model
     public function getFullNameAttribute()
     {
         return $this->first_name.' '.$this->middle_name.' '.$this->last_name;
+    }
+
+    public function getLastFullNameAttribute()
+    {
+        return $this->middle_name . ', ' . $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function getAgeAttribute()
+    {
+        if ($this->date_of_birth) {
+            return Carbon::parse($this->date_of_birth)->age;
+        }
+
+        return null;
     }
 }

@@ -13,18 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('home_owners', function (Blueprint $table) {
+        Schema::create('home_owner_vehicles', function (Blueprint $table) {
             $table->id();
-            $table->text('first_name');
-            $table->text('last_name');
-            $table->text('middle_name')->nullable();
-            $table->string('date_of_birth');
-            $table->string('email')->nullable()->unique();
-            $table->string('contact_no')->unique();
-            $table->string('gender');
+            $table->unsignedBigInteger('home_owner_id');
+            $table->foreign('home_owner_id')->references('id')->on('home_owners');
+            $table->string('plate_number')->unique();
+            $table->string('car_type');
             $table->json('metadata')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -35,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('home_owners');
+        Schema::dropIfExists('home_owner_vehicles');
     }
 };

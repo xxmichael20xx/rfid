@@ -109,7 +109,7 @@
                                         name="home_owner_id"
                                         id="home_owner_id"
                                         class="form-select"
-                                        wire:model="form.home_owner_id">
+                                        wire:model.lazy="form.home_owner_id">
                                         <option value="" selected disabled>Select biller</option>
                                         @forelse ($homeOwners as $data)
                                             <option value="{{ $data->id }}">{{ $data->full_name }}</option>
@@ -134,7 +134,7 @@
                                         name="type"
                                         id="type"
                                         class="form-select"
-                                        wire:model="form.type">
+                                        wire:model.lazy="form.type">
                                         <option value="" selected disabled>Select payment</option>
                                         @forelse ($types as $data)
                                             <option value="{{ $data }}">{{ $data }}</option>
@@ -157,7 +157,7 @@
                                         name="mode"
                                         id="mode"
                                         class="form-select"
-                                        wire:model="form.mode">
+                                        wire:model.lazy="form.mode">
                                         <option value="" selected disabled>Select payment mode</option>
                                         @forelse ($modes as $data)
                                             <option value="{{ $data }}">{{ $data }}</option>
@@ -184,7 +184,7 @@
                                         type="text"
                                         class="form-control @error('form.amount') is-invalid @enderror"
                                         placeholder="Ex. John"
-                                        wire:model="form.amount"
+                                        wire:model.lazy="form.amount"
                                         autofocus>
                                     <label for="amount">Amount*</label>
         
@@ -202,7 +202,7 @@
                                         name="transaction_date"
                                         type="date"
                                         class="form-control @error('form.transaction_date') is-invalid @enderror"
-                                        wire:model="form.transaction_date">
+                                        wire:model.lazy="form.transaction_date">
                                     <label for="transaction_date">Transaction date*</label>
         
                                     @error('form.transaction_date')
@@ -220,7 +220,7 @@
                                         id="reference"
                                         name="reference"
                                         class="form-control form-control--textarea @error('form.reference') is-invalid @enderror"
-                                        wire:model="form.reference"
+                                        wire:model.lazy="form.reference"
                                         rows="5"></textarea>
                                     <label for="reference">Reference (optional)</label>
         

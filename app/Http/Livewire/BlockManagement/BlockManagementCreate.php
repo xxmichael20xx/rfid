@@ -26,16 +26,28 @@ class BlockManagementCreate extends Component
     public function rules()
     {
         return [
-            'newBlock.block' => 'required',
+            'newBlock.block' => [
+                'required',
+                Rule::unique('blocks', 'block')
+            ],
             'newBlock.details' => 'nullable',
-            'newBlock.lots.*.lot' => ['required', 'distinct']
+            'newBlock.lots.*.lot' => [
+                'required',
+                'distinct',
+                Rule::unique('lots', 'lot')
+            ]
         ];
     }
 
     public function create()
     {
         // validate the form
-        $this->validate();
+        $this->validate($this->rules(), [
+            'newBlock.block.unique' => 'The block name is already taken.',
+            'newBlock.lots.*.lot.required' => 'The lot name field is required.',
+            'newBlock.lots.*.lot.distinct' => 'The lot name should be unique.',
+            'newBlock.lots.*.lot.unique' => 'The lot name already taken.',
+        ]);
 
         // create new block
         $createdBlock = Block::create([
