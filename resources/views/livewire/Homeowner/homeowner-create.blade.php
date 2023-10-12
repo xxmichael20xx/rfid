@@ -25,6 +25,36 @@
                             @csrf
         
                             <div class="row mb-3">
+                                <div class="col-12">
+                                    @if ($form['profile'])
+                                        <img
+                                            src="{{ $form['profile']->temporaryUrl() }}"
+                                            alt="Image Preview"
+                                            class="img-fluid mb-3 rounded shadow"
+                                            style="width: 250px;"
+                                        />
+                                    @endif
+                                    <div class="mb-3">
+                                        <label for="profile" class="form-label">Profile</label>
+                                        <input
+                                            id="profile"
+                                            name="profile"
+                                            type="file"
+                                            class="form-control @error('form.profile') is-invalid @enderror"
+                                            wire:model="form.profile"
+                                            accept="image/*"
+                                        >
+
+                                        @error('form.profile')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <div class="col-6">
                                     <div class="form-floating mb-3">
                                         <input

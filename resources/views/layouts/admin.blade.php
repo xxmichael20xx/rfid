@@ -214,7 +214,7 @@
             const loadChange = document.querySelectorAll('.load-change')
             if (loadChange.length > 0) {
                 loadChange.forEach((item) => {
-                    item.dispatchEvent(new new Event('change', {
+                    item.dispatchEvent(new Event('change', {
                         bubbles: true, // Allow the event to bubble up the DOM
                         cancelable: true // Allow the event to be canceled
                     }))

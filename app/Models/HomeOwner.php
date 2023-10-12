@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,6 +22,7 @@ class HomeOwner extends Model
         'block',
         'lot',
         'contact_no',
+        'profile',
         'metadata'
     ];
 
@@ -35,7 +37,8 @@ class HomeOwner extends Model
      * Attribute to be appended
      */
     protected $appends = [
-        'full_name'
+        'full_name',
+        'profile_path'
     ];
 
     /**
@@ -44,6 +47,11 @@ class HomeOwner extends Model
     public function getFullNameAttribute()
     {
         return $this->first_name.' '.$this->middle_name.' '.$this->last_name;
+    }
+
+    public function getProfilePathAttribute()
+    {
+        return $this->profile;
     }
 
     public function myBlock()
@@ -74,5 +82,18 @@ class HomeOwner extends Model
     public function rfidMonitorings()
     {
         return $this->hasMany(RfidMonitoring::class, 'home_owner_id', 'id');
+    }
+
+    protected function profile(): Attribute
+    {
+        return Attribute::make(
+            get: function (?string $value) {
+                if (! $value) {
+                    return '';
+                }
+
+                return asset('uploads/' . $value);
+            }
+        );
     }
 }

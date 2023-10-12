@@ -5,15 +5,18 @@ namespace App\Http\Livewire\Homeowner;
 use App\Models\Block;
 use App\Models\HomeOwner;
 use App\Models\Lot;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class HomeownerUpdate extends Component
 {
+    use WithFileUploads;
+
     public $model;
     public $modelFullName;
     public $modelCurrentLot;
-    public $modelSelectedLot;
     public $blocks = [];
     public $lots = [];
 
@@ -30,12 +33,13 @@ class HomeownerUpdate extends Component
             'model.last_name' => $nameRules,
             'model.middle_name' => ['string', 'min:2', 'max:30'],
             'model.block' => ['required'],
-            'modelSelectedLot' => ['required'],
+            'model.lot' => ['required'],
             'model.contact_no' => [
                 'required',
                 'regex:/^09\d{9}$/',
-                Rule::unique('home_owners', 'contact_no')->ignore($this->model->id)
-            ]
+                Rule::unique('home_owners', 'contact_no')->ignore($this->model['id'])
+            ],
+            'model.profileUpdate' => ['nullable', 'image']
         ];
     }
 
@@ -46,7 +50,12 @@ class HomeownerUpdate extends Component
     public function update()
     {
         // validate the form data
-        $this->validate($this->rules(), ['model.contact_no.regex' => 'Contact number format is invalid, valid format is: 09123456789']);
+        $this->validate(
+            $this->rules(),
+            [
+                'model.contact_no.regex' => 'Contact number format is invalid, valid format is: 09123456789'
+            ]
+        );
 
         // update new home owner if validation is passed
         // and if home owner exists
@@ -59,19 +68,23 @@ class HomeownerUpdate extends Component
             ]);
         }
 
+        // Handle image upload
+        if ($profileUpdate = data_get($this->model, 'profileUpdate', null)) {
+            $this->model['profile'] = Storage::putFileAs('images/home-owners', $profileUpdate, $profileUpdate->hashName());
+        }
+
         // set the selected lot
-        $this->model->lot = $this->modelSelectedLot;
-        $this->model->save();
+        HomeOwner::find($this->model['id'])->update($this->model);
 
         // check if the lot has ben changed
-        if ($this->modelCurrentLot !== $this->modelSelectedLot) {
+        if ($this->modelCurrentLot !== $this->model['lot']) {
             // set the selected lot as 'available'
             Lot::find($this->modelCurrentLot)->update([
                 'availability' => 'available'
             ]);
 
             // set the selected lot as 'unavailable'
-            Lot::find($this->modelSelectedLot)->update([
+            Lot::find($this->model['lot'])->update([
                 'availability' => 'unavailable'
             ]);
         }
@@ -89,24 +102,24 @@ class HomeownerUpdate extends Component
     {
         // get and assign the available lots of the selected block
         $this->lots = Lot::where('availability', 'available')
-            ->where('block_id', $this->model->block)
+            ->where('block_id', $this->model['block'])
             ->orWhere('id', $this->modelCurrentLot)
             ->get();
         
         // reset the selected lot value
-        $this->modelSelectedLot = '';
+        $this->model['lot'] = '';
     }
 
     public function mount($id)
     {
-        $this->model = HomeOwner::find($id);
-        $this->modelFullName = $this->model->full_name;
-        $this->modelSelectedLot = $this->modelCurrentLot = $this->model->lot;
+        $this->model = HomeOwner::find($id)->toArray();
+        $this->modelFullName = $this->model['full_name'];
+        $this->modelCurrentLot = $this->model['lot'];
 
         $this->blocks = Block::all();
         $this->lots = Lot::where('availability', 'available')
-            ->where('block_id', $this->model->block)
-            ->orWhere('id', $this->model->lot)
+            ->where('block_id', $this->model['block'])
+            ->orWhere('id', $this->model['lot'])
             ->get();
     }
 

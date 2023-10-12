@@ -33,6 +33,7 @@ class HomeOwnerSeeder extends Seeder
             $newHomeOwner->block = $myBlock->id;
             $newHomeOwner->lot = $myLot->id;
             $newHomeOwner->contact_no = '09'.rand(111111111, 999999999);
+            $newHomeOwner->profile = 'images/default_profile.png';
             $newHomeOwner->save();
 
             $myLot->update([

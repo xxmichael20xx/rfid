@@ -23,6 +23,7 @@ class GuardRfidMonitoring extends Component
     public $monitorings;
     public $homeOwner;
     public $captureImage;
+    public $dateTime;
 
     public function logEntry()
     {
@@ -35,34 +36,30 @@ class GuardRfidMonitoring extends Component
             ->where('time_out', '=', 'N/A')
             ->first();
 
-            
-        $captureUrl = $this->uploadCapture();
+        $this->dateTime = "{$currentDate} @ {$currentTime}";
         if (! $monitoring) {
             $newMonitoring = RfidMonitoring::create([
                 'rfid' => $id,
                 'date' => $currentDate,
-                'time_in' => $currentTime,
-                'capture_in' => $captureUrl
+                'time_in' => $currentTime
             ]);
 
-            if ($newMonitoring) {
+            /* if ($newMonitoring) {
                 $this->emit('new-entry', [
                     'date' => $currentDate,
                     'time' => $currentTime
                 ]);
-            }
+            } */
 
-            $this->captureImage = null;
         } else {
             $monitoring->update([
-                'time_out' => $currentTime,
-                'capture_out' => $captureUrl
+                'time_out' => $currentTime
             ]);
 
-            $this->emit('updated-entry', [
+            /* $this->emit('updated-entry', [
                 'date' => $currentDate,
                 'time' => $currentTime
-            ]);
+            ]); */
         }
 
         $this->fetchLatest();
@@ -99,7 +96,7 @@ class GuardRfidMonitoring extends Component
      */
     public function validateEntry($id)
     {
-        $rfidExists = Rfid::with('homeOwner', 'homeOwner.rfid')->where('rfid', $id)->first();
+        $rfidExists = Rfid::with('homeOwner', 'homeOwner.rfid', 'homeOwner.profiles')->where('rfid', $id)->first();
 
         if (! $rfidExists) {
             $this->emit('invalid-rfid');
@@ -107,6 +104,7 @@ class GuardRfidMonitoring extends Component
         }
 
         $this->homeOwner = $rfidExists->homeOwner;
+        $this->logEntry();
         $this->emit('homeowner-data');
     }
 

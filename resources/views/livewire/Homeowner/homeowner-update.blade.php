@@ -24,6 +24,36 @@
                         <div class="row">
                             <form method="POST" wire:submit.prevent="update" class="col-12">
                                 @csrf
+
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <img
+                                            src="{{ $model['profile_path'] }}"
+                                            alt="Image Preview"
+                                            id="imagePreview"
+                                            class="img-fluid mb-3 rounded shadow"
+                                            style="width: 250px;"
+                                            wire:ignore
+                                        />
+                                        <div class="mb-3">
+                                            <label for="profileSelect" class="form-label">Profile</label>
+                                            <input
+                                                id="profileSelect"
+                                                name="profile"
+                                                type="file"
+                                                class="form-control @error('model.profileUpdate') is-invalid @enderror"
+                                                wire:model="model.profileUpdate"
+                                                accept="image/*"
+                                            >
+    
+                                            @error('model.profileUpdate')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ str_replace('model.', '', $message) }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
             
                                 <div class="row mb-3">
                                     <div class="col-6">
@@ -41,7 +71,7 @@
                 
                                             @error('model.first_name')
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
+                                                    <strong>{{ str_replace('model.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
         
@@ -60,7 +90,7 @@
                 
                                             @error('model.last_name')
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
+                                                    <strong>{{ str_replace('model.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
                                         </div>
@@ -78,7 +108,7 @@
                 
                                             @error('model.middle_name')
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
+                                                    <strong>{{ str_replace('model.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
                                         </div>
@@ -97,7 +127,7 @@
                                                 required>
                                                 <option value="" selected disabled>Select block</option>
                                                 @forelse ($blocks as $data)
-                                                    <option value="{{ $data->id }}" @if($model->block == $data->id) selected @endif>{{ $data->block }}</option>
+                                                    <option value="{{ $data->id }}">{{ $data->block }}</option>
                                                 @empty
                                                     <option value="" disabled>No available block</option>
                                                 @endforelse
@@ -106,17 +136,17 @@
                 
                                             @error('block')
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
+                                                    <strong>{{ str_replace('model.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="form-floating mb-3">
-                                            <select name="lot" id="lot" class="form-select" wire:model="modelSelectedLot" required>
+                                            <select name="lot" id="lot" class="form-select" wire:model="model.lot" required>
                                                 <option value="" selected disabled>Select lot</option>
                                                 @forelse ($lots as $data)
-                                                    <option value="{{ $data->id }}" @if($model->lot == $data->id) selected @endif>{{ $data->lot }}</option>
+                                                    <option value="{{ $data->id }}">{{ $data->lot }}</option>
                                                 @empty
                                                     <option value="" disabled>No available lot</option>
                                                 @endforelse
@@ -125,7 +155,7 @@
                 
                                             @error('lot')
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
+                                                    <strong>{{ str_replace('model.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
                                         </div>
@@ -166,4 +196,38 @@
             </div>
         </div>
     </div>
+
+    @section('scripts')
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                const profileSelect = document.getElementById('profileSelect')
+                const imagePreview = document.getElementById('imagePreview')
+
+                if (profileSelect && imagePreview) {
+                    profileSelect.addEventListener('change', (e) => {
+                        // Create a FileReader object to read the selected file
+                        const reader = new FileReader()
+                        const selectedFile = profileSelect.files[0]
+
+                        // Check if a file was selected
+                        if (selectedFile) {
+                            // Add an event listener to the FileReader to handle the file reading
+                            reader.addEventListener('load', () => {
+                                // Set the source of the image preview to the loaded data URL
+                                imagePreview.src = reader.result
+                                imagePreview.style.display = 'block'
+                            });
+
+                            // Read the selected file as a data URL
+                            reader.readAsDataURL(selectedFile)
+                        } else {
+                            // Clear the image preview if no file is selected
+                            imagePreview.src = ''
+                            imagePreview.style.display = 'none'
+                        }
+                    })
+                }
+            })
+        </script>
+    @endsection
 </div>

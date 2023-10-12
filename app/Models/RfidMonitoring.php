@@ -26,23 +26,6 @@ class RfidMonitoring extends Model
         'metadata' => 'json'
     ];
 
-    protected function captureIn(): Attribute
-    {
-        return Attribute::make(
-            get: fn (string $value) => asset('uploads/' . $value)
-        );
-    }
-
-    protected function captureOut(): Attribute
-    {
-        return Attribute::make(
-            get: function($value) {
-                $value ??= '';
-                return asset('uploads/' . $value);
-            }
-        );
-    }
-
     public function rfidData()
     {
         return $this->belongsTo(Rfid::class, 'rfid', 'rfid');

@@ -6,6 +6,9 @@
                 <a href="{{ route('homeowners.list') }}" class="btn btn-success text-white">
                     <i class="fa fa-hand-point-left"></i> Go back
                 </a>
+                <a href="{{ route('homeowners.update', ['id' => $data->id]) }}" class="btn btn-info text-white p-2 ms-2">
+                    <i class="fa fa-pencil"></i> Update
+                </a>
             </div>
         </div>
     </div>
@@ -15,6 +18,16 @@
                 <div class="card-body">
                     <div class="container">
                         <div class="row mb-3">
+                            <div class="col-12">
+                                @if ($data->profile)
+                                    <img
+                                        src="{{ $data->profile }}"
+                                        alt="Image Preview"
+                                        class="img-fluid mb-3 rounded shadow"
+                                        style="width: 250px;"
+                                    />
+                                @endif
+                            </div>
                             <div class="col-12">
                                 <p class="card-title h5">Home Owner: {{ $data->full_name }}</p>
                                 <hr class="theme-separator">

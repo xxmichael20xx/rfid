@@ -5,11 +5,15 @@ namespace App\Http\Livewire\Homeowner;
 use App\Models\Block;
 use App\Models\HomeOwner;
 use App\Models\Lot;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class HomeownerCreate extends Component
 {
+    use WithFileUploads;
+
     public $blocks = [];
     public $lots = [];
 
@@ -22,7 +26,8 @@ class HomeownerCreate extends Component
         'middle_name' => '',
         'block' => '',
         'lot' => '',
-        'contact_no' => ''
+        'contact_no' => '',
+        'profile' => null
     ];
 
     /**
@@ -39,7 +44,8 @@ class HomeownerCreate extends Component
             'form.middle_name' => ['string', 'min:2', 'max:30'],
             'form.block' => ['required'],
             'form.lot' => ['required'],
-            'form.contact_no' => ['required', 'regex:/^09\d{9}$/', Rule::unique('home_owners', 'contact_no')]
+            'form.contact_no' => ['required', 'regex:/^09\d{9}$/', Rule::unique('home_owners', 'contact_no')],
+            'form.profile' => ['required', 'image']
         ];
     }
 
@@ -51,6 +57,11 @@ class HomeownerCreate extends Component
         // validate the form data
         $this->validate($this->rules(), ['form.contact_no.regex' => 'Contact number format is invalid, valid format is: 09123456789']);
 
+        // Handle image upload
+        if ($profile = $this->form['profile']) {
+            $this->form['profile'] = Storage::putFileAs('images/home-owners', $profile, $profile->hashName());
+        }
+
         // create a new home owner if validation is passed
         // and if new home owner is created
         if (! HomeOwner::create($this->form)) {
@@ -61,6 +72,8 @@ class HomeownerCreate extends Component
                 'message' => 'Failed to create new Home Owner!'
             ]);
         }
+
+        $this->form['profile'] = null;
 
         // set the selected lot as 'unavailable'
         Lot::find($this->form['lot'])->update([
