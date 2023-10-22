@@ -20,7 +20,7 @@ class GuardVisitorMonitoring extends Component
      */
     public function mount()
     {
-        $this->qrService->generateQr(1);
+        // $this->qrService->generateQr(1);
     }
 
     /**
