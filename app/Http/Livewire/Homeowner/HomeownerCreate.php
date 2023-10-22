@@ -308,7 +308,7 @@ class HomeownerCreate extends Component
      */
     public function render()
     {
-        return view('livewire.homeowner.homeowner-create')
+        return view('livewire.Homeowner.homeowner-create')
             ->extends('layouts.admin')
             ->section('content');
     }

@@ -68,7 +68,7 @@ class ActivityCreate extends Component
      */
     public function render()
     {
-        return view('livewire.activity.activity-create')
+        return view('livewire.Activity.activity-create')
             ->extends('layouts.admin')
             ->section('content');
     }

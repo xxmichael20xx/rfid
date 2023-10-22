@@ -187,7 +187,7 @@ class BlockManagementList extends Component
 
     public function render()
     {
-        return view('livewire.blockmanagement.block-management-list')
+        return view('livewire.BlockManagement.block-management-list')
             ->extends('layouts.admin')
             ->section('content');
     }

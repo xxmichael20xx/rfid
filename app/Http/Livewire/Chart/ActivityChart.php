@@ -143,6 +143,6 @@ class ActivityChart extends Component
 
     public function render()
     {
-        return view('livewire.chart.activity-chart');
+        return view('livewire.Chart.activity-chart');
     }
 }

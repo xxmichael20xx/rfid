@@ -19,7 +19,7 @@ class PaymentsOverview extends Component
      */
     public function render()
     {
-        return view('livewire.payments.payments-overview')
+        return view('livewire.Payments.payments-overview')
             ->extends('layouts.admin')
             ->section('content');
     }

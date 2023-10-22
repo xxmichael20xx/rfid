@@ -40,6 +40,6 @@ class ActivityDelete extends Component
      */
     public function render()
     {
-        return view('livewire.activity.activity-delete');
+        return view('livewire.Activity.activity-delete');
     }
 }

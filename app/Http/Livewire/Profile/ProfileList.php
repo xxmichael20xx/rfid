@@ -16,7 +16,7 @@ class ProfileList extends Component
 
     public function render()
     {
-        return view('livewire.profile.profile-list')
+        return view('livewire.Profile.profile-list')
             ->extends('layouts.admin')
             ->section('content');
     }

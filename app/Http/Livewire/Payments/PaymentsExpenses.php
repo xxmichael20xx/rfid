@@ -193,7 +193,7 @@ class PaymentsExpenses extends Component
      */
     public function render()
     {
-        return view('livewire.payments.payments-expenses')
+        return view('livewire.Payments.payments-expenses')
             ->extends('layouts.admin')
             ->section('content');
     }

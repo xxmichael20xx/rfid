@@ -136,7 +136,7 @@ class GuardRfidMonitoring extends Component
 
     public function render()
     {
-        return view('livewire.guard.rfid.guard-rfid-monitoring')
+        return view('livewire.Guard.Rfid.guard-rfid-monitoring')
             ->extends('layouts.guard')
             ->section('content');
     }

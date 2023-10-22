@@ -103,7 +103,7 @@ class HomeownerUpdate extends Component
 
     public function render()
     {
-        return view('livewire.homeowner.homeowner-update')
+        return view('livewire.Homeowner.homeowner-update')
             ->extends('layouts.admin')
             ->section('content');
     }

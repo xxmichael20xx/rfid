@@ -90,6 +90,6 @@ class HomeownerDelete extends Component
      */
     public function render()
     {
-        return view('livewire.homeowner.homeowner-delete');
+        return view('livewire.Homeowner.homeowner-delete');
     }
 }

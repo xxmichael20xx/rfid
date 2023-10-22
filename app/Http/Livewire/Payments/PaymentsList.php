@@ -533,7 +533,7 @@ class PaymentsList extends Component
      */
     public function render()
     {
-        return view('livewire.payments.payments-list')
+        return view('livewire.Payments.payments-list')
             ->extends('layouts.admin')
             ->section('content');
     }

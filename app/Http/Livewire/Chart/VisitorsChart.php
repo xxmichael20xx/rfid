@@ -148,6 +148,6 @@ class VisitorsChart extends Component
 
     public function render()
     {
-        return view('livewire.chart.visitors-chart');
+        return view('livewire.Chart.visitors-chart');
     }
 }

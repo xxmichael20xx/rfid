@@ -324,7 +324,7 @@ class HomeownerView extends Component
 
     public function render()
     {
-        return view('livewire.homeowner.homeowner-view')
+        return view('livewire.Homeowner.homeowner-view')
             ->extends('layouts.admin')
             ->section('content');
     }

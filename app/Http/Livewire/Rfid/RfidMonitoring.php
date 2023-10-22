@@ -16,7 +16,7 @@ class RfidMonitoring extends Component
 
     public function render()
     {
-        return view('livewire.rfid.rfid-monitoring')
+        return view('livewire.Rfid.rfid-monitoring')
             ->extends('layouts.admin')
             ->section('content');
     }

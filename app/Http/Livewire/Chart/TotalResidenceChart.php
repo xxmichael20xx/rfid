@@ -66,6 +66,6 @@ class TotalResidenceChart extends Component
 
     public function render()
     {
-        return view('livewire.chart.total-residence-chart');
+        return view('livewire.Chart.total-residence-chart');
     }
 }

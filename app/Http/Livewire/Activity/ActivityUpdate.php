@@ -68,7 +68,7 @@ class ActivityUpdate extends Component
 
     public function render()
     {
-        return view('livewire.activity.activity-update')
+        return view('livewire.Activity.activity-update')
             ->extends('layouts.admin')
             ->section('content');
     }

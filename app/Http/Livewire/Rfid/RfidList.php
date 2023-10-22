@@ -110,7 +110,7 @@ class RfidList extends Component
 
     public function render()
     {
-        return view('livewire.rfid.rfid-list')
+        return view('livewire.Rfid.rfid-list')
             ->extends('layouts.admin')
             ->section('content');
     }

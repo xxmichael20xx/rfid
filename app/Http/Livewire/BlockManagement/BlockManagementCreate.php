@@ -91,7 +91,7 @@ class BlockManagementCreate extends Component
 
     public function render()
     {
-        return view('livewire.blockmanagement.block-management-create')
+        return view('livewire.BlockManagement.block-management-create')
             ->extends('layouts.admin')
             ->section('content');
     }

@@ -156,7 +156,7 @@ class PaymentsTypes extends Component
      */
     public function render()
     {
-        return view('livewire.payments.payments-types')
+        return view('livewire.Payments.payments-types')
             ->extends('layouts.admin')
             ->section('content');
     }
