@@ -1,0 +1,60 @@
+{
+  "public/assets/fonts/Rubik/Rubik-Black.ttf": {
+    "file": "assets/Rubik-Black-bc9b7194.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-Black.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-BlackItalic.ttf": {
+    "file": "assets/Rubik-BlackItalic-eb096dc7.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-BlackItalic.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-Bold.ttf": {
+    "file": "assets/Rubik-Bold-e1bc0a0f.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-Bold.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-BoldItalic.ttf": {
+    "file": "assets/Rubik-BoldItalic-13e067fc.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-BoldItalic.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-ExtraBold.ttf": {
+    "file": "assets/Rubik-ExtraBold-43c7ff54.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-ExtraBold.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-ExtraBoldItalic.ttf": {
+    "file": "assets/Rubik-ExtraBoldItalic-1abbded9.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-ExtraBoldItalic.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-Italic.ttf": {
+    "file": "assets/Rubik-Italic-8f44d792.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-Italic.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-Medium.ttf": {
+    "file": "assets/Rubik-Medium-99699974.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-Medium.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-MediumItalic.ttf": {
+    "file": "assets/Rubik-MediumItalic-103157cf.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-MediumItalic.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-Regular.ttf": {
+    "file": "assets/Rubik-Regular-7839aacd.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-Regular.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-SemiBold.ttf": {
+    "file": "assets/Rubik-SemiBold-3f76a099.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-SemiBold.ttf"
+  },
+  "public/assets/fonts/Rubik/Rubik-SemiBoldItalic.ttf": {
+    "file": "assets/Rubik-SemiBoldItalic-c7d7762e.ttf",
+    "src": "public/assets/fonts/Rubik/Rubik-SemiBoldItalic.ttf"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-a9677550.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  },
+  "resources/sass/app.scss": {
+    "file": "assets/app-33af991a.css",
+    "isEntry": true,
+    "src": "resources/sass/app.scss"
+  }
+}
