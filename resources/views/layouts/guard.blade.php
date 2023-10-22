@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="favicon.ico">
 
     {{-- Styles --}}
-    @vite(['resources/sass/app.scss', 'resources/sass/guard.scss'])
+    @vite(['resources/sass/app.scss'])
     @livewireStyles
 </head>
 
