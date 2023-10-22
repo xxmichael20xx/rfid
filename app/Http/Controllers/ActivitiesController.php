@@ -43,6 +43,6 @@ class ActivitiesController extends Controller
             }
         }
 
-        return view('admin.activity.list', compact('activities', 'search', 'filter'));
+        return view('admin.Activity.list', compact('activities', 'search', 'filter'));
     }
 }

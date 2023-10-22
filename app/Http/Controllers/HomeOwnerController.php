@@ -34,6 +34,6 @@ class HomeOwnerController extends Controller
      * Define the homeowners new page
      */
     public function create(Request $request) {
-        return view('admin.homeowner.create-page');
+        return view('admin.Homeowner.create-page');
     }
 }
