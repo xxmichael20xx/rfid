@@ -10,24 +10,41 @@ class Payment extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * Attributes that will be fillable
+     */
     protected $fillable = [
         'home_owner_id',
-        'type',
+        'type_id',
         'mode',
         'amount',
         'transaction_date',
+        'date_paid',
+        'due_date',
         'reference',
+        'is_recurring',
+        'recurring_date',
         'status',
-        'paid_on',
-        'metadata'
+        'metadata',
     ];
 
+    /**
+     * Attribute that will be casted
+     */
     protected $casts = [
         'metadata' => 'json'
     ];
 
+    /**
+     * Define model relationships
+     */
     public function biller()
     {
         return $this->belongsTo(HomeOwner::class, 'home_owner_id', 'id');
+    }
+
+    public function paymentType()
+    {
+        return $this->hasOne(PaymentType::class, 'id', 'type_id');
     }
 }

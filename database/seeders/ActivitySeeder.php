@@ -22,7 +22,7 @@ class ActivitySeeder extends Seeder
         foreach(range(4, 8) as $num) {
             $startDate = Carbon::now()->addDays(rand(1, 60));
             Activity::create([
-                'title' => $faker->word(),
+                'title' => $faker->word() . ' -- ' . $num,
                 'description' => $faker->sentence,
                 'location' => $faker->word(),
                 'start_date' => $startDate->format('Y-m-d'),

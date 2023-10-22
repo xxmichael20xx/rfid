@@ -7,12 +7,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Notifications\Notifiable;
 
 class HomeOwner extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, Notifiable;
 
     /**
      * Attributes that can be filled
@@ -104,11 +103,6 @@ class HomeOwner extends Model
     public function profiles()
     {
         return $this->hasMany(Profile::class, 'home_owner_id', 'id');
-    }
-
-    public function rfid()
-    {
-        return $this->hasOne(Rfid::class, 'home_owner_id', 'id');
     }
 
     public function payments()

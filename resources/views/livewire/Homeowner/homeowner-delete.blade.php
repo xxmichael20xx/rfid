@@ -12,7 +12,7 @@
                 text: 'Homeowner will be deleted!',
                 showConfirmButton: true,
                 showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Yes, confirm'
             }).then((e) => {
                 if (e.isConfirmed) {
                     document.getElementById(id).click()

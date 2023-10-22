@@ -1,7 +1,7 @@
 <div>
     <div class="row g-4 mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="app-page-title">User Management</h1>
+            <h1 class="app-page-title">Manage Users</h1>
             <div class="col-auto">
                 <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#newUserModal">
                     <i class="fa fa-user-plus"></i> Add New
@@ -10,33 +10,31 @@
         </div>
     </div>
 
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="d-flex">
-                <div class="form-floating me-2">
-                    <input type="search" name="search" id="search" class="form-control" placeholder="Search..." value="{{ $search }}">
-                    <label>Search...</label>
-                </div>
-            </div>
-            @if ($search)
-                <a href="{{ route('user-management.index') }}" class="text-help">Clear search</a>
-            @endif
-        </div>
-    </div>
-
     <div class="row g-4 mb-4">
         <div class="col-12">
             <div class="card shadow-lg border-0">
                 <div class="card-body">
                     <div class="container">
-                        @if ($search)
-                            <div class="row py-3">
-                                <div class="col-12">
-                                    <h5>Search results for `{{ $search }}`</h5>
+                        <div class="row">
+                            <div class="col-4">
+                                <p class="card-title h5">List of Users</p>
+                            </div>
+                            <div class="col-8 text-right" wire:ignore>
+                                <div class="row justify-content-end">
+                                    <div class="col-4 d-flex flex-column">
+                                        <div class="input-container input-group me-2">
+                                            <input type="search" name="search" id="search" class="form-control" placeholder="Search..." value="{{ request()->get('search') }}">
+                                            <button class="btn btn-secondary" type="button" id="search-btn">Search</button>
+                                        </div>
+                                        @if (request()->get('search'))
+                                            <a href="{{ route('user-management.index') }}" class="text-help mt-2">Clear search/filters</a>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        @endif
-                        <div class="row">
+                            <div class="col-12">
+                                <hr class="theme-separator">
+                            </div>
                             <div class="col-12">
                                 <div class="table-responsive">
                                     <table class="table app-table-hover mb-0 text-left visitors-table">
@@ -99,7 +97,7 @@
                                         placeholder="Ex. John"
                                         wire:model.lazy="createForm.first_name"
                                         autofocus>
-                                    <label for="first_name">First Name*</label>
+                                    <label for="first_name">First Name<span class="required">*</span></label>
                                     @error('createForm.first_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -116,7 +114,7 @@
                                         class="form-control @error('createForm.last_name') is-invalid @enderror"
                                         placeholder="Ex. John"
                                         wire:model.lazy="createForm.last_name">
-                                    <label for="last_name">Last Name*</label>
+                                    <label for="last_name">Last Name<span class="required">*</span></label>
                                     @error('createForm.last_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -153,7 +151,7 @@
                                         class="form-control @error('createForm.email') is-invalid @enderror"
                                         placeholder="Ex. example@john.com"
                                         wire:model.lazy="createForm.email">
-                                    <label for="email">Email*</label>
+                                    <label for="email">Email<span class="required">*</span></label>
                                     @error('createForm.email')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -169,7 +167,7 @@
                                         type="password"
                                         class="form-control @error('createForm.password') is-invalid @enderror"
                                         wire:model.lazy="createForm.password">
-                                    <label for="password">Password*</label>
+                                    <label for="password">Password<span class="required">*</span></label>
                                     @error('createForm.password')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -194,7 +192,7 @@
                                             <option value="" disabled>No available role</option>
                                         @endforelse
                                     </select>
-                                    <label for="role">Role*</label>
+                                    <label for="role">Role<span class="required">*</span></label>
         
                                     @error('createForm.role')
                                         <span class="invalid-feedback" role="alert">
@@ -216,53 +214,66 @@
 
     @section('scripts')
         <script>
-            window.addEventListener('DOMContentLoaded', () => {
+            $(document).ready(function() {
                 /** Add keydown event to search input */
                 const search = document.getElementById('search')
                 search.addEventListener('keydown', (event) => {
                     if (event.keyCode === 13 && search.value !== '') {
-                        let currentUrl = window.location.href
-                        let noParams = currentUrl.split('?')[0]
-
-                        let newParam = noParams+'?search='+search.value
-                        window.location.href = newParam
+                        window.location.href = setUrlParam('search', search.value)
                     }
                 })
 
-                /** Define click event on update-role buttons */
-                const updateButtons = document.querySelectorAll('.update-role')
-                if (updateButtons.length > 0) {
-                    Array.from(updateButtons).forEach((updateButton) => {
-                        updateButton.addEventListener('click', () => {
-                            const id = updateButton.getAttribute('data-id')
-                            const options = {
-                                option1: 'Admin',
-                                option2: 'Guard',
-                                option3: 'Treasurer'
-                            };
+                /** Definf click event to search */
+                $(document).on('click', '#search-btn', function() {
+                    if (search.value) {
+                        window.location.href = setUrlParam('search', search.value)
+                    }
+                })
 
-                            Swal.fire({
-                                title: 'Update User Role',
-                                input: 'select',
-                                inputOptions: options,
-                                inputPlaceholder: 'Select new role',
-                                showCancelButton: true,
-                                confirmButtonText: 'Submit',
-                                cancelButtonText: 'Cancel',
-                                inputValidator: (value) => {
-                                    if (!value) {
-                                        return 'You must select an option';
-                                    }
-                                }
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    const selectedOption = options[result.value]
-                                    Livewire.emit('updateRole', { id: id, role: selectedOption })
-                                }
-                            });
-                        })
-                    })
+                /** Define function set set the URL parameter */
+                function setUrlParam(key, value) {
+                    let currentUrl = new URL(window.location.href)
+                    let urlSearch = new URLSearchParams(currentUrl.search)
+
+                    if (urlSearch.size < 1) {
+                        urlSearch.append(key, value)
+                    } else {
+                        urlSearch.set(key, value)
+                    }
+                    
+                    currentUrl.search = '?' + urlSearch.toString()
+                    return currentUrl
                 }
+
+                /** Define click event on update-role buttons */
+                $(document).on('click', '.update-role', function() {
+                    const id = $(this).data('id')
+                    const options = {
+                        option1: 'Admin',
+                        option2: 'Guard',
+                        option3: 'Treasurer'
+                    };
+
+                    Swal.fire({
+                        title: 'Update User Role',
+                        input: 'select',
+                        inputOptions: options,
+                        inputPlaceholder: 'Select new role',
+                        showCancelButton: true,
+                        confirmButtonText: 'Submit',
+                        cancelButtonText: 'Cancel',
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'You must select an option';
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const selectedOption = options[result.value]
+                            Livewire.emit('updateRole', { id: id, role: selectedOption })
+                        }
+                    });
+                })
             })
         </script>
     @endsection

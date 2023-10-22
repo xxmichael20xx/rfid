@@ -14,4 +14,14 @@ class HomeOwnerVehicle extends Model
         'plate_number',
         'car_type'
     ];
+
+    public function rfid()
+    {
+        return $this->hasOne(Rfid::class, 'vehicle_id', 'id');
+    }
+
+    public function homeOwner()
+    {
+        return $this->belongsTo(HomeOwner::class, 'home_owner_id', 'id');
+    }
 }

@@ -74,6 +74,13 @@ class UserManagement extends Component
 
         if ($search = request()->get('search')) {
             $this->search = $search;
+
+            $likeSearch = '%'.$search.'%';
+            $this->users = User::where('id', '<>', $userId)
+                ->where('first_name', 'LIKE', $likeSearch)
+                ->orWhere('last_name', 'LIKE', $likeSearch)
+                ->orWhere('middle_name', 'LIKE', $likeSearch)
+                ->get();
         }
     }
 

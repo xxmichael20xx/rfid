@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             BlockLotSeeder::class,
             HomeOwnerSeeder::class,
             ActivitySeeder::class,
+            PaymentTypeSeeder::class
         ]);
     }
 }

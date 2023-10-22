@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.7",
         "laravel/ui": "^4.2",
         "livewire/livewire": "^2.1",
+        "maatwebsite/excel": "^3.1",
         "pusher/pusher-php-server": "^7.2"
     },
     "require-dev": {
@@ -55,6 +56,7 @@
         ],
         "setup": [
             "@composer install",
+            "@php artisan vendor:publish --provider=\"Maatwebsite\\Excel\\ExcelServiceProvider\"",
             "@npm install",
             "@php artisan migrate:fresh --seed",
             "@php artisan optimize:clear"

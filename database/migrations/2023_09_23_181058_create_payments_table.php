@@ -15,16 +15,19 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            
             $table->unsignedBigInteger('home_owner_id');
             $table->foreign('home_owner_id')->references('id')->on('home_owners');
-            $table->string('type');
-            $table->string('mode');
+            $table->unsignedBigInteger('type_id');
+            $table->foreign('type_id')->references('id')->on('payment_types');
+            $table->string('mode')->nullable();
             $table->float('amount', 20);
-            $table->string('transaction_date');
+            $table->timestamp('transaction_date')->nullable();
+            $table->timestamp('date_paid')->nullable();
+            $table->timestamp('due_date')->nullable();
             $table->string('reference')->nullable();
+            $table->boolean('is_recurring')->default(0)->nullable();
+            $table->string('recurring_date')->nullable();
             $table->string('status')->default('pending')->nullable();
-            $table->timestamp('paid_on')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
             $table->softDeletes();

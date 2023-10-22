@@ -2,6 +2,10 @@
     <div class="row g-4 mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <h1 class="app-page-title">RFID Panel - Monitoring</h1>
+
+            <div id="realtime-clock" wire:ignore>
+                <span id="datetime" class="h4"></span>
+            </div>
         </div>
     </div>
 
@@ -12,8 +16,13 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                <div class="alert alert-success text-dark">
-                                    <i class="fa fa-info-circle"></i> Tap your RFID to log your entry
+                                <div class="alert alert-success text-dark d-flex justify-content-between">
+                                    <span>
+                                        <i class="fa fa-info-circle me-2"></i> Tap your RFID to log your entry
+                                    </span>
+                                    <div class="input-container">
+                                        <input type="text" class="form-control bg-white" id="tapped_id" name="tapped_id" placeholder="Focus here and tap the RFID">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -122,12 +131,6 @@
                                         <div class="col-6">
                                             <p class="text-dark"><b>Member Since:</b> {{ \Carbon\Carbon::parse($homeOwner?->created_at)->format('M y, Y') }}</p>
                                         </div>
-                                        <div class="col-6">
-                                            @php
-                                                $rfid = ($homeOwner?->rfid !== null) ? $homeOwner?->rfid->rfid : 'No assigned RFID';
-                                            @endphp
-                                            <p class="text-dark"><b>RFID:</b> {{ $rfid }}</p>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col" wire:ignore>
@@ -155,7 +158,7 @@
                                 <div class="col">
                                     <div class="row">
                                         <div class="col-12">
-                                            <p class="card-title h5">Profile Details</p>
+                                            <p class="card-title h5">Family Members</p>
                                             <hr class="theme-separator">
                                         </div>
                                     </div>
@@ -206,15 +209,24 @@
                                                         <tr>
                                                             <th class="cell">Plate Number</th>
                                                             <th class="cell">Car Type (Name)</th>
+                                                            <th class="cell">RFID</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @if ($homeOwner?->vehicles == null)
                                                         @else
                                                             @forelse ($homeOwner?->vehicles as $vehicle)
+                                                                @php
+                                                                    if ($rfid = $vehicle->rfid) {
+                                                                        $rfid = $rfid->rfid;
+                                                                    } else {
+                                                                        $rfid = 'No assigned RFID';
+                                                                    }
+                                                                @endphp
                                                                 <tr>
                                                                     <td class="cell">{{ $vehicle->plate_number }}</td>
                                                                     <td class="cell">{{ $vehicle->car_type }}</td>
+                                                                    <td class="cell">{{ $rfid }}</td>
                                                                 </tr>
                                                             @empty
                                                                 <tr>
@@ -252,8 +264,10 @@
     @section('scripts')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
+            $(document).ready(function() {
                 let homeOwnerData = new bootstrap.Modal('#homeOwnerData', {})
                 let previewCaptureModal = new bootstrap.Modal('#previewCaptureModal', {})
                 let previewCapture = document.getElementById('previewCapture')
@@ -321,28 +335,31 @@
                 })
 
                 /** Define approve entry click event */
-                const approveEntry = document.getElementById('approve-entry')
-                if (approveEntry) {
-                    approveEntry.addEventListener('click', () => {
-                        Livewire.emit('logEntry')
-                    })
-                }
+                $(document).on('click', '#approve-entry', function() {
+                    Livewire.emit('logEntry')
+                })
 
                 /** Define view capture for time-in and time-out */
-                const viewTimeInOut = document.querySelectorAll('.view-time-in, .view-time-out')
-                if (viewTimeInOut.length > 0) {
-                    Array.from(viewTimeInOut).forEach((item) => {
-                        item.addEventListener('click', () => {
-                            const image = item.getAttribute('data-img')
-                            const date = item.getAttribute('data-date')
-                            const time = item.getAttribute('data-time')
-                            previewCapture.setAttribute('src', image)
-                            previewCaptureTime.innerHTML = `${date} @ ${time}`
+                $(document).on('click', '.view-time-in, .view-time-out', function() {
+                    const image = $(this).data('img')
+                    const date = $(this).data('date')
+                    const time = $(this).data('time')
+                    previewCapture.attr('src', image)
+                    previewCaptureTime.html(`${date} @ ${time}`)
 
-                            previewCaptureModal.show()
-                        })
-                    })
-                }
+                    previewCaptureModal.show()
+                })
+
+                /** Initialize the change/input on the RFID input field */
+                const inputElement = document.getElementById('tapped_id')
+                let debouncedValidateEntry = _.debounce((id) => {
+                    Livewire.emit('validateEntry', id)
+                }, 1500)
+
+                inputElement.addEventListener('input', function(event) {
+                    const id = event.target.value
+                    debouncedValidateEntry(id)
+                })
             })
 
             function takeSnapshot() {
@@ -377,6 +394,20 @@
             function approveEntry() {
                 Livewire.emit('logEntry')
             }
+
+            function updateDateTime() {
+                const dateTimeElement = document.getElementById('datetime');
+                const now = new Date();
+                const dateTimeString = now.toLocaleString(); // Customize the format as needed
+
+                dateTimeElement.innerText = dateTimeString;
+            }
+
+            // Initial call to display the date and time
+            updateDateTime();
+
+            // Update the date and time every second
+            setInterval(updateDateTime, 1000);
         </script>
     @endsection
 </div>

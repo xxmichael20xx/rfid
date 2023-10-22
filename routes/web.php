@@ -14,7 +14,11 @@ use App\Http\Livewire\Guard\Rfid\GuardRfidMonitoring;
 use App\Http\Livewire\Homeowner\HomeownerCreate;
 use App\Http\Livewire\Homeowner\HomeownerUpdate;
 use App\Http\Livewire\Homeowner\HomeownerView;
+use App\Http\Livewire\Payments\PaymentsExpenses;
 use App\Http\Livewire\Payments\PaymentsList;
+use App\Http\Livewire\Payments\PaymentsOverview;
+use App\Http\Livewire\Payments\PaymentsRecurring;
+use App\Http\Livewire\Payments\PaymentsTypes;
 use App\Http\Livewire\Profile\ProfileList;
 use App\Http\Livewire\Rfid\RfidList;
 use App\Http\Livewire\Rfid\RfidMonitoring;
@@ -63,12 +67,14 @@ Route::name('homeowners.')
         Route::get('view/{id}', HomeownerView::class)->name('view');
     });
 
+
 /** Define profiles pages */
 Route::name('profiles.')
     ->prefix('profiles')
     ->group(function() {
         Route::get('/', ProfileList::class)->name('list');
     });
+
 
 /** Define activities pages */
 Route::name('activities.')
@@ -99,7 +105,10 @@ Route::name('rfid.')
 Route::name('payments.')
     ->prefix('payments')
     ->group(function() {
-        Route::get('/', PaymentsList::class)->name('list');
+        Route::get('overview', PaymentsOverview::class)->name('overview');
+        Route::get('expenses', PaymentsExpenses::class)->name('expenses');
+        Route::get('list', PaymentsList::class)->name('list');
+        Route::get('types', PaymentsTypes::class)->name('types');
     });
 
 /** Define User Management pages */

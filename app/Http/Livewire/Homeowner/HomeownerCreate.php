@@ -7,7 +7,11 @@ use App\Models\HomeOwner;
 use App\Models\HomeOwnerBlockLot;
 use App\Models\HomeOwnerVehicle;
 use App\Models\Lot;
+use App\Models\Payment;
+use App\Models\PaymentType;
+use App\Models\Rfid;
 use App\Rules\NotFutureDate;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -19,7 +23,9 @@ class HomeownerCreate extends Component
 
     protected $listeners = [
         'selectLot',
-        'unSelectLot'
+        'unSelectLot',
+        'selectPayment',
+        'unSelectPayment',
     ];
     public $availableLBlockLots = [];
 
@@ -39,10 +45,17 @@ class HomeownerCreate extends Component
         'vehicles' => [
             [
                 'plate_number' => '',
-                'car_type' => ''
+                'car_type' => '',
+                'rfid' => ''
             ]
-        ]
+        ],
+        'payments' => []
     ];
+
+    /**
+     * List of payment types
+     */
+    public $paymentTypes;
 
     /**
      * Add the validation rules for createing
@@ -68,7 +81,9 @@ class HomeownerCreate extends Component
                 'required_with:form.vehicles.*.car_type',
                 Rule::unique('home_owner_vehicles', 'plate_number')
             ],
-            'form.vehicles.*.car_type' => ['sometimes', 'nullable', 'required_with:form.vehicles.*.plate_number']
+            'form.vehicles.*.car_type' => ['sometimes', 'nullable', 'required_with:form.vehicles.*.plate_number'],
+            'form.vehicles.*.rfid' => ['sometimes', 'nullable', 'distinct', Rule::unique('rfids', 'rfid')],
+            'form.payments' => ['nullable']
         ];
     }
 
@@ -84,6 +99,7 @@ class HomeownerCreate extends Component
             'form.vehicles.*.plate_number.required_with' => 'The plate number is required when the car type is provided.',
             'form.vehicles.*.plate_number.unique' => 'The plate number is already taken.',
             'form.vehicles.*.car_type.required_with' => 'The car type is required when the plate number is provided.',
+            'form.vehicles.*.rfid.distinct' => 'The rfid should be unique.',
         ]);
 
         // Handle image upload
@@ -117,8 +133,11 @@ class HomeownerCreate extends Component
         // add the selected block & lots
         $this->processBlockAndLots($newHomeOwner->id);
 
-        // add the vehicles
+        // add vehicles
         $this->processVehicles($newHomeOwner->id);
+
+        // add payments
+        $this->processPayments($newHomeOwner->id);
         
         // dispatch a javacript event to trigger the notification
         $this->emit('show.dialog', [
@@ -161,10 +180,62 @@ class HomeownerCreate extends Component
 
         if (count($vehicles) > 0) {
             foreach ($vehicles as $vehicle) {
-                HomeOwnerVehicle::create([
+                $homeOwnerVehicle = HomeOwnerVehicle::create([
                     'home_owner_id' => $homeOwnerId,
                     'plate_number' => $vehicle['plate_number'],
                     'car_type' => $vehicle['car_type']
+                ]);
+
+                if ($rfid = data_get($vehicle, 'rfid')) {
+                    Rfid::create([
+                        'vehicle_id' => $homeOwnerVehicle->id,
+                        'rfid' => $rfid
+                    ]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Process the selected payments
+     */
+    public function processPayments($homeOwnerId)
+    {
+        $payments = (array) $this->form['payments'];
+
+        // Get the current year and month
+        $currentYear = Carbon::now()->year;
+        $currentMonth = Carbon::now()->month;
+
+        if ($payments) {
+            foreach ($payments as $payment) {
+                $paymentId = (int) ($payment);
+                $paymentType = PaymentType::find($paymentId);
+                $selectedDate = Carbon::create($currentYear, $currentMonth, $paymentType->recurring_day);
+                $dueDate = Carbon::now();
+
+                // Check if the selected date is within the current month and not a past date
+                if ($selectedDate->isCurrentMonth() && $selectedDate->isFuture()) {
+                    $dueDate = $selectedDate;
+                } else {
+                    $frequency = $paymentType->frequency;
+                    $recurringDate = (int) $paymentType->recurring_day;
+
+                    if ($frequency === 'monthly') {
+                        // For monthly payments
+                        $dueDate->addMonthsNoOverflow()->day($recurringDate);
+                    } elseif ($frequency === 'annually') {
+                        // For annually payments
+                        $dueDate->addYear()->day($recurringDate);
+                    }
+                }
+
+                Payment::create([
+                    'home_owner_id' => $homeOwnerId,
+                    'type_id' => $paymentId,
+                    'amount' => $paymentType->amount,
+                    'due_date' => $dueDate,
+                    'is_recurring' => $paymentType->is_recurring
                 ]);
             }
         }
@@ -185,6 +256,23 @@ class HomeownerCreate extends Component
 
         // Re-index the array
         $this->form['block_lots'] = array_values((array) $this->form['block_lots']);
+    }
+
+    public function selectPayment($id)
+    {
+        $this->form['payments'][] = $id;
+    }
+
+    public function unSelectPayment($id)
+    {
+        // Remove the value 'block' from the array
+        $key = array_search($id, (array) $this->form['payments']);
+        if ($key !== false) {
+            unset($this->form['payments'][$key]);
+        }
+
+        // Re-index the array
+        $this->form['payments'] = array_values((array) $this->form['payments']);
     }
 
     public function addVehicle() {
@@ -211,6 +299,8 @@ class HomeownerCreate extends Component
                 $this->availableLBlockLots[$block->block] = $lots;
             }
         }
+
+        $this->paymentTypes = PaymentType::orderBy('type', 'asc')->get();
     }
     
     /**

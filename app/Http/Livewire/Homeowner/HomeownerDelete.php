@@ -3,9 +3,10 @@
 namespace App\Http\Livewire\Homeowner;
 
 use App\Models\HomeOwner;
+use App\Models\HomeOwnerBlockLot;
 use App\Models\Lot;
+use App\Models\Rfid;
 use Livewire\Component;
-use RealRashid\SweetAlert\Facades\Alert;
 
 class HomeownerDelete extends Component
 {
@@ -14,6 +15,8 @@ class HomeownerDelete extends Component
 
     /**
      * Function to delete the Home Owner
+     *
+     * @return void
      */
     public function delete()
     {
@@ -22,9 +25,10 @@ class HomeownerDelete extends Component
         $homeowner->delete();
 
         // set the lot as 'available'
-        Lot::find($homeowner->lot)->update([
-            'availability' => 'available'
-        ]);
+        $this->unassignLots();
+
+        // archive the assigned 'RFID'
+        $this->archiveRfid();
 
         // send an event for notification
         $this->emit('show.dialog', [
@@ -36,7 +40,43 @@ class HomeownerDelete extends Component
     }
 
     /**
-     * Mount function to initialize dynamic data
+     * Update all assigned lots
+     *
+     * @return void
+     */
+    protected function unassignLots()
+    {
+        $blockLots = HomeOwnerBlockLot::where('home_owner_id', $this->modelId)->get();
+
+        foreach ($blockLots as $blockLot) {
+            $lot = $blockLot->lot;
+            $updateLot = Lot::find($lot);
+            $updateLot->update([
+                'availability' => 'available'
+            ]);
+
+            $blockLot->delete();
+        }
+    }
+
+    /**
+     * Archive the assigned RFID of the deleted Home Owner
+     *
+     * @return void
+     */
+    public function archiveRfid()
+    {
+        // Check if RFID exists
+        if ($rfid = Rfid::where('home_owner_id', $this->modelId)->first()) {
+            // Archive the RFID
+            $rfid->delete();
+        }
+    }
+
+    /**
+     * Initialize component data
+     *
+     * @return void
      */
     public function mount()
     {
@@ -44,7 +84,9 @@ class HomeownerDelete extends Component
     }
 
     /**
-     * Function to render the blade file
+     * Define what blade file to render
+     *
+     * @return View
      */
     public function render()
     {

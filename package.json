@@ -17,7 +17,6 @@
     },
     "dependencies": {
         "chart.js": "^4.4.0",
-        "choices.js": "^10.2.0",
         "chokidar": "^3.5.3",
         "laravel-echo": "^1.15.3",
         "pusher": "^5.1.3",

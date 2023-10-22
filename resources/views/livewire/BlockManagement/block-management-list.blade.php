@@ -151,7 +151,7 @@
                     <div class="modal-body">
                         <div class="row mb-2">
                             <div class="col-12">
-                                <label>Lots*</label>
+                                <label>Lots<span class="required">*</span></label>
                             </div>
                             @foreach ($lotForm['lots'] as $lotFormKey => $item)
                                 <div class="col-12 mb-5 @if($lotFormKey > 0) border-top pt-5 @endif">
@@ -276,7 +276,7 @@
                                     text: 'Lot will be deleted!',
                                     showConfirmButton: true,
                                     showCancelButton: true,
-                                    confirmButtonText: 'Yes, delete it!'
+                                    confirmButtonText: 'Yes, confirm'
                                 }).then((e) => {
                                     if (e.isConfirmed) {
                                         document.getElementById(id).click()

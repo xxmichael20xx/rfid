@@ -7,10 +7,6 @@ window.Swal = Swal
 import Chart from 'chart.js/auto';
 window.Chart = Chart
 
-import Choices from 'choices.js';
-import 'choices.js/public/assets/styles/choices.min.css';
-window.Choices = Choices
-
 const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',

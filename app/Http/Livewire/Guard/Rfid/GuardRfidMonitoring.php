@@ -99,14 +99,20 @@ class GuardRfidMonitoring extends Component
      */
     public function validateEntry($id)
     {
-        $rfidExists = Rfid::with('homeOwner', 'homeOwner.rfid', 'homeOwner.profiles', 'homeOwner.vehicles')->where('rfid', $id)->first();
+        $rfidExists = Rfid::with(
+            'vehicle',
+            'vehicle.rfid',
+            'vehicle.homeOwner.profiles',
+            'vehicle.homeOwner.vehicles',
+            'vehicle.homeOwner.vehicles.rfid'
+        )->where('rfid', $id)->first();
 
         if (! $rfidExists) {
             $this->emit('invalid-rfid');
             return false;
         }
 
-        $this->homeOwner = $rfidExists->homeOwner;
+        $this->homeOwner = $rfidExists->vehicle->homeOwner;
         $this->emit('homeowner-data');
     }
 

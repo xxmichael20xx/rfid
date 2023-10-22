@@ -19,7 +19,7 @@ class HomeOwnerSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         $faker = Faker::create();
         $cars = config('cars');
@@ -60,7 +60,7 @@ class HomeOwnerSeeder extends Seeder
                     'block' => $block,
                     'lot' => $lot->id
                 ]);
-    
+
                 Lot::find($lot->id)->update([
                     'availability' => 'unavailable'
                 ]);
@@ -70,23 +70,19 @@ class HomeOwnerSeeder extends Seeder
                 $licensePlate = $randomPrefix . '-'. $faker->numberBetween(1000, 9999);
                 $carName = $cars[array_rand($cars)];
 
-                HomeOwnerVehicle::create([
+                $homeOwnerHevicle = HomeOwnerVehicle::create([
                     'home_owner_id' => $newHomeOwner->id,
                     'plate_number' => $licensePlate,
                     'car_type' => $carName
                 ]);
-            }
 
-            /**
-             * mt_rand(1, 99999999) generates a random number between 1 and 99,999,999 (inclusive).
-             * str_pad is used to ensure that the generated number always has 8 digits.
-             * If the random number is less than 8 digits, it adds leading zeros.
-             */
-            $rfid =  str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
-            Rfid::create([
-                'home_owner_id' => $newHomeOwner->id,
-                'rfid' => $rfid
-            ]);
+                // Add RFID to Vehicle
+                $rfid =  str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+                Rfid::create([
+                    'vehicle_id' => $homeOwnerHevicle->id,
+                    'rfid' => $rfid
+                ]);
+            }
         }
     }
 }

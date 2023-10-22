@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('rfids', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('home_owner_id');
-            $table->foreign('home_owner_id')->references('id')->on('home_owners');
+            $table->unsignedBigInteger('vehicle_id');
+            $table->foreign('vehicle_id')->references('id')->on('home_owner_vehicles');
             $table->string('rfid')->unique();
             $table->json('metadata')->nullable();
             $table->timestamps();

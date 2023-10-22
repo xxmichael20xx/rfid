@@ -107,19 +107,49 @@
                                 <span class="nav-link-text">Blocks Managements</span>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item has-submenu">
                             <a
-                                class="nav-link {{ isRouteActive(['profiles.list']) }}"
-                                href="{{ route('profiles.list') }}">
-								<i class="fa fa-users"></i>
-                                <span class="nav-link-text">Profiles</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ isRouteActive(['payments.list']) }}" href="{{ route('payments.list') }}">
-								<i class="fa fa-dollar"></i>
-                                <span class="nav-link-text">Payments</span>
-                            </a>
+                                class="nav-link submenu-toggle collapsed {{ isRouteActive(['payments.overview', 'payments.list', 'payments.recurring', 'payments.types']) }}"
+                                href="#"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#nav-settings-menu"
+                                aria-expanded="false"
+                                aria-controls="nav-settings-menu"
+                            >
+                                <span class="nav-link-text">
+                                    <i class="fa fa-cogs"></i> Payments
+                                </span>
+                                <span class="submenu-arrow">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                                </span>
+					        </a>
+
+                            <div id="nav-settings-menu" class="submenu nav-settings-menu {{ isRouteShown(['payments.overview', 'payments.expenses', 'payments.list', 'payments.types']) }}" data-bs-parent="#menu-accordion">
+						        <ul class="submenu-list list-unstyled ps-4">
+                                    {{-- <li class="submenu-item">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['payments.overview']) }}" href="{{ route('payments.overview') }}">
+                                            <i class="fa fa-chart-line"></i> Overview
+                                        </a>
+                                    </li> --}}
+							        <li class="submenu-item">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['payments.expenses']) }}" href="{{ route('payments.expenses') }}">
+                                            <i class="fa fa-hand-holding-dollar"></i> Expenses
+                                        </a>
+                                    </li>
+							        <li class="submenu-item">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['payments.list']) }}" href="{{ route('payments.list') }}">
+                                            <i class="fa fa-money-bill"></i> List
+                                        </a>
+                                    </li>
+							        <li class="submenu-item">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['payments.types']) }}" href="{{ route('payments.types') }}">
+                                            <i class="fa fa-cogs"></i> Types
+                                        </a>
+                                    </li>
+						        </ul>
+					        </div>
                         </li>
                         <li class="nav-item">
                             <a
@@ -130,7 +160,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a 
+                            <a
                                 class="nav-link {{ isRouteActive(['rfid.list']) }}"
                                 href="{{ route('rfid.list') }}">
 								<i class="fa fa-id-card"></i>
@@ -174,7 +204,7 @@
     @vite(['resources/js/app.js'])
     @livewireScripts
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
     @yield('scripts')
 
     <script>

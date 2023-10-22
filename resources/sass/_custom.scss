@@ -60,3 +60,9 @@
     background: #5cb377;
     border: 0;
 }
+
+.submenu-link {
+    &.active {
+        color: #15a362 !important;
+    }
+}

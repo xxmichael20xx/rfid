@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('last_name');
             $table->text('middle_name')->nullable();
             $table->string('date_of_birth');
-            $table->string('email')->nullable()->unique();
+            $table->string('email')->default(null)->nullable()->unique();
             $table->string('contact_no')->unique();
             $table->string('gender');
             $table->json('metadata')->nullable();

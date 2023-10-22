@@ -63,7 +63,7 @@
                                 text: `RFID for \'${name}\' will be deleted and this can\'t be undone!`,
                                 showConfirmButton: true,
                                 showCancelButton: true,
-                                confirmButtonText: 'Yes, delete it!'
+                                confirmButtonText: 'Yes, confirm'
                             }).then((e) => {
                                 if (e.isConfirmed) {
                                     Livewire.emit('deleteRfid', { id: id })

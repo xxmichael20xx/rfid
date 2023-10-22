@@ -14,7 +14,7 @@ class HomeOwnerController extends Controller
     public function list(Request $request)
     {
         // get all home owners data from database
-        $homeOwners = HomeOwner::with(['blockLots', 'blockLots.block', 'blockLots.lot', 'rfid'])->orderBy('created_at', 'DESC')->get();
+        $homeOwners = HomeOwner::with(['blockLots', 'blockLots.block', 'blockLots.lot', 'vehicles'])->orderBy('created_at', 'DESC')->get();
 
         // check if URL has "?search=keyword"
         if ($search = data_get($_GET, 'search')) {

@@ -11,7 +11,7 @@ class Rfid extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'home_owner_id',
+        'vehicle_id',
         'rfid',
         'metadata'
     ];
@@ -20,8 +20,8 @@ class Rfid extends Model
         'metadata' => 'json'
     ];
 
-    public function homeOwner()
+    public function vehicle()
     {
-        return $this->belongsTo(HomeOwner::class, 'home_owner_id', 'id');
+        return $this->belongsTo(HomeOwnerVehicle::class, 'vehicle_id', 'id');
     }
 }

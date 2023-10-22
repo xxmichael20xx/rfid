@@ -258,16 +258,63 @@
                                                     @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-4 d-flex justify-content-start align-items-end">
+                                            <div class="col-4">
+                                                <div class="input-container">
+                                                    <label>Vehicle #{{ $vehiclesKey + 1 }}: RFID</label>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control @error('form.vehicles.'.$vehiclesKey.'.rfid') is-invalid @enderror"
+                                                        wire:model.lazy="form.vehicles.{{ $vehiclesKey }}.rfid">
+                                                    @error('form.vehicles.'.$vehiclesKey.'.rfid')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ str_replace('form.', '', $message) }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                    <small class="text-help">Note: Please click the RFID input before tapping the RFID</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
                                                 @if ($vehiclesKey > 0)
-                                                    <button type="button" class="btn btn-danger text-white ms-3" wire:click="removeVehicle({{ $vehiclesKey }})">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
+                                                    <a type="#!" class="text-danger clickable" wire:click="removeVehicle({{ $vehiclesKey }})">
+                                                        <i class="fa fa-times"></i> Remove vehicle
+                                                    </a>
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
                                 @endforeach
+                            </div>
+
+                            <div class="row mt-5 mb-3">
+                                <div class="col-12">
+                                    <p class="card-title h5">Payment Details</p>
+                                    <hr class="theme-separator">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-8">
+                                    <div class="input-container" wire:ignore>
+                                        <label for="payments">Payments</label>
+                                        <select
+                                            id="payments"
+                                            multiple="multiple"
+                                            class="form-control @error('form.payments') is-invalid @enderror"
+                                            wire:model.lazy="form.payments">
+                                            @forelse ($paymentTypes as $key => $paymentType)
+                                                <option value="{{ $paymentType->id }}">{{ $paymentType->type }}</option>
+                                            @empty
+                                                <option value="" disabled>No available payments</option>
+                                            @endforelse
+                                        </select>
+
+                                        @error('form.block_lots')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ str_replace('form.', '', $message) }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
         
                             <div class="row">
@@ -293,13 +340,11 @@
         <script>
             $(document).ready(function() {
                 $('#block-lots').select2()
-
                 $('#block-lots').on('select2:select', function (e) {
                     const id = e.params.data.id
 
                     Livewire.emit('selectLot', id)
                 })
-
                 $('#block-lots').on('select2:unselect', function (e) {
                     const id = e.params.data.id
 
@@ -323,6 +368,18 @@
                     }
 
                     $('#age').val(age)
+                })
+
+                $('#payments').select2()
+                $('#payments').on('select2:select', function (e) {
+                    const id = e.params.data.id
+
+                    Livewire.emit('selectPayment', id)
+                })
+                $('#payments').on('select2:unselect', function (e) {
+                    const id = e.params.data.id
+
+                    Livewire.emit('unSelectPayment', id)
                 })
             })
         </script>

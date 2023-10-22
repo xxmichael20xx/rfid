@@ -35,7 +35,7 @@
                                                 placeholder="Ex. Fun Run"
                                                 wire:model.lazy="model.title"
                                                 autofocus>
-                                            <label for="title">Title*</label>
+                                            <label for="title">Title<span class="required">*</span></label>
                 
                                             @error('model.title')
                                                 <span class="invalid-feedback" role="alert">
@@ -74,7 +74,7 @@
                                                 placeholder="Ex. Central Gym"
                                                 wire:model.lazy="form.location"
                                                 autofocus>
-                                            <label for="location">Location*</label>
+                                            <label for="location">Location<span class="required">*</span></label>
                 
                                             @error('form.location')
                                                 <span class="invalid-feedback" role="alert">

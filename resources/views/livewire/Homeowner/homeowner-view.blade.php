@@ -56,12 +56,6 @@
                             <div class="col-6">
                                 <p class="text-dark"><b>Member Since:</b> {{ \Carbon\Carbon::parse($data->created_at)->format('M y, Y') }}</p>
                             </div>
-                            <div class="col-6">
-                                @php
-                                    $rfid = ($data->rfid) ? $data->rfid->rfid : 'No assigned RFID';
-                                @endphp
-                                <p class="text-dark"><b>RFID:</b> {{ $rfid }}</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -71,23 +65,23 @@
 
     <div class="accordion mb-5" id="accordionHomeOwner" wire:ignore>
         <div class="accordion-item">
-            <h2 class="accordion-header" id="headingListOfProfiles">
+            <h2 class="accordion-header" id="headingListOfFamilyMembers">
                 <button
                     class="accordion-button text-dark"
                     type="button"
                     data-bs-toggle="collapse"
-                    data-bs-target="#collapseLiftOfProfiles"
+                    data-bs-target="#collapseLiftOfFamilyMembers"
                     aria-expanded="true"
-                    aria-controls="collapseLiftOfProfiles"
+                    aria-controls="collapseLiftOfFamilyMembers"
                 >
-                    <i class="fa fa-users me-2"></i> Profiles
+                    <i class="fa fa-users me-2"></i> Family Members
                 </button>
             </h2>
-            <div id="collapseLiftOfProfiles" class="accordion-collapse collapse show" aria-labelledby="headingListOfProfiles" data-bs-parent="#accordionHomeOwner">
+            <div id="collapseLiftOfFamilyMembers" class="accordion-collapse collapse show" aria-labelledby="headingListOfFamilyMembers" data-bs-parent="#accordionHomeOwner">
                 <div class="accordion-body">
                     <div class="row mb-3">
                         <div class="col-12 d-flex justify-content-between mb-3">
-                            <p class="card-title h5">Manage Profiles</p>
+                            <p class="card-title h5">Manage Family Members</p>
                             <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#newProfileModal">
                                 <i class="fa fa-user-plus"></i> Add New
                             </button>
@@ -265,14 +259,23 @@
                                         <tr>
                                             <th class="cell">Plate Number</th>
                                             <th class="cell">Car Type (Name)</th>
+                                            <th class="cell">RFID</th>
                                             <th class="cell">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($data->vehicles as $vehicle)
+                                            @php
+                                                if ($rfid = $vehicle->rfid) {
+                                                    $rfid = $rfid->rfid;
+                                                } else {
+                                                    $rfid = 'No assigned RFID';
+                                                }
+                                            @endphp
                                             <tr>
                                                 <td class="cell">{{ $vehicle->plate_number }}</td>
                                                 <td class="cell">{{ $vehicle->car_type }}</td>
+                                                <td class="cell">{{ $rfid }}</td>
                                                 <td class="cell d-flex">
                                                     <button
                                                         type="button"
@@ -306,7 +309,6 @@
         </div>
     </div>
 
-    <!-- Modal for new profile form -->
     <div class="modal fade" id="newProfileModal" tabindex="-1" aria-labelledby="newProfileModalLabel" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog--md-max">
             <form method="POST" wire:submit.prevent="create">
@@ -314,7 +316,7 @@
                 
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="newProfileModalLabel">New Profile Form</h1>
+                        <h1 class="modal-title fs-5" id="newProfileModalLabel">New Family Members Form</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -467,7 +469,6 @@
         </div>
     </div>
 
-    <!-- Modal for profile update form -->
     <div class="modal fade" id="updateProfileModal" tabindex="-1" aria-labelledby="updateProfileModalLabel" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog--md-max">
             <form method="POST" wire:submit.prevent="update">
@@ -475,7 +476,7 @@
                 
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="updateProfileModalLabel">Update Profile Form</h1>
+                        <h1 class="modal-title fs-5" id="updateProfileModalLabel">Update Family Member Form</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -628,7 +629,6 @@
         </div>
     </div>
 
-    <!-- Model for new vehicle -->
     <div class="modal fade" id="newVehicleModal" tabindex="-1" aria-labelledby="newVehicleModalLabel" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog">
             <form method="POST" wire:submit.prevent="createVehicle">
@@ -691,7 +691,6 @@
         </div>
     </div>
 
-    <!-- Model for update vehicle -->
     <div class="modal fade" id="newBlockAndLotModal" tabindex="-1" aria-labelledby="newBlockAndLotModalLabel" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog">
             <form method="POST" wire:submit.prevent="addBlockLot">
@@ -741,7 +740,6 @@
         </div>
     </div>
 
-    <!-- Model for update vehicle -->
     <div class="modal fade" id="updateVehicleModal" tabindex="-1" aria-labelledby="updateVehicleModalLabel" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog">
             <form method="POST" wire:submit.prevent="updateVehicle">
@@ -794,6 +792,31 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="rfid">RFID</label>
+                                    <input
+                                        id="rfid"
+                                        name="rfid"
+                                        type="text"
+                                        class="form-control @error('updateVehicleForm.rfid') is-invalid @enderror"
+                                        wire:model.lazy="updateVehicleForm.rfid"
+                                        autofocus>
+                                    
+                                    @error('updateVehicleForm.rfid')
+                                        <span class="invalid-feedback mb-3" role="alert">
+                                            <strong>{{ str_replace('update vehicle form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                    <small class="text-help">
+                                        <span>Note: Please click the RFID input before tapping the RFID</span>
+                                        <span class="text-danger d-block fw-bold">Also when removing the RFID value, it will be unassigned from the vehicle!</span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -808,35 +831,29 @@
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
-            window.addEventListener('DOMContentLoaded', () => {
+            $(document).ready(function() {
                 /** Initialize click event for confirm-delete-profile */
-                const confirmDeleteProfile = document.querySelectorAll('.confirm-delete-profile')
-                if (confirmDeleteProfile.length > 0) {
-                    Array.from(confirmDeleteProfile).forEach((item) => {
-                        const id = item.getAttribute('data-id')
-                        const name = item.getAttribute('data-name')
-                        item.addEventListener('click', () => {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'Are you sure?',
-                                text: `Profile \'${name}\' will be deleted and this can\'t be undone!`,
-                                showConfirmButton: true,
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes, delete it!'
-                            }).then((e) => {
-                                if (e.isConfirmed) {
-                                    Livewire.emit('deleteProfile', { id: id })
-                                }
-                            })
-                        })
-                    })
-                }
+                $(document).on('click', '.confirm-delete-profile', function() {
+                    const id = $(this).data('id');
+                    const name = $(this).data('name');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Are you sure?',
+                        text: `Family Member '${name}' will be deleted and this can't be undone!`,
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, confirm'
+                    }).then((e) => {
+                        if (e.isConfirmed) {
+                            Livewire.emit('deleteProfile', { id: id });
+                        }
+                    });
+                });
 
                 /** Add delete lot confirmation */
                 $(document).on('click', '.delete-lot', function() {
-                    const id = $(this).data('id')
-                    const lot = $(this).data('lot')
-                    
+                    const id = $(this).data('id');
+                    const lot = $(this).data('lot');
                     Swal.fire({
                         icon: 'info',
                         title: 'Are you sure?',
@@ -846,37 +863,35 @@
                         confirmButtonText: 'Yes, confirm'
                     }).then((e) => {
                         if (e.isConfirmed) {
-                            Livewire.emit('deleteBlockLot', id)
+                            Livewire.emit('deleteBlockLot', id);
                         }
-                    })
-                })
+                    });
+                });
 
                 $(document).on('change', '#date_of_birth, #update_date_of_birth', function() {
-                    const value = $(this).val()
-                    const ageSelector = $(this).data('age')
-                    const today = new Date()
-                    const birthDate = new Date(value)
-
-                    let age = today.getFullYear() - birthDate.getFullYear()
-                    const monthDiff = today.getMonth() - birthDate.getMonth()
+                    const value = $(this).val();
+                    const ageSelector = $(this).data('age');
+                    const today = new Date();
+                    const birthDate = new Date(value);
+                    let age = today.getFullYear() - birthDate.getFullYear();
+                    const monthDiff = today.getMonth() - birthDate.getMonth();
 
                     if (birthDate > today) {
-                        age = 'Invalid selected date'
+                        age = 'Invalid selected date';
                     } else {
                         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                            age--
+                            age--;
                         }
                     }
 
-                    $('#' + ageSelector).val(age)
-                })
+                    $('#' + ageSelector).val(age);
+                });
 
                 /** Add delete vehicle confirmation */
                 $(document).on('click', '.delete-vehicle', function() {
-                    const id = $(this).data('id')
-                    const plate = $(this).data('plate')
-                    const type = $(this).data('type')
-                    
+                    const id = $(this).data('id');
+                    const plate = $(this).data('plate');
+                    const type = $(this).data('type');
                     Swal.fire({
                         icon: 'info',
                         title: 'Are you sure?',
@@ -886,10 +901,10 @@
                         confirmButtonText: 'Yes, confirm'
                     }).then((e) => {
                         if (e.isConfirmed) {
-                            Livewire.emit('deleteVehicle', id)
+                            Livewire.emit('deleteVehicle', id);
                         }
-                    })
-                })
+                    });
+                });
 
                 /** Add event to trigger update modal */
                 Livewire.on('update.vehicle-prepare', () => {

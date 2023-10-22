@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Rfid;
 
 use App\Models\HomeOwner;
+use App\Models\HomeOwnerVehicle;
 use App\Models\Rfid;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -10,27 +11,27 @@ use Livewire\Component;
 class RfidList extends Component
 {
     public $rfids;
-    public $unassignedHomeOwners;
+    public $unassignedVehicles;
 
-    protected $listeners = ['deleteRfid', 'setRfid'];
-
-    public $rfidForm = [
-        'home_owner_id' => '',
-        'rfid' => ''
+    protected $listeners = [
+        'deleteRfid',
+        'setRfid',
+        'selectVehicle',
+        'unselectVehicle'
     ];
 
-    public function rules()
-    {
-        return [
-            'rfidForm.home_owner_id' => ['required'],
-            'rfidForm.rfid' => ['required', Rule::unique('rfids', 'rfid')]
-        ];
-    }
+    public $rfidForm = [
+        'vehicle_id' => '',
+        'rfid' => ''
+    ];
 
     public function create()
     {
         // validate the rfid form
-        $this->validate();
+        $this->validate([
+            'rfidForm.vehicle_id' => ['required'],
+            'rfidForm.rfid' => ['required', Rule::unique('rfids', 'rfid')]
+        ]);
 
         // assign the rfid to a home owner
         Rfid::create($this->rfidForm);
@@ -74,20 +75,37 @@ class RfidList extends Component
         $this->rfidForm['rfid'] = $id;
     }
 
+    public function selectVehicle($id)
+    {
+        $this->rfidForm['vehicle_id'] = $id;
+    }
+
+    /**
+     * Initialize component data
+     */
     public function mount()
     {
+        // get all vehicles
+        $vehicles = HomeOwnerVehicle::with(['rfid', 'homeOwner'])->get();
+        $this->unassignedVehicles = [];
+
+        foreach ($vehicles as $vehicle) {
+            $homeOwner = $vehicle->homeOwner->last_full_name;
+            $available = [
+                'vehicle_id' => $vehicle->id,
+                'vehicle' => $vehicle->car_type . ' - ' . $vehicle->plate_number
+            ];
+
+            if (! $vehicle->rfid) {
+                if (! isset($this->unassignedVehicles[$homeOwner])) {
+                    $this->unassignedVehicles[$homeOwner] = [];
+                }
+                $this->unassignedVehicles[$homeOwner][] = $available;
+            }
+        }
+
         // get the list of Rfids
-        $this->rfids = Rfid::with(['homeOwner'])->get();
-
-        // get home owners that doesn't have a rfid yet
-        $homeOwners = HomeOwner::all()->pluck('id')->toArray();
-        $rfids = Rfid::all()->pluck('home_owner_id')->toArray();
-
-        // Find the home_owner_ids that do not exist in $rfids
-        $homeOwnersWithoutRfid = array_diff($homeOwners, $rfids);
-
-        // Fetch the corresponding HomeOwner models
-        $this->unassignedHomeOwners = HomeOwner::whereIn('id', $homeOwnersWithoutRfid)->get();
+        $this->rfids = Rfid::with(['vehicle', 'vehicle.homeOwner'])->get();
     }
 
     public function render()

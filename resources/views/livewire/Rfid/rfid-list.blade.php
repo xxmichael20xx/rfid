@@ -1,7 +1,7 @@
 <div>
     <div class="row g-4 mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="app-page-title">RFID Panel - Listing</h1>
+            <h1 class="app-page-title">Manage RFID</h1>
             <a href="{{ route('rfid.monitoring') }}" class="btn btn-success text-white">Go to Monitoring</a>
         </div>
     </div>
@@ -13,12 +13,19 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
+                                <p class="card-title h5">List of RFID</p>
+                                <hr class="theme-separator">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
                                 <div class="table-responsive">
                                     <table class="table app-table-hover mb-0 text-left visitors-table">
                                         <thead class="bg-portal-green">
                                             <tr>
                                                 <th class="cell">RFID</th>
                                                 <th class="cell">Home Owner</th>
+                                                <th class="cell">Vehicle</th>
                                                 <th class="cell">Date Registered</th>
                                                 <th class="cell">Actions</th>
                                             </tr>
@@ -27,14 +34,19 @@
                                             @forelse ($rfids as $data)
                                                 <tr>
                                                     <td class="cell">{{ $data->rfid }}</td>
-                                                    <td class="cell">{{ $data->homeOwner->full_name }}</td>
+                                                    <td class="cell">{{ $data->vehicle->homeOwner->full_name }}</td>
+                                                    <td class="cell">
+                                                        {{ $data->vehicle->car_type }}
+                                                        <br>
+                                                        <span class="text-dark fw-bold">{{ $data->vehicle->plate_number }}</span>
+                                                    </td>
                                                     <td class="cell">{{ \Carbon\Carbon::parse($data->created_at)->format('M d, Y @ h:s A') }}</td>
                                                     <td class="cell d-flex">
                                                         <button
                                                             type="button"
                                                             class="btn btn-danger text-white p-2 confirm-delete-rfid"
                                                             data-id="{{ $data->id }}"
-                                                            data-name="{{ $data->homeOwner->full_name }}">
+                                                            data-name="{{ $data->vehicle->homeOwner->full_name }}">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </td>
@@ -67,24 +79,26 @@
                             <form method="POST" wire:submit.prevent="create" class="col-12">
                                 @csrf
         
-                                <div class="row mb-3">
+                                <div class="row mb-3" wire:ignore>
                                     <div class="col-12">
-                                        <div class="form-floating mb-3">
+                                        <div class="input-container mb-3">
+                                            <label for="vehicle_id">Home Owner<span class="required">*</span></label>
                                             <select
-                                                name="home_owner_id"
-                                                id="home_owner_id"
-                                                class="form-select @error('rfidForm.home_owner_id') is-invalid @enderror"
-                                                wire:model.lazy="rfidForm.home_owner_id">
-                                                <option value="" disabled selected>Select home owner</option>
-                                                @forelse ($unassignedHomeOwners as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->full_name }}</option>
+                                                id="vehicle_id"
+                                                class="form-control @error('form.vehicle_id') is-invalid @enderror"
+                                                wire:model.lazy="form.vehicle_id">
+                                                @forelse ($unassignedVehicles as $key => $unassignedVehicle)
+                                                    <optgroup label="{{ $key }}">
+                                                        @foreach ($unassignedVehicle as $vehicleKey => $vehicleData)
+                                                            <option value="{{ $vehicleData['vehicle_id'] }}">{{ $vehicleData['vehicle'] }}</option>
+                                                        @endforeach
+                                                    </optgroup>
                                                 @empty
-                                                    <option value="" disabled>No available home owner</option>
+                                                    <option value="" disabled>No available vehicle to assign</option>
                                                 @endforelse
                                             </select>
-                                            <label for="home_owner_id">Home Owner*</label>
         
-                                            @error('rfidForm.home_owner_id')
+                                            @error('rfidForm.vehicle_id')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ str_replace('rfid form.', '', $message) }}</strong>
                                                 </span>
@@ -95,27 +109,27 @@
         
                                 <div class="row mb-3">
                                     <div class="col-12">
-                                        <div class="form-floating mb-3">
+                                        <div class="input-container mb-3">
+                                            <label for="rfid">RFID<span class="required">*</span></label>
                                             <input
                                                 name="rfid"
                                                 id="rfid"
                                                 class="form-control @error('rfidForm.rfid') is-invalid @enderror"
                                                 type="text"
                                                 wire:model.lazy="rfidForm.rfid">
-                                            <label for="rfid">RFID*</label>
         
                                             @error('rfidForm.rfid')
-                                                <span class="invalid-feedback" role="alert">
+                                                <span class="invalid-feedback mb-3" role="alert">
                                                     <strong>{{ str_replace('rfid form.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
+                                            <small class="text-help fw-bold">Note: Please click the RFID input before tapping the RFID</small>
                                         </div>
                                     </div>
                                 </div>
         
                                 <div class="row">
-                                    <div class="col-12 d-flex justify-content-between">
-                                        <button type="button" class="btn btn-info text-white" id="scan-id">Scan Id</button>
+                                    <div class="col-12 d-flex">
                                         <button type="submit" class="btn btn-primary text-white">Save</button>
                                     </div>
                                 </div>
@@ -128,72 +142,42 @@
     </div>
     
     @section('scripts')
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
+            $(document).ready(function() {
                 /** Initialize click event for confirm-delete-rfid */
-                const confirmDeleteRfid = document.querySelectorAll('.confirm-delete-rfid')
-                if (confirmDeleteRfid.length > 0) {
-                    Array.from(confirmDeleteRfid).forEach((item) => {
-                        const id = item.getAttribute('data-id')
-                        const name = item.getAttribute('data-name')
-                        item.addEventListener('click', () => {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'Are you sure?',
-                                text: `RFID for \'${name}\' will be deleted and this can\'t be undone!`,
-                                showConfirmButton: true,
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes, delete it!'
-                            }).then((e) => {
-                                if (e.isConfirmed) {
-                                    Livewire.emit('deleteRfid', { id: id })
-                                }
-                            })
-                        })
+                $(document).on('click', '.confirm-delete-rfid', function() {
+                    const id = $(this).data('id')
+                    const name = $(this).data('name')
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Are you sure?',
+                        text: `RFID for \'${name}\' will be deleted and this can\'t be undone!`,
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, confirm'
+                    }).then((e) => {
+                        if (e.isConfirmed) {
+                            Livewire.emit('deleteRfid', { id: id })
+                        }
                     })
-                }
+                })
 
-                /** Initialize click event for scan-id */
-                const scanId = document.getElementById('scan-id')
-                if (scanId) {
-                    let loading
+                /** Initialize the select2 for vehicles and events */
+                $('#vehicle_id').select2()
+                $('#vehicle_id').on('select2:select', function (e) {
+                    const id = e.params.data.id
 
-                    scanId.addEventListener('click', () => {
-                        loading = Swal.fire({
-                            title: 'Please scan an id',
-                            allowEscapeKey: false,
-                            allowOutsideClick: false,
-                            showCancelButton: true,
-                            didOpen: () => {
-                                Swal.showLoading()
-                            }
-                        })
+                    Livewire.emit('selectVehicle', id)
+                })
+                $('#vehicle_id').on('select2:unselect', function (e) {
+                    const id = e.params.data.id
 
-                        let channel = window.Echo.channel('my-channel')
-                        channel.listen('.scan-id', function({ id }) {
-                            loading.close()
-
-                            setTimeout(() => {
-                                if (id || id !== '') {
-                                    Livewire.emit('setRfid', id)
-
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Scan Success',
-                                        text: 'Successfully scanned an id!'
-                                    })
-                                    
-                                } else {
-                                    Swal.fire({
-                                        icon: 'info',
-                                        title: 'Invalid',
-                                        text: 'The scanned id is invalid!'
-                                    })
-                                }
-                            }, 500)
-                        })
-                    })
-                }
+                    Livewire.emit('unselectVehicle', id)
+                })
             })
         </script>
     @endsection

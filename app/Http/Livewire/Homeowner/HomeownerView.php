@@ -8,6 +8,7 @@ use App\Models\HomeOwnerBlockLot;
 use App\Models\HomeOwnerVehicle;
 use App\Models\Lot;
 use App\Models\Profile;
+use App\Models\Rfid;
 use App\Rules\NotFutureDate;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
@@ -197,7 +198,16 @@ class HomeownerView extends Component
 
     public function prepareUpdateVehicle($payload)
     {
-        $this->updateVehicleForm = HomeOwnerVehicle::find($payload)->toArray();
+        $vehicle = HomeOwnerVehicle::with('rfid')
+            ->find($payload)
+            ->toArray();
+        $this->updateVehicleForm = [
+            'id' => data_get($vehicle, 'id'),
+            'plate_number' => data_get($vehicle, 'plate_number'),
+            'car_type' => data_get($vehicle, 'car_type'),
+            'rfid_id' => data_get($vehicle, 'rfid.id'),
+            'rfid' => data_get($vehicle, 'rfid.rfid'),
+        ];
         
         $this->emit('update.vehicle-prepare');
     }
@@ -210,6 +220,11 @@ class HomeownerView extends Component
                 Rule::unique('home_owner_vehicles', 'plate_number')->ignore($this->updateVehicleForm['id'], 'id')
             ],
             'updateVehicleForm.car_type' => ['required'],
+            'updateVehicleForm.rfid' => [
+                'sometimes',
+                'nullable',
+                Rule::unique('rfids', 'rfid')->ignore($this->updateVehicleForm['rfid_id'], 'id'),
+            ],
         ]);
 
         $updateVehicle = HomeOwnerVehicle::find($this->updateVehicleForm['id']);
@@ -217,12 +232,28 @@ class HomeownerView extends Component
             Arr::only($this->updateVehicleForm, ['plate_number', 'car_type'])
         );
 
+        // process update or delete rfid
+        $this->processRfid();
+
         $this->emit('show.dialog', [
             'icon' => 'success',
             'title' => 'Update Success',
             'message' => 'Vehicle has been successfully updated!',
             'reload' => true
         ]);
+    }
+
+    public function processRfid()
+    {
+        $rfid_id = data_get($this->updateVehicleForm, 'rfid_id');
+        $rfid = data_get($this->updateVehicleForm, 'rfid');
+
+        $currentRfid = Rfid::find($rfid_id);
+        if (empty($rfid)) {
+            $currentRfid->delete();
+        } else {
+            $currentRfid->update(compact('rfid'));
+        }
     }
 
     public function selectLot($id)
@@ -273,11 +304,11 @@ class HomeownerView extends Component
     {
         $this->data = HomeOwner::with([
             'profiles',
-            'rfid',
             'blockLots',
             'blockLots.block',
             'blockLots.lot',
-            'vehicles'
+            'vehicles',
+            'vehicles.rfid'
         ])->findOrFail($id);
 
         foreach (Block::all() as $block) {
