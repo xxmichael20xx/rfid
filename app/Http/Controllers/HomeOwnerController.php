@@ -27,7 +27,7 @@ class HomeOwnerController extends Controller
                 ->get();
         }
 
-        return view('admin.homeowner.list', compact('homeOwners', 'search'));
+        return view('admin.Homeowner.list', compact('homeOwners', 'search'));
     }
 
     /**
