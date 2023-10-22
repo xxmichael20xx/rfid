@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="favicon.ico">
 
     {{-- Styles --}}
-    @vite(['resources/sass/app.scss'])
+    @vite(['resources/sass/app.scss', 'resources/sass/guard.scss'])
     @livewireStyles
 </head>
 
@@ -89,6 +89,12 @@
                                 <span class="nav-link-text">RFID Monitoring</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ isRouteActive(['guard.visitors.monitoring']) }}" href="{{ route('guard.visitors.monitoring') }}">
+								<i class="fa fa-walking"></i>
+                                <span class="nav-link-text">Visitor Monitoring</span>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
 
@@ -107,6 +113,8 @@
 
     @vite(['resources/js/app.js'])
     @livewireScripts
+    
+    <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
     @yield('scripts')
 
     <script>

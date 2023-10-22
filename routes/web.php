@@ -11,6 +11,7 @@ use App\Http\Livewire\Activity\ActivityUpdate;
 use App\Http\Livewire\BlockManagement\BlockManagementList;
 use App\Http\Livewire\BlockManagement\BlockManagementCreate;
 use App\Http\Livewire\Guard\Rfid\GuardRfidMonitoring;
+use App\Http\Livewire\Guard\Visitor\GuardVisitorMonitoring;
 use App\Http\Livewire\Homeowner\HomeownerCreate;
 use App\Http\Livewire\Homeowner\HomeownerUpdate;
 use App\Http\Livewire\Homeowner\HomeownerView;
@@ -122,6 +123,13 @@ Route::name('user-management.')
 Route::name('guard.')
     ->prefix('guard')
     ->group(function() {
+        /** Define Visitor monitoring routes */
+        Route::name('visitors.')
+            ->group(function() {
+                Route::get('monitoring', GuardVisitorMonitoring::class)->name('monitoring');
+            });
+
+        /** Define RFID monitoring routes */
         Route::name('rfid-monitoring.')
             ->group(function() {
                 Route::get('/rfid-monitoring', GuardRfidMonitoring::class)->name('index');

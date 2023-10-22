@@ -16,7 +16,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                <div class="alert alert-success text-dark d-flex justify-content-between">
+                                <div class="alert alert-success text-dark d-flex justify-content-between align-items-center">
                                     <span>
                                         <i class="fa fa-info-circle me-2"></i> Tap your RFID to log your entry
                                     </span>

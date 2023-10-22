@@ -1,0 +1,43 @@
+#html5-qrcode-anchor-scan-type-change {
+    display: none !important;
+}
+
+#qrScanner__dashboard_section_csr {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+    width: 25%;
+    margin: auto;
+
+    & span:first-of-type {
+        display: flex;
+        flex-direction: column;
+        font-size: 1.2em;
+
+        select {
+            border-radius: 5px;
+            border: 1px solid #BABABA;
+            background-color: transparent;
+            color: #212529;
+            padding: 11px 13px;
+            outline: none;
+        }
+    }
+
+    .html5-qrcode-element {
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        border: none;
+        border-radius: 6px;
+        color: #FFF;
+    }
+
+    #html5-qrcode-button-camera-start {
+        background-color: #15a362;
+    }
+
+    #html5-qrcode-button-camera-stop {
+        background-color: #d26d69;
+    }
+}
