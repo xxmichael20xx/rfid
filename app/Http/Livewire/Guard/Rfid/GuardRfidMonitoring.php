@@ -22,11 +22,12 @@ class GuardRfidMonitoring extends Component
 
     public $monitorings;
     public $homeOwner;
+    public $tappedRfid;
     public $captureImage;
 
     public function logEntry()
     {
-        $id = $this->homeOwner->rfid->rfid;
+        $id = $this->tappedRfid;
         $today = Carbon::now();
         $currentDate = $today->format('m/d/Y');
         $currentTime = $today->format('h:i A');
@@ -90,7 +91,7 @@ class GuardRfidMonitoring extends Component
         );
 
         // set file name
-        $fileName = $this->homeOwner->rfid->rfid . '_' . now()->format('Y_m_d-H_i_s') . '.jpg';
+        $fileName = $this->tappedRfid . '_' . now()->format('Y_m_d-H_i_s') . '.jpg';
         return Storage::putFileAs('images/monitoring', $file, $fileName);
     }
 
@@ -112,6 +113,7 @@ class GuardRfidMonitoring extends Component
             return false;
         }
 
+        $this->tappedRfid = $id;
         $this->homeOwner = $rfidExists->vehicle->homeOwner;
         $this->emit('homeowner-data');
     }
@@ -126,7 +128,7 @@ class GuardRfidMonitoring extends Component
 
     protected function fetchLatest()
     {
-        $this->monitorings = RfidMonitoring::with(['rfidData', 'rfidData.homeOwner'])->latest()->get();
+        $this->monitorings = RfidMonitoring::with(['rfidData', 'rfidData.vehicle', 'rfidData.vehicle.homeOwner'])->latest()->get();
     }
 
     public function mount()

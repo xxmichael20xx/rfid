@@ -39,7 +39,7 @@
                     if (! hasQrScanned) {
                         hasQrScanned = true
                         
-    
+                        alert('QR CODE: Scan Success')
                     }
                 }
     
