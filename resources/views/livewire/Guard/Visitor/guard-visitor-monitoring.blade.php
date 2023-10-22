@@ -25,29 +25,28 @@
         <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
         <script>
             let hasQrScanned = false
+
             $(document).ready(function() {
-                
-            })
-
-            let html5QrcodeScanner = new Html5QrcodeScanner(
-                "qrScanner",
-                { fps: 10, qrbox: {width: 350, height: 350} },
-                true
-            );
-            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-
-            function onScanSuccess(decodedText) {
-                // html5QrcodeScanner.clear()
-                if (! hasQrScanned) {
-                    hasQrScanned = true
-                    
-                    
+                let html5QrcodeScanner = new Html5QrcodeScanner(
+                    "qrScanner",
+                    { fps: 10, qrbox: {width: 350, height: 350} },
+                    false
+                );
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    
+                function onScanSuccess(decodedText) {
+                    // html5QrcodeScanner.clear()
+                    if (! hasQrScanned) {
+                        hasQrScanned = true
+                        
+    
+                    }
                 }
-            }
-
-            function onScanFailure(error) {
-                console.warn(`Code scan error = ${error}`);
-            }
+    
+                function onScanFailure(error) {
+                    console.warn(`Code scan error = ${error}`);
+                }
+            })
 
             function updateDateTime() {
                 const dateTimeElement = document.getElementById('datetime');
