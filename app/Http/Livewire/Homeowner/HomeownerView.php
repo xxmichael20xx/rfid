@@ -250,9 +250,16 @@ class HomeownerView extends Component
 
         $currentRfid = Rfid::find($rfid_id);
         if (empty($rfid)) {
-            $currentRfid->delete();
+            $currentRfid->forceDelete();
         } else {
-            $currentRfid->update(compact('rfid'));
+            if ($currentRfid) {
+                $currentRfid->update(compact('rfid'));
+            } else {
+                Rfid::create([
+                    'vehicle_id' => data_get($this->updateVehicleForm, 'id'),
+                    'rfid' => $rfid
+                ]);
+            }
         }
     }
 
