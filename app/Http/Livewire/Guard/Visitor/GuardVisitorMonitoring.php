@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Guard\Visitor;
 
+use App\Models\Visitor;
 use App\Services\QRService;
 use Illuminate\Support\Facades\Response;
 use Livewire\Component;
@@ -9,6 +10,12 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class GuardVisitorMonitoring extends Component
 {
+    /**
+     * The component listeners
+     */
+    protected $listeners = [
+        'validateQrCode'
+    ];
     protected $qrService;
 
     public $qrCodeUrl;
@@ -18,11 +25,41 @@ class GuardVisitorMonitoring extends Component
         $this->qrService = new QRService;
     }
 
-    public function downloadQRCode()
+    /**
+     * Validate and process the QR Code
+     */
+    public function validateQrCode($token)
     {
-        $route = route('download.qr', [], false); // The third argument sets the absolute parameter to false
+        $visitorToken = Visitor::where('token', $token)->first();
 
-        return redirect($route);
+        if (! $visitorToken) {
+            // emit a new event for the notification
+            $this->emit('guard.qr-processed', [
+                'icon' => 'warning',
+                'title' => 'Invalid',
+                'message' => 'QR Code is invalid'
+            ]);
+        } else {
+            if ($visitorToken->date_visited) {
+                // emit a new event for the notification
+                $this->emit('guard.qr-processed', [
+                    'icon' => 'warning',
+                    'title' => 'Expired',
+                    'message' => 'QR Code is expired'
+                ]);
+            } else {
+                $visitorToken->update([
+                    'date_visited' => now()
+                ]);
+
+                // emit a new event for the notification
+                $this->emit('guard.qr-processed', [
+                    'icon' => 'success',
+                    'title' => 'Welcome Visitor!',
+                    'message' => 'Have a good day!'
+                ]);
+            }
+        }
     }
 
     /**
@@ -30,7 +67,7 @@ class GuardVisitorMonitoring extends Component
      */
     public function mount()
     {
-        // $this->qrService->generateQr(1);
+        //
     }
 
     /**

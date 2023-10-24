@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Chart;
 
+use App\Models\HomeOwner;
 use Carbon\Carbon;
 use Livewire\Component;
 
@@ -46,10 +47,9 @@ class TotalResidenceChart extends Component
             $endDate = $startDate->copy()->endOfYear();
 
             // Retrieve records for the current year
-            // $records = HomeOwner::whereYear('created_at', '=', $currentYear - $i)
-            //     ->whereBetween('created_at', [$startDate, $endDate])
-            //     ->count();
-            $records = $currentYear - ($i * rand(350, 400));
+            $records = HomeOwner::whereYear('created_at', '=', $currentYear - $i)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->count();
 
             // Store the data in the array
             $this->labels[] = $startDate->format('Y');

@@ -296,6 +296,78 @@
                                             </tr>
                                         @empty
                                             <tr>
+                                                <td class="cell text-center" colspan="4">No result(s)</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingVisitors">
+                <button
+                    class="accordion-button text-dark"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseVisitors"
+                    aria-expanded="false"
+                    aria-controls="collapseVisitors"
+                >
+                    <i class="fa fa-walking me-2"></i> Visitors
+                </button>
+            </h2>
+            <div id="collapseVisitors" class="accordion-collapse collapse" aria-labelledby="headingVisitors" data-bs-parent="#accordionHomeOwner">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-12 d-flex justify-content-between mb-3">
+                            <p class="card-title h5">Visitor Listing</p>
+                            <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#newVisitorQr">
+                                <i class="fa fa-plus"></i> Add New
+                            </button>
+                        </div>
+                        <hr class="theme-separator">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table app-table-hover mb-0 text-left visitors-table">
+                                    <thead class="bg-portal-green">
+                                        <tr>
+                                            <th class="cell">Visitor Name</th>
+                                            <th class="cell">QR Code</th>
+                                            <th class="cell">Date Visited</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($data->visitors as $visitor)
+                                            @php
+                                                $dateVisited = $visitor->date_visited;
+
+                                                if ($dateVisited) {
+                                                    $dateVisited = Carbon\Carbon::parse($dateVisited)->format('M d, y @ h:ia');
+                                                }
+                                            @endphp
+                                            <tr>
+                                                <td class="cell">{{ $visitor->last_full_name }}</td>
+                                                <td class="cell">
+                                                    @if ($visitor->qr_image)
+                                                        <img src="{{ asset('uploads/') }}/{{ $visitor->qr_image }}" alt="qr-code-{{ $visitor->id }}" class="img-fluid" style="width: 150px;" />
+                                                    @else
+                                                        <button type="button" class="btn btn-primary text-white" wire:click="generateQrCode({{ $visitor->id }})">
+                                                            <i class="fa fa-qrcode"></i> Generate QR
+                                                        </button>
+                                                    @endif
+                                                </td>
+                                                <td class="cell">{{ $dateVisited }}</td>
+                                            </tr>
+                                        @empty
+                                            <tr>
                                                 <td class="cell text-center" colspan="3">No result(s)</td>
                                             </tr>
                                         @endforelse
@@ -827,9 +899,65 @@
         </div>
     </div>
 
+    <div class="modal fade" id="newVisitorQr" tabindex="-1" aria-labelledby="newVisitorQrLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog">
+            <form method="POST" wire:submit.prevent="createVisitorQr">
+                @csrf
+                
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="newVisitorQrLabel">New Visitor QR</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="last_name">Last Name<span class="required">*</span></label>
+                                    <input
+                                        id="last_name"
+                                        name="last_name"
+                                        type="text"
+                                        class="form-control @error('visitorForm.last_name') is-invalid @enderror"
+                                        wire:model.lazy="visitorForm.last_name">
+                                    @error('visitorForm.last_name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('visitor form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="first_name">First Name<span class="required">*</span></label>
+                                    <input
+                                        id="first_name"
+                                        name="first_name"
+                                        type="text"
+                                        class="form-control @error('visitorForm.first_name') is-invalid @enderror"
+                                        wire:model.lazy="visitorForm.first_name">
+                                    @error('visitorForm.first_name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('visitor form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success text-white">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     @section('scripts')
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
         <script>
             $(document).ready(function() {
                 /** Initialize click event for confirm-delete-profile */

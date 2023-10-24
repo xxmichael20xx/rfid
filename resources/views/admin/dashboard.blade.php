@@ -9,10 +9,10 @@
                 <i class="fa fa-walking fa-3x me-3"></i>
                 <div>
                     <h4 class="stats-type text-dark mb-1">Visitors Today</h4>
-                    <div class="stats-figure">{{ rand(5, 20) }}</div>
+                    <div class="stats-figure">{{ $visitorsToday }}</div>
                 </div>
             </div>
-            <a class="app-card-link-mask" href="#"></a>
+            <a class="app-card-link-mask" href="{{ route('visitor-monitoring.index') }}"></a>
         </div>
     </div>
     <div class="col-6 col-lg-3">
@@ -82,16 +82,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($dummyVisitors as $dummyVisitor)
+                                        @forelse ($visitors as $visitor)
                                             <tr>
                                                 <td class="cell">
-                                                    <img
-                                                        class="visitors-table--image rounded-circle me-3"
-                                                        src="{{ asset(data_get($dummyVisitor, 'image')) }}"
-                                                        alt="visitor-image" />
-                                                    {{ data_get($dummyVisitor, 'name') }}
+                                                    {{ $visitor->last_full_name }}
                                                 </td>
-                                                <td class="cell">{{ data_get($dummyVisitor, 'date') }}</td>
+                                                <td class="cell">{{ Carbon\Carbon::parse($visitor->date_visited)->format('M d, Y @ h:ia') }}</td>
                                             </tr>
                                         @empty
                                             <tr>
@@ -140,7 +136,7 @@
                                                         {{ \Carbon\Carbon::parse($data->start_date)->format('M d, Y') }}
                                                     @else
                                                         {{ \Carbon\Carbon::parse($data->start_date)->format('M d') }} - {{ \Carbon\Carbon::parse($data->end_date)->format('M d, Y') }}
-                                                    @endif    
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @empty

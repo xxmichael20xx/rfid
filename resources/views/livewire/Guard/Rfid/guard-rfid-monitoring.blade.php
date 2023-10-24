@@ -1,10 +1,9 @@
 <div>
     <div class="row g-4 mb-4">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="app-page-title">RFID Panel - Monitoring</h1>
-
-            <div id="realtime-clock" wire:ignore>
-                <span id="datetime" class="h4"></span>
+        <div class="col-12">
+            <div class="alert alert-success d-flex flex-column w-100 align-items-center" wire:ignore>
+                <span class="display-4 text-dark">RFID Panel - Monitoring</span>
+                <span id="datetime" class="display-2 text-dark"></span>
             </div>
         </div>
     </div>
@@ -50,6 +49,7 @@
                                                         <button
                                                             type="button"
                                                             class="btn btn-success text-white view-time-in"
+                                                            data-type="Time In"
                                                             data-date="{{ $data->date }}"
                                                             data-time="{{ $data->time_in }}"
                                                             data-img="{{ $data->capture_in }}"
@@ -61,6 +61,7 @@
                                                             <button
                                                                 type="button"
                                                                 class="btn btn-secondary text-white view-time-out"
+                                                                data-type="Time Out"
                                                                 data-date="{{ $data->date }}"
                                                                 data-time="{{ $data->time_out }}"
                                                                 data-img="{{ $data->capture_out }}"
@@ -253,7 +254,10 @@
                     <div class="modal-body">
                         <div class="container">
                             <img src="" class="img-fluid w-100" id="previewCapture" alt="preview-capture">
-                            <h4 class="text-dark text-center mt-2" id="previewCaptureTime"></h4>
+                            <div class="alert alert-success text-center mt-3">
+                                <h3 id="previewCaptureType"></h3>
+                                <h4 class="text-dark text-center mt-2" id="previewCaptureTime"></h4>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -272,6 +276,7 @@
                 let previewCaptureModal = new bootstrap.Modal('#previewCaptureModal', {})
                 let previewCapture = document.getElementById('previewCapture')
                 let previewCaptureTime = document.getElementById('previewCaptureTime')
+                let previewCaptureType = document.getElementById('previewCaptureType')
 
                 /** Define pusher event to file RFID Tap */
                 let channel = window.Echo.channel('my-channel')
@@ -279,6 +284,7 @@
                     if (id || id !== '') {
                         Livewire.emit('validateEntry', id)
                     } else {
+                        $('#tapped_id').val('')
                         Swal.fire({
                             icon: 'info',
                             title: 'Invalid',
@@ -297,6 +303,7 @@
 
                 /** Define events for new entry log */
                 Livewire.on('new-entry', ({date, time}) => {
+                    $('#tapped_id').val('')
                     homeOwnerData.hide()
                     Swal.fire({
                         icon: 'success',
@@ -312,6 +319,7 @@
 
                 /** Define events for update entry log */
                 Livewire.on('updated-entry', ({date, time}) => {
+                    $('#tapped_id').val('')
                     homeOwnerData.hide()
                     Swal.fire({
                         icon: 'success',
@@ -327,6 +335,7 @@
 
                 /** Define event for invalid rfid */
                 Livewire.on('invalid-rfid', () => {
+                    $('#tapped_id').val('')
                     Swal.fire({
                         icon: 'warning',
                         title: 'Invalid RFID',
@@ -336,16 +345,25 @@
 
                 /** Define approve entry click event */
                 $(document).on('click', '#approve-entry', function() {
+                    $('#tapped_id').val('')
                     Livewire.emit('logEntry')
                 })
 
                 /** Define view capture for time-in and time-out */
                 $(document).on('click', '.view-time-in, .view-time-out', function() {
+                    const type = $(this).data('type')
                     const image = $(this).data('img')
                     const date = $(this).data('date')
                     const time = $(this).data('time')
+                    let icon = `<i class="fa fa-sign-in"></i>`
+
+                    if (type == 'Time Out') {
+                        icon = `<i class="fa fa-sign-out"></i>`
+                    }
+
                     previewCapture.setAttribute('src', image)
                     previewCaptureTime.innerHTML = `${date} @ ${time}`
+                    previewCaptureType.innerHTML = `${icon} ${type}`
 
                     previewCaptureModal.show()
                 })

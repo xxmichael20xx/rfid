@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Chart;
 
+use App\Models\Visitor;
 use Carbon\Carbon;
 use Livewire\Component;
 
@@ -24,7 +25,7 @@ class VisitorsChart extends Component
     public function change()
     {
         $this->setData();
-        $this->emit('updateChart', [
+        $this->emit('updateVisitorChart', [
             'labels' => $this->labels,
             'datasets' => [[
                 'label' => $this->title,
@@ -55,17 +56,23 @@ class VisitorsChart extends Component
      */
     public function setDays()
     {
+        // Get the current date
+        $currentDate = Carbon::now();
+
         // Loop through the past 7 days
         for ($i = 0; $i < 7; $i++) {
-            // Calculate the start and end dates for each day's range
-            $endDate = Carbon::now()->subDays($i);
+            // Calculate the start and end dates for each 1-week interval
+            $startDate = $currentDate->copy()->subDays($i)->startOfDay();
+            $endDate = $startDate->copy()->endOfDay();
+
+            $startDateFormat = $startDate->copy()->format('Y-m-d H:i:s');
+            $endDateFormat = $endDate->copy()->format('Y-m-d H:i:s');
 
             // Retrieve records for the current day within the date range
-            // $records = Activity::whereDate('created_at', $endDate)->count();
-            $records = rand(4, 23);
+            $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat])->count();
 
             // Store the data in the array
-            $this->labels[] = $endDate->format('M d, Y');
+            $this->labels[] = $startDate->format('M d, Y');
             $this->rows[] = $records;
         }
 
@@ -91,12 +98,14 @@ class VisitorsChart extends Component
 
         for ($i = 0; $i < 4; $i++) {
             // Calculate the start and end dates for each 1-week interval
-            $startDate = $currentDate->copy()->subWeeks($i);
-            $endDate = $startDate->copy()->endOfWeek();
+            $startDate = $currentDate->copy()->subWeeks($i)->startOfDay();
+            $endDate = $startDate->copy()->endOfWeek()->endOfDay();
+
+            $startDateFormat = $startDate->copy()->format('Y-m-d H:i:s');
+            $endDateFormat = $endDate->copy()->format('Y-m-d H:i:s');
 
             // Retrieve records for the current 1-week interval
-            // $records = Activity::whereBetween('created_at', [$startDate, $endDate])->count();
-            $records = rand(10, 50);
+            $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat])->count();
 
             // Store the data in the array
             $this->labels[] = $startDate->format('M d') . ' - ' . $endDate->format('M d');
@@ -122,12 +131,14 @@ class VisitorsChart extends Component
 
         for ($i = 0; $i < 4; $i++) {
             // Calculate the start and end dates for each month
-            $startDate = $currentDate->copy()->subMonths($i)->startOfMonth();
-            $endDate = $currentDate->copy()->subMonths($i)->endOfMonth();
+            $startDate = $currentDate->copy()->subMonths($i)->startOfMonth()->startOfDay();
+            $endDate = $currentDate->copy()->subMonths($i)->endOfMonth()->endOfDay();
+
+            $startDateFormat = $startDate->copy()->format('Y-m-d H:i:s');
+            $endDateFormat = $endDate->copy()->format('Y-m-d H:i:s');
 
             // Retrieve records for the current month
-            // $records = Activity::whereBetween('created_at', [$startDate, $endDate])->count();
-            $records = rand(40, 70);
+            $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat])->count();
 
             // Store the data in the array
             $this->labels[] = $startDate->format('M Y');

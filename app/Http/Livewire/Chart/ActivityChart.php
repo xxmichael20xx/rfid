@@ -25,7 +25,7 @@ class ActivityChart extends Component
     public function change()
     {
         $this->setData();
-        $this->emit('updateChart', [
+        $this->emit('updateActivityChart', [
             'labels' => $this->labels,
             'datasets' => [[
                 'label' => $this->title,
@@ -49,6 +49,10 @@ class ActivityChart extends Component
         } else {
             $this->setMonths();
         }
+
+        // Reverse the arrays
+        $this->labels = array_reverse($this->labels);
+        $this->rows = array_reverse($this->rows);
     }
 
     /**
@@ -59,13 +63,20 @@ class ActivityChart extends Component
         // Loop through the past 7 days
         for ($i = 0; $i < 7; $i++) {
             // Calculate the start and end dates for each day's range
-            $endDate = Carbon::now()->subDays($i);
+            $today = Carbon::now()->subDays($i);
+            $todayFormat = $today->copy()->format('Y-m-d');
 
             // Retrieve records for the current day within the date range
-            $records = Activity::whereDate('created_at', $endDate)->count();
+            $records = Activity::whereDate('start_date', $todayFormat)
+                ->orWhereDate('end_date', $todayFormat)
+                ->orWhere(function($query) use($todayFormat) {
+                    $query->where('start_date', '<=', $todayFormat)
+                        ->where('end_date', '>=', $todayFormat);
+                })
+                ->count();
 
             // Store the data in the array
-            $this->labels[] = $endDate->format('M d, Y');
+            $this->labels[] = $todayFormat;
             $this->rows[] = $records;
         }
 
@@ -86,16 +97,25 @@ class ActivityChart extends Component
      */
     public function setWeeks()
     {
-        // Get the current date
-        $currentDate = Carbon::now();
-
         for ($i = 0; $i < 4; $i++) {
+            // Get the current date
+            $currentDate = Carbon::now()->subWeeks($i);
+
             // Calculate the start and end dates for each 1-week interval
-            $startDate = $currentDate->copy()->subWeeks($i);
+            $startDate = $currentDate->copy()->startOfWeek();
             $endDate = $startDate->copy()->endOfWeek();
 
+            $startDateFormat = $startDate->copy()->format('Y-m-d');
+            $endDateFormat = $endDate->copy()->format('Y-m-d');
+
             // Retrieve records for the current 1-week interval
-            $records = Activity::whereBetween('created_at', [$startDate, $endDate])->count();
+            $records = Activity::where('start_date', $startDateFormat)
+                ->orWhere('end_date', $endDateFormat)
+                ->orWhere(function($query) use($startDateFormat, $endDateFormat) {
+                    $query->where('start_date', '>=', $startDateFormat)
+                        ->where('end_date', '<=', $endDateFormat);
+                })
+                ->count();
 
             // Store the data in the array
             $this->labels[] = $startDate->format('M d') . ' - ' . $endDate->format('M d');
@@ -125,7 +145,13 @@ class ActivityChart extends Component
             $endDate = $currentDate->copy()->subMonths($i)->endOfMonth();
 
             // Retrieve records for the current month
-            $records = Activity::whereBetween('created_at', [$startDate, $endDate])->count();
+            $records = Activity::where('start_date', $startDate)
+                ->orWhere('end_date', $endDate)
+                ->orWhere(function($query) use($startDate, $endDate) {
+                    $query->where('start_date', '>=', $startDate)
+                        ->where('end_date', '<=', $endDate);
+                })
+                ->count();
 
             // Store the data in the array
             $this->labels[] = $startDate->format('M Y');

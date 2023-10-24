@@ -2,36 +2,12 @@
 @section('content')
 
 <div class="row g-4 mb-4">
-    <div class="col-12">
-        <h1 class="app-page-title">Activities @if($filter) - Today @endif</h1>
-    </div>
-</div>
-<div class="row g-4 mb-4">
     <div class="col-12 d-flex justify-content-between align-items-center">
-        <div class="col-auto">
-            <div class="d-flex">
-                <div class="form-floating me-2">
-                    <input type="search" name="search" id="search" class="form-control" placeholder="Search...">
-                    <label>Search...</label>
-                </div>
-                <div class="form-floating">
-                    <select name="filter-by" id="filter-by" class="form-select">
-                        <option value="" selected disabled>Filter by</option>
-                        <option value="today">Today</option>
-                        <option value="archived">Archived</option>
-                    </select>
-                    <label>Filter By</label>
-                </div>
-            </div>
-            @if ($filter || $search)
-                <a href="{{ route('activities.list') }}" class="text-help">Clear filters/search</a>
-            @endif
-        </div>
-        <div class="col-auto">
-            <a href="{{ route('activities.create') }}" class="btn btn-success text-white">
-                <i class="fa fa-user-plus"></i> Add New
-            </a>
-        </div>
+        <h1 class="app-page-title">Activities @if($filter) - Today @endif</h1>
+
+        <a href="{{ route('activities.create') }}" class="btn btn-success text-white">
+            <i class="fa fa-user-plus"></i> Add New
+        </a>
     </div>
 </div>
 
@@ -40,13 +16,36 @@
         <div class="card shadow-lg border-0">
             <div class="card-body">
                 <div class="container">
-                    @if ($search)
-                        <div class="row py-3">
-                            <div class="col-12">
-                                <h5>Search results for `{{ $search }}`</h5>
+                    <div class="row">
+                        <div class="col-4">
+                            <p class="card-title h5">List of Activityes</p>
+                        </div>
+                        <div class="col-8 text-right">
+                            <div class="row justify-content-end">
+                                <div class="col-4 d-flex flex-column">
+                                    <div class="input-container input-group me-2">
+                                        <input type="search" name="search" id="search" class="form-control" placeholder="Search..." value="{{ request()->get('search') }}">
+                                        <button class="btn btn-secondary" type="button" id="search-btn">Search</button>
+                                    </div>
+                                    @if (request()->get('search') || request()->get('filter'))
+                                        <a href="{{ route('activities.list') }}" class="text-help mt-2">Clear search/filters</a>
+                                    @endif
+                                </div>
+                                <div class="col-4">
+                                    <div class="input-container">
+                                        <select name="filter-by" id="filter-by" class="form-select">
+                                            <option value="" selected disabled>Filter by</option>
+                                            <option value="today">Today</option>
+                                            <option value="archived">Archived</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    @endif
+                        <div class="col-12">
+                            <hr class="theme-separator">
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive">

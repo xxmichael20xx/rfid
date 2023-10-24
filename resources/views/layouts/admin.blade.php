@@ -168,13 +168,9 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link on-dev" href="#">
-								<i class="fa fa-qrcode"></i>
-                                <span class="nav-link-text">QR Panel</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link on-dev" href="#">
+                            <a
+                                class="nav-link {{ isRouteActive(['visitor-monitoring.index']) }}"
+                                href="{{ route('visitor-monitoring.index') }}">
 								<i class="fa fa-walking"></i>
                                 <span class="nav-link-text">Visitor Monitoring</span>
                             </a>
@@ -222,7 +218,9 @@
 
                     // check if event has a reload
                     if (typeof e.reload !== 'undefined') {
-                        window.location.reload()
+                        if (e.reload) {
+                            window.location.reload()
+                        }
                     }
                 })
             })

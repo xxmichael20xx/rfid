@@ -1,10 +1,9 @@
 <div>
     <div class="row g-4 mb-4">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="app-page-title">Visitors  Monitoring</h1>
-
-            <div id="realtime-clock" wire:ignore>
-                <span id="datetime" class="h4"></span>
+        <div class="col-12">
+            <div class="alert alert-success d-flex flex-column w-100 align-items-center" wire:ignore>
+                <span class="display-4 text-dark">Visitors  Monitoring</span>
+                <span id="datetime" class="display-2 text-dark"></span>
             </div>
         </div>
     </div>
@@ -25,6 +24,7 @@
         <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
         <script>
             let hasQrScanned = false
+            let qrLoading = null
 
             $(document).ready(function() {
                 let html5QrcodeScanner = new Html5QrcodeScanner(
@@ -32,20 +32,49 @@
                     { fps: 10, qrbox: {width: 350, height: 350} },
                     false
                 );
-                html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure)
     
-                function onScanSuccess(decodedText) {
-                    // html5QrcodeScanner.clear()
+                function onScanSuccess(decodedText, decodedResult) {
                     if (! hasQrScanned) {
                         hasQrScanned = true
-                        
-                        alert('QR CODE: Scan Success')
+                        html5QrcodeScanner.clear()
+                        qrLoading = Swal.fire({
+                            title: 'Processing...',
+                            allowOutsideClick: false,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading()
+                            }
+                        })
+    
+                        Livewire.emit('validateQrCode', '11_1698159530_Fvjv')
                     }
                 }
     
                 function onScanFailure(error) {
-                    console.warn(`Code scan error = ${error}`);
+                    console.warn(`Code scan error = ${error}`)
                 }
+
+                /** Define qr actions */
+                Livewire.on('guard.qr-processed', (e) => {
+                    qrLoading.close()
+
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: e.icon,
+                            title: e.title,
+                            text: e.message,
+                        }).then(() => {
+                            hasQrScanned = false
+                            html5QrcodeScanner = new Html5QrcodeScanner(
+                                "qrScanner",
+                                { fps: 10, qrbox: {width: 350, height: 350} },
+                                false
+                            );
+                            html5QrcodeScanner.render(onScanSuccess, onScanFailure)
+                        })
+                    }, 500)
+                })
             })
 
             function updateDateTime() {

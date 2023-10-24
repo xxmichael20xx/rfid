@@ -27,7 +27,7 @@
                                             @forelse ($monitorings as $data)
                                                 <tr>
                                                     <td class="cell">{{ $data->rfid }}</td>
-                                                    <td class="cell">{{ $data->rfidData->homeOwner->full_name }}</td>
+                                                    <td class="cell">{{ $data->rfidData->vehicle->homeOwner->last_full_name }}</td>
                                                     <td class="cell">{{ $data->date }}</td>
                                                     <td class="cell">{{ $data->time_in }} | {{ $data->time_out }}</td>
                                                 </tr>

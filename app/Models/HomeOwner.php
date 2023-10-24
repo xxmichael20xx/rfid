@@ -120,6 +120,11 @@ class HomeOwner extends Model
         return $this->hasMany(HomeOwnerVehicle::class, 'home_owner_id', 'id');
     }
 
+    public function visitors()
+    {
+        return $this->hasMany(Visitor::class, 'home_owner_id', 'id');
+    }
+
     protected function profile(): Attribute
     {
         return Attribute::make(

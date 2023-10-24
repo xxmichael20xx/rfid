@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\HomeOwner;
+use App\Models\Visitor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -19,23 +20,10 @@ class AdminController extends Controller
         $totalHomeOwners = HomeOwner::all()->count();
 
         // create a dummy data for visitors
-        $dummyVisitors = [
-            [
-                'image' => 'images/avatar_1.png',
-                'name' => 'Justin Romero',
-                'date' => '06/06/23'
-            ],
-            [
-                'image' => 'images/avatar_2.png',
-                'name' => 'Mark James Manzano',
-                'date' => '06/04/23'
-            ],
-            [
-                'image' => 'images/avatar_3.png',
-                'name' => 'Jethro Maiquz',
-                'date' => '06/01/23'
-            ]
-        ];
+        $visitors = Visitor::where('date_visited', '<>', null)
+            ->orderBy('date_visited', 'DESC')
+            ->limit(10)
+            ->get();
 
         // create a dummy date for activities
         $activities = Activity::latest()->limit(5)->get();
@@ -49,7 +37,10 @@ class AdminController extends Controller
             ->get()
             ->count();
 
+        // get the visitors today
+        $visitorsToday = Visitor::whereDate('date_visited', now())->count();
+
         // returns a view an using compact, it will pass in the variable data to the view
-        return view('admin.dashboard', compact('totalHomeOwners', 'dummyVisitors', 'activities', 'activitiesToday'));
+        return view('admin.dashboard', compact('totalHomeOwners', 'visitors', 'activities', 'activitiesToday', 'visitorsToday'));
     }
 }

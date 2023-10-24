@@ -11,7 +11,7 @@ class RfidMonitoring extends Component
 
     public function mount()
     {
-        $this->monitorings = RfidMonitoringModel::with(['rfidData', 'rfidData.homeOwner'])->latest()->get();
+        $this->monitorings = RfidMonitoringModel::with(['rfidData', 'rfidData.vehicle.homeOwner'])->latest()->get();
     }
 
     public function render()

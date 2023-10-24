@@ -16,7 +16,6 @@
                     </select>
                 </div>
                 <canvas width="100%" id="activity-chart" class="p-5 pb-0"></canvas>
-                <small class="text-info">Note: Chart data is only a dummy at the moment.</small>
             </div>
         </div>
     </div>
@@ -38,7 +37,7 @@
                 }
             )
 
-            Livewire.on('updateChart', data => {
+            Livewire.on('updateActivityChart', data => {
                 chart.data = data
                 chart.update()
             })

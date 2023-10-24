@@ -26,16 +26,15 @@
             
                                 <div class="row mb-3">
                                     <div class="col-6">
-                                        <div class="form-floating mb-3">
+                                        <div class="input-container mb-3">
+                                            <label for="title">Title<span class="required">*</span></label>
                                             <input
                                                 id="title"
                                                 name="title"
                                                 type="text"
                                                 class="form-control @error('form.title') is-invalid @enderror"
-                                                placeholder="Ex. Fun Run"
                                                 wire:model.lazy="form.title"
                                                 autofocus>
-                                            <label for="title">Title<span class="required">*</span></label>
                 
                                             @error('form.title')
                                                 <span class="invalid-feedback" role="alert">
@@ -46,16 +45,14 @@
                                     </div>
         
                                     <div class="col-6">
-                                        <div class="form-floating mb-3">
+                                        <div class="input-container mb-3">
+                                            <label for="location">Location<span class="required">*</span></label>
                                             <input
                                                 id="location"
                                                 name="location"
                                                 type="text"
                                                 class="form-control @error('form.location') is-invalid @enderror"
-                                                placeholder="Ex. Central Gym"
-                                                wire:model.lazy="form.location"
-                                                autofocus>
-                                            <label for="location">Location<span class="required">*</span></label>
+                                                wire:model.lazy="form.location">
                 
                                             @error('form.location')
                                                 <span class="invalid-feedback" role="alert">
@@ -68,14 +65,14 @@
             
                                 <div class="row mb-3">
                                     <div class="col-6">
-                                        <div class="form-floating mb-3">
+                                        <div class="input-container mb-3">
+                                            <label for="start_date">Start date<span class="required">*</span></label>
                                             <input
                                                 id="start_date"
                                                 name="start_date"
                                                 type="date"
                                                 class="form-control @error('form.start_date') is-invalid @enderror"
                                                 wire:model.lazy="form.start_date">
-                                            <label for="start_date">Start date</label>
                 
                                             @error('form.start_date')
                                                 <span class="invalid-feedback" role="alert">
@@ -86,14 +83,14 @@
                                     </div>
         
                                     <div class="col-6">
-                                        <div class="form-floating mb-3">
+                                        <div class="input-container mb-3">
+                                            <label for="end_date">End date<span class="required">*</span></label>
                                             <input
                                                 id="end_date"
                                                 name="end_date"
                                                 type="date"
                                                 class="form-control @error('form.end_date') is-invalid @enderror"
                                                 wire:model.lazy="form.end_date">
-                                            <label for="end_date">End date</label>
                 
                                             @error('form.end_date')
                                                 <span class="invalid-feedback" role="alert">
@@ -106,14 +103,14 @@
             
                                 <div class="row mb-3">
                                     <div class="col-12">
-                                        <div class="form-floating mb-3">
+                                        <div class="input-container mb-3">
+                                            <label for="description">Description<span class="required">*</span></label>
                                             <textarea
                                                 id="description"
                                                 name="description"
                                                 class="form-control form-control--textarea @error('form.title') is-invalid @enderror"
                                                 wire:model.lazy="form.description"
                                                 rows="5"></textarea>
-                                            <label for="description">Description</label>
                 
                                             @error('form.description')
                                                 <span class="invalid-feedback" role="alert">

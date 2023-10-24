@@ -9,8 +9,10 @@ use App\Models\HomeOwnerVehicle;
 use App\Models\Lot;
 use App\Models\Profile;
 use App\Models\Rfid;
+use App\Models\Visitor;
 use App\Rules\NotFutureDate;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
@@ -45,6 +47,9 @@ class HomeownerView extends Component
     public $updateVehicleForm;
     public $availableLBlockLots = [];
     public $blockLotForm = [];
+
+    public $homeOwnerId;
+    public $visitorForm;
 
     public function create()
     {
@@ -307,15 +312,51 @@ class HomeownerView extends Component
         ]);
     }
 
+    // Cretae a new Visitor QR Code
+    public function createVisitorQr()
+    {
+        // validate the form
+        $this->validate([
+            'visitorForm.last_name' => ['required'],
+            'visitorForm.first_name' => ['required'],
+        ]);
+
+        // crate the visitor data
+        $this->visitorForm['token'] = sprintf('%s_%s_%s', $this->homeOwnerId, time(), Str::random(4));
+        Visitor::create($this->visitorForm);
+
+        // reset the form
+        $this->visitorForm['token'] = '';
+        $this->visitorForm['last_name'] = '';
+        $this->visitorForm['first_name'] = '';
+
+        // emit a new event for the notification
+        $this->emit('show.dialog', [
+            'icon' => 'success',
+            'title' => 'Create Success',
+            'message' => 'Visitor data create. You may now generate a QR code!',
+            'reload' => true
+        ]);
+    }
+
+    // generate and download qr code
+    public function generateQrCode($id)
+    {
+        $route = route('download.qr', ['id' => $id], false);
+        return redirect($route);
+    }
+
     public function mount($id)
     {
+        $this->homeOwnerId = $id;
         $this->data = HomeOwner::with([
             'profiles',
             'blockLots',
             'blockLots.block',
             'blockLots.lot',
             'vehicles',
-            'vehicles.rfid'
+            'vehicles.rfid',
+            'visitors'
         ])->findOrFail($id);
 
         foreach (Block::all() as $block) {
@@ -327,6 +368,12 @@ class HomeownerView extends Component
                 $this->availableLBlockLots[$block->block] = $lots;
             }
         }
+
+        $this->visitorForm = [
+            'home_owner_id' => $id,
+            'last_name' => '',
+            'first_name' => ''
+        ];
     }
 
     public function render()

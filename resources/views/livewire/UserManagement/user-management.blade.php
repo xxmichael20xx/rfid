@@ -88,16 +88,16 @@
                     <div class="modal-body">
                         <div class="row mb-3">
                             <div class="col-6">
-                                <div class="form-floating mb-3">
+                                <div class="input-container mb-3">
+                                    <label for="first_name">First Name<span class="required">*</span></label>
                                     <input
                                         id="first_name"
                                         name="first_name"
                                         type="text"
                                         class="form-control @error('createForm.first_name') is-invalid @enderror"
-                                        placeholder="Ex. John"
                                         wire:model.lazy="createForm.first_name"
                                         autofocus>
-                                    <label for="first_name">First Name<span class="required">*</span></label>
+
                                     @error('createForm.first_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -106,15 +106,15 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="form-floating mb-3">
+                                <div class="input-container mb-3">
+                                    <label for="last_name">Last Name<span class="required">*</span></label>
                                     <input
                                         id="last_name"
                                         name="last_name"
                                         type="text"
                                         class="form-control @error('createForm.last_name') is-invalid @enderror"
-                                        placeholder="Ex. John"
                                         wire:model.lazy="createForm.last_name">
-                                    <label for="last_name">Last Name<span class="required">*</span></label>
+
                                     @error('createForm.last_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -123,15 +123,15 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="form-floating mb-3">
+                                <div class="input-container mb-3">
+                                    <label for="middle_name">Middle Name</label>
                                     <input
                                         id="middle_name"
                                         name="middle_name"
                                         type="text"
                                         class="form-control @error('createForm.middle_name') is-invalid @enderror"
-                                        placeholder="Ex. John"
                                         wire:model.lazy="createForm.middle_name">
-                                    <label for="middle_name">Middle Name</label>
+
                                     @error('createForm.middle_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -143,15 +143,15 @@
 
                         <div class="row mb-3">
                             <div class="col-6">
-                                <div class="form-floating mb-3">
+                                <div class="input-container mb-3">
+                                    <label for="email">Email<span class="required">*</span></label>
                                     <input
                                         id="email"
                                         name="email"
                                         type="email"
                                         class="form-control @error('createForm.email') is-invalid @enderror"
-                                        placeholder="Ex. example@john.com"
                                         wire:model.lazy="createForm.email">
-                                    <label for="email">Email<span class="required">*</span></label>
+
                                     @error('createForm.email')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -160,14 +160,15 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="form-floating mb-3">
+                                <div class="input-container mb-3">
+                                    <label for="password">Password<span class="required">*</span></label>
                                     <input
                                         id="password"
                                         name="password"
                                         type="password"
                                         class="form-control @error('createForm.password') is-invalid @enderror"
                                         wire:model.lazy="createForm.password">
-                                    <label for="password">Password<span class="required">*</span></label>
+
                                     @error('createForm.password')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -179,7 +180,8 @@
 
                         <div class="row">
                             <div class="col-6">
-                                <div class="form-floating mb-3">
+                                <div class="input-container mb-3">
+                                    <label for="role">Role<span class="required">*</span></label>
                                     <select
                                         name="role"
                                         id="role"
@@ -192,7 +194,6 @@
                                             <option value="" disabled>No available role</option>
                                         @endforelse
                                     </select>
-                                    <label for="role">Role<span class="required">*</span></label>
         
                                     @error('createForm.role')
                                         <span class="invalid-feedback" role="alert">

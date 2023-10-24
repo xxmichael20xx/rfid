@@ -223,9 +223,12 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="row mb-3 mt-5">
                                 <div class="col-6">
                                     <label>Vehicles</label>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <button type="button" class="btn btn-info text-white" wire:click="addVehicle">Add Vehicle</button>
                                 </div>
                                 @foreach ($form['vehicles'] as $vehiclesKey => $item)
                                     <div class="col-12 my-2 @if($vehiclesKey > 0) border-top @endif">
@@ -313,13 +316,14 @@
                                                 <strong>{{ str_replace('form.', '', $message) }}</strong>
                                             </span>
                                         @enderror
+
+                                        <small class="text-help">Click the field to display list of available payments</small>
                                     </div>
                                 </div>
                             </div>
         
                             <div class="row">
-                                <div class="col-12 d-flex justify-content-between">
-                                    <button type="button" class="btn btn-info text-white" wire:click="addVehicle">Add Vehicle</button>
+                                <div class="col-12 d-flex justify-content-end">
                                     <div>
                                         <a href="{{ route('homeowners.list') }}" class="btn btn-danger text-white me-2">Cancel</a>
                                         <button type="submit" class="btn btn-primary text-white">Save</button>
