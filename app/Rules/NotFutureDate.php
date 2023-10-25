@@ -40,6 +40,6 @@ class NotFutureDate implements Rule
      */
     public function message()
     {
-        return 'The date of birth should not be a future date.';
+        return 'The date should not be a future date.';
     }
 }
