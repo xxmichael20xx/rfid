@@ -14,7 +14,7 @@ class RfidMonitoring extends Component
 
     public function mount()
     {
-        $this->monitorings = collect(RfidMonitoring::latest()->get())->map(function($item) {
+        $this->monitorings = collect(RfidMonitoringModel::latest()->get())->map(function($item) {
             // get the rfid data
             $rfidData = Rfid::withTrashed()->where('rfid', $item->rfid)->first();
 

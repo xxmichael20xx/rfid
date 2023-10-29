@@ -9,7 +9,6 @@ use App\Models\RfidMonitoring;
 use Carbon\Carbon;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
