@@ -124,7 +124,7 @@
                                 <div class="row">
                                     <div class="col-12 text-end">
                                         <a href="{{ route('activities.list') }}" class="btn btn-danger text-white">Cancel</a>
-                                        <button type="submit" class="btn btn-success text-white">Save</button>
+                                        <button type="submit" class="btn btn-primary text-white">Save</button>
                                     </div>
                                 </div>
                             </form>

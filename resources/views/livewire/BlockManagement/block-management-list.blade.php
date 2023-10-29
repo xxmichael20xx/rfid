@@ -1,7 +1,7 @@
 <div>
     <div class="row g-4 mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="app-page-title">Block & Lots Management</h1>
+            <h1 class="app-page-title">Manage Blocks</h1>
             <div class="col-auto">
                 <a href="{{ route('block-management.create') }}" class="btn btn-success text-white">
                     <i class="fa fa-user-plus"></i> Add New
@@ -15,6 +15,12 @@
             <div class="card shadow-lg border-0">
                 <div class="card-body">
                     <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="card-title h5">List of Blocks & Lots</p>
+                                <hr class="theme-separator">
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-12">
                                 <div class="table-responsive">

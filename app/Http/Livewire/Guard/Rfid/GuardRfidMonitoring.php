@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire\Guard\Rfid;
 
+use App\Models\HomeOwner;
+use App\Models\HomeOwnerVehicle;
 use App\Models\Rfid;
 use App\Models\RfidMonitoring;
 use Carbon\Carbon;
@@ -22,6 +24,7 @@ class GuardRfidMonitoring extends Component
 
     public $monitorings;
     public $homeOwner;
+    public $vehicleData;
     public $tappedRfid;
     public $captureImage;
 
@@ -113,8 +116,14 @@ class GuardRfidMonitoring extends Component
             return false;
         }
 
+        if (! $rfidExists->vehicle || ! $rfidExists->vehicle->homeOwner) {
+            $this->emit('invalid-rfid');
+            return false;
+        }
+
         $this->tappedRfid = $id;
         $this->homeOwner = $rfidExists->vehicle->homeOwner;
+        $this->vehicleData = $rfidExists->vehicle;
         $this->emit('homeowner-data');
     }
 
@@ -128,7 +137,26 @@ class GuardRfidMonitoring extends Component
 
     protected function fetchLatest()
     {
-        $this->monitorings = RfidMonitoring::with(['rfidData', 'rfidData.vehicle', 'rfidData.vehicle.homeOwner'])->latest()->get();
+        $this->monitorings = collect(RfidMonitoring::latest()->get())->map(function($item) {
+            // get the rfid data
+            $rfidData = Rfid::withTrashed()->where('rfid', $item->rfid)->first();
+
+            // get the vehicle data
+            $vehicle = HomeOwnerVehicle::where('id', $rfidData->vehicle_id)->first();
+
+            // get the homeOwner data
+            $homeOwner = HomeOwner::withTrashed()->where('id', $vehicle->home_owner_id)->first();
+
+            return [
+                'rfid' => $item->rfid,
+                'date' => $item->date,
+                'time_in' => $item->time_in,
+                'time_out' => $item->time_out,
+                'capture_in' => $item->capture_in,
+                'capture_out' => $item->capture_out,
+                'home_owner' => $homeOwner->last_full_name
+            ];
+        });
     }
 
     public function mount()

@@ -41,30 +41,30 @@
                                         <tbody>
                                             @forelse ($monitorings as $data)
                                                 <tr>
-                                                    <td class="cell">{{ $data->rfid }}</td>
-                                                    <td class="cell">{{ $data->rfidData->vehicle->homeOwner->full_name }}</td>
-                                                    <td class="cell">{{ $data->date }}</td>
-                                                    <td class="cell">{{ $data->time_in }} | {{ $data->time_out }}</td>
+                                                    <td class="cell">{{ $data['rfid'] }}</td>
+                                                    <td class="cell">{{ $data['home_owner'] }}</td>
+                                                    <td class="cell">{{ $data['date'] }}</td>
+                                                    <td class="cell">{{ $data['time_in'] }} | {{ $data['time_out'] }}</td>
                                                     <td class="cell">
                                                         <button
                                                             type="button"
                                                             class="btn btn-success text-white view-time-in"
                                                             data-type="Time In"
-                                                            data-date="{{ $data->date }}"
-                                                            data-time="{{ $data->time_in }}"
-                                                            data-img="{{ $data->capture_in }}"
+                                                            data-date="{{ $data['date'] }}"
+                                                            data-time="{{ $data['time_in'] }}"
+                                                            data-img="{{ $data['capture_in'] }}"
                                                         >
                                                             <i class="fa fa-sign-in"></i> View Time In
                                                         </button>
 
-                                                        @if ($data->time_out !== 'N/A')
+                                                        @if ($data['time_out'] !== 'N/A')
                                                             <button
                                                                 type="button"
                                                                 class="btn btn-secondary text-white view-time-out"
                                                                 data-type="Time Out"
-                                                                data-date="{{ $data->date }}"
-                                                                data-time="{{ $data->time_out }}"
-                                                                data-img="{{ $data->capture_out }}"
+                                                                data-date="{{ $data['date'] }}"
+                                                                data-time="{{ $data['time_out'] }}"
+                                                                data-img="{{ $data['capture_out'] }}"
                                                             >
                                                                 <i class="fa fa-sign-out"></i> View Time Out
                                                             </button>
@@ -195,52 +195,29 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="col-12 d-flex justify-content-between mb-3">
-                                            <p class="card-title h5">Vehicles List</p>
+                                @if ($vehicleData)
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col-12 d-flex justify-content-between mb-3">
+                                                <p class="card-title h5">Vehicles Data</p>
+                                            </div>
+                                            <hr class="theme-separator">
                                         </div>
-                                        <hr class="theme-separator">
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="table-responsive">
-                                                <table class="table app-table-hover mb-0 text-left visitors-table">
-                                                    <thead class="bg-portal-green">
-                                                        <tr>
-                                                            <th class="cell">Plate Number</th>
-                                                            <th class="cell">Car Type (Name)</th>
-                                                            <th class="cell">RFID</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @if ($homeOwner?->vehicles == null)
-                                                        @else
-                                                            @forelse ($homeOwner?->vehicles as $vehicle)
-                                                                @php
-                                                                    if ($rfid = $vehicle->rfid) {
-                                                                        $rfid = $rfid->rfid;
-                                                                    } else {
-                                                                        $rfid = 'No assigned RFID';
-                                                                    }
-                                                                @endphp
-                                                                <tr>
-                                                                    <td class="cell">{{ $vehicle->plate_number }}</td>
-                                                                    <td class="cell">{{ $vehicle->car_type }}</td>
-                                                                    <td class="cell">{{ $rfid }}</td>
-                                                                </tr>
-                                                            @empty
-                                                                <tr>
-                                                                    <td class="cell text-center" colspan="2">No result(s)</td>
-                                                                </tr>
-                                                            @endforelse
-                                                        @endif
-                                                    </tbody>
-                                                </table>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <p class="text-dark"><b>Plate Number:</b> {{ $vehicleData->plate_number }}</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <p class="text-dark"><b>Car Type (Name):</b> {{ $vehicleData->car_type }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <p class="text-dark"><b>Date Registered:</b> {{ $vehicleData->created_at }}</p>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>

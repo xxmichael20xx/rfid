@@ -193,8 +193,10 @@ class PaymentsExpenses extends Component
      */
     public function render()
     {
+        $role = auth()->user()->role;
+        $layout = $role == 'Admin' ? 'layouts.admin' : 'layouts.treasurer';
         return view('livewire.Payments.payments-expenses')
-            ->extends('layouts.admin')
+            ->extends($layout)
             ->section('content');
     }
 }

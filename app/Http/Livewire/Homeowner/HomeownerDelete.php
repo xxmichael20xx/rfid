@@ -67,7 +67,7 @@ class HomeownerDelete extends Component
     public function archiveRfid()
     {
         // Check if RFID exists
-        if ($rfid = Rfid::where('home_owner_id', $this->modelId)->first()) {
+        if ($rfid = Rfid::where('vehicle_id', $this->modelId)->first()) {
             // Archive the RFID
             $rfid->delete();
         }

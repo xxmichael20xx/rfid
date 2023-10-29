@@ -24,14 +24,6 @@
                 <div class="app-header-content">
                     <div class="row text-end">
                         <div class="app-utilities">
-                            <!--//app-utility-item-->
-                            <div class="app-utility-item">
-                                <a href="#" title="Settings">
-									<i class="fa fa-cogs"></i>
-                                </a>
-                            </div>
-                            <!--//app-utility-item-->
-
                             <div class="app-utility-item app-user-dropdown dropdown">
                                 <a
                                     class="dropdown-toggle"
@@ -40,21 +32,16 @@
                                     href="#"
                                     role="button"
                                     aria-expanded="false">
-									<img src="{{ asset('images/profile_avatar.png') }}" alt="user profile">
+									<img src="{{ asset('images/admin-with-cogwheels.png') }}" alt="user profile">
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
-                                    <li><a class="dropdown-item" href="#">Account</a></li>
-                                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
+                                <ul class="dropdown-menu shadow-lg" aria-labelledby="user-dropdown-toggle">
                                     <li>
 										<a
 											class="dropdown-item"
 											href="{{ route('logout') }}"
 											onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
 										>
-											{{ __('Logout') }}
+											<i class="fa fa-sign-out"></i> {{ __('Logout') }}
 										</a>
 
 										<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -63,25 +50,18 @@
 									</li>
                                 </ul>
                             </div>
-                            <!--//app-user-dropdown-->
                         </div>
-                        <!--//app-utilities-->
                     </div>
-                    <!--//row-->
                 </div>
-                <!--//app-header-content-->
             </div>
         </div>
         <div id="app-sidepanel" class="app-sidepanel">
             <div id="sidepanel-drop" class="sidepanel-drop"></div>
             <div class="sidepanel-inner d-flex flex-column">
                 <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
-                <div class="app-branding">
-                    <a class="app-logo" href="/">
-						{{-- <img class="logo-icon me-2" src="assets/images/app-logo.svg" alt="logo"> --}}
-						<span class="logo-text">{{ config('app.name', 'RFID Portal') }}</span>
-					</a>
-                </div>
+                <a class="app-logo" href="/">
+                    <img class="img-fluid" src="{{ asset('images/logo.png') }}" alt="logo">
+                </a>
 
                 <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
                     <ul class="app-menu list-unstyled accordion" id="menu-accordion">
@@ -128,11 +108,6 @@
 
                             <div id="nav-settings-menu" class="submenu nav-settings-menu {{ isRouteShown(['payments.overview', 'payments.expenses', 'payments.list', 'payments.types']) }}" data-bs-parent="#menu-accordion">
 						        <ul class="submenu-list list-unstyled ps-4">
-                                    {{-- <li class="submenu-item">
-                                        <a class="submenu-link text-dark {{ isRouteActive(['payments.overview']) }}" href="{{ route('payments.overview') }}">
-                                            <i class="fa fa-chart-line"></i> Overview
-                                        </a>
-                                    </li> --}}
 							        <li class="submenu-item">
                                         <a class="submenu-link text-dark {{ isRouteActive(['payments.expenses']) }}" href="{{ route('payments.expenses') }}">
                                             <i class="fa fa-hand-holding-dollar"></i> Expenses
@@ -153,7 +128,7 @@
                         </li>
                         <li class="nav-item">
                             <a
-                                class="nav-link {{ isRouteActive(['activities.list', 'activities.create']) }}"
+                                class="nav-link {{ isRouteActive(['activities.list', 'activities.create', 'activities.update']) }}"
                                 href="{{ route('activities.list') }}">
 								<i class="fa fa-tasks"></i>
                                 <span class="nav-link-text">Activities</span>
@@ -183,7 +158,6 @@
                         </li>
                     </ul>
                 </nav>
-
             </div>
         </div>
     </header>

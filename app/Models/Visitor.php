@@ -43,7 +43,7 @@ class Visitor extends Model
      */
     public function for()
     {
-        return $this->belongsTo(HomeOwner::class, 'home_owner_id', 'id');
+        return $this->belongsTo(HomeOwner::class, 'home_owner_id', 'id')->withTrashed();
     }
 
     /**

@@ -156,8 +156,10 @@ class PaymentsTypes extends Component
      */
     public function render()
     {
+        $role = auth()->user()->role;
+        $layout = $role == 'Admin' ? 'layouts.admin' : 'layouts.treasurer';
         return view('livewire.Payments.payments-types')
-            ->extends('layouts.admin')
+            ->extends($layout)
             ->section('content');
     }
 }

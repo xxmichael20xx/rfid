@@ -32,9 +32,31 @@
                                         </thead>
                                         <tbody>
                                             @forelse ($rfids as $data)
+                                                @php
+                                                    $vehicleData = App\Models\HomeOwnerVehicle::where('id', $data->vehicle_id)->first();
+                                                    $homeOwner = App\Models\HomeOwner::withTrashed()->where('id', $vehicleData->home_owner_id)->first();
+
+                                                    $isArchived = (bool) $homeOwner->deleted_at;
+                                                    $archivedText = 'text-dark';
+
+                                                    if ($isArchived) {
+                                                        $archivedText = 'text-danger';
+                                                    }
+                                                @endphp
                                                 <tr>
                                                     <td class="cell">{{ $data->rfid }}</td>
-                                                    <td class="cell">{{ $data->vehicle->homeOwner->full_name }}</td>
+                                                    <td class="cell">
+                                                        <span
+                                                            class="fw-bold {{ $archivedText }}"
+                                                            @if ($isArchived)
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-placement="top"
+                                                                data-bs-title="This Home Owner is archived"
+                                                            @endif
+                                                        >
+                                                            {{ $homeOwner->last_full_name }}
+                                                        </span>
+                                                    </td>
                                                     <td class="cell">
                                                         {{ $data->vehicle->car_type }}
                                                         <br>
@@ -46,7 +68,7 @@
                                                             type="button"
                                                             class="btn btn-danger text-white p-2 confirm-delete-rfid"
                                                             data-id="{{ $data->id }}"
-                                                            data-name="{{ $data->vehicle->homeOwner->full_name }}">
+                                                            data-name="{{ $homeOwner->full_name }}">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </td>

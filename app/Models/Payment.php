@@ -40,7 +40,7 @@ class Payment extends Model
      */
     public function biller()
     {
-        return $this->belongsTo(HomeOwner::class, 'home_owner_id', 'id');
+        return $this->belongsTo(HomeOwner::class, 'home_owner_id', 'id')->withTrashed();
     }
 
     public function paymentType()

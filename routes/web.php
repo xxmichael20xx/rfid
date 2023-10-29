@@ -11,6 +11,7 @@ use App\Http\Livewire\Activity\ActivityUpdate;
 use App\Http\Livewire\BlockManagement\BlockManagementList;
 use App\Http\Livewire\BlockManagement\BlockManagementCreate;
 use App\Http\Livewire\Guard\Rfid\GuardRfidMonitoring;
+use App\Http\Livewire\Guard\Visitor\GuardVisitorList;
 use App\Http\Livewire\Guard\Visitor\GuardVisitorMonitoring;
 use App\Http\Livewire\Homeowner\HomeownerCreate;
 use App\Http\Livewire\Homeowner\HomeownerUpdate;
@@ -101,16 +102,6 @@ Route::middleware('auth.admin')
                 Route::get('/', RfidList::class)->name('list');
                 Route::get('/monitoring', RfidMonitoring::class)->name('monitoring');
             });
-        
-        /** Define Payments pages */
-        Route::name('payments.')
-            ->prefix('payments')
-            ->group(function() {
-                Route::get('overview', PaymentsOverview::class)->name('overview');
-                Route::get('expenses', PaymentsExpenses::class)->name('expenses');
-                Route::get('list', PaymentsList::class)->name('list');
-                Route::get('types', PaymentsTypes::class)->name('types');
-            });
 
         /** Define User Management pages */
         Route::name('user-management.')
@@ -127,22 +118,36 @@ Route::middleware('auth.admin')
             });
     });
 
+Route::middleware('auth.admin_or_treasurer')
+    ->group(function() {
+        /** Define Payments pages */
+        Route::name('payments.')
+            ->prefix('payments')
+            ->group(function() {
+                Route::get('overview', PaymentsOverview::class)->name('overview');
+                Route::get('expenses', PaymentsExpenses::class)->name('expenses');
+                Route::get('list', PaymentsList::class)->name('list');
+                Route::get('types', PaymentsTypes::class)->name('types');
+            });
+    });
+
 Route::middleware('auth.guard')
     ->group(function() {
         /** Define Guard route */
         Route::name('guard.')
             ->prefix('guard')
             ->group(function() {
-                /** Define Visitor monitoring routes */
-                Route::name('visitors.')
-                    ->group(function() {
-                        Route::get('monitoring', GuardVisitorMonitoring::class)->name('monitoring');
-                    });
-        
                 /** Define RFID monitoring routes */
                 Route::name('rfid-monitoring.')
                     ->group(function() {
                         Route::get('/rfid-monitoring', GuardRfidMonitoring::class)->name('index');
+                    });
+
+                /** Define Visitor monitoring routes */
+                Route::name('visitors.')
+                    ->group(function() {
+                        Route::get('monitoring', GuardVisitorMonitoring::class)->name('monitoring');
+                        Route::get('list', GuardVisitorList::class)->name('list');
                     });
             });
     });

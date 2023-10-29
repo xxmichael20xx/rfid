@@ -12,6 +12,12 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
+                                <p class="card-title h5">List of Types</p>
+                                <hr class="theme-separator">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
                                 <div class="table-responsive">
                                     <table class="table app-table-hover mb-0 text-left visitors-table">
                                         <thead class="bg-portal-green">
@@ -19,7 +25,6 @@
                                                 <th class="cell">Type</th>
                                                 <th class="cell">Amount</th>
                                                 <th class="cell">Frequency</th>
-                                                <th class="cell">Recurring</th>
                                                 <th class="cell">Recurring Day</th>
                                                 <th class="cell">Actions</th>
                                             </tr>
@@ -29,22 +34,28 @@
                                                 <tr>
                                                     <td class="cell">{{ $paymentType->type }}</td>
                                                     <td class="cell">₱{{ number_format($paymentType->amount) }}</td>
-                                                    <td class="cell">{{ toTitle($paymentType->frequency) }}</td>
-                                                    <td class="cell">{{ ($paymentType->is_recurring) ? 'Recurring' : 'One-Time' }}</td>
+                                                    <td class="cell">
+                                                        {{ toTitle($paymentType->frequency) }}
+                                                        <small class="text-dark d-block">Mode: {{ ($paymentType->is_recurring) ? 'Recurring' : 'One-Time' }}</small>
+                                                    </td>
                                                     <td class="cell">
                                                         @php
                                                             $recurringDay = $paymentType->recurring_day;
                                                             $ordinalDay = getOrdinalSuffix($recurringDay);
                                                             $frequency = $paymentType->frequency;
                                                             $every = '';
+                                                            $recurringHelp = '';
 
                                                             if ($frequency == 'monthly') {
                                                                 $every = sprintf("Every %s of the month", $ordinalDay);
                                                             } else {
-                                                                $every = sprintf("Every %s of the year based on first payment", $ordinalDay);
+                                                                $every = sprintf("Every %s of the year", $ordinalDay);
+                                                                $recurringHelp = 'Note: Based on first payment';
                                                             }
                                                         @endphp
                                                         {{ $every }}
+                                                        <br>
+                                                        <small class="text-help">{{ $recurringHelp }}</small>
                                                     </td>
                                                     <td class="cell-d-flex">
                                                         <button

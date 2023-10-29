@@ -15,7 +15,11 @@ class AuthController extends Controller
     {
         // Check if user is already authenticated
         if (auth()->check()) {
-            return redirect('dashboard');
+            return match (auth()->user()->role) {
+                'Admin' => redirect()->route('dashboard'),
+                'Guard' => redirect()->route('guard.rfid-monitoring.index'),
+                default => redirect()->route('payments.expenses')
+            };
         }
 
         return view('auth.login');

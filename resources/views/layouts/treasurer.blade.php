@@ -30,7 +30,7 @@
                                     href="#"
                                     role="button"
                                     aria-expanded="false">
-									<img src="{{ asset('images/guard.png') }}" alt="user profile">
+									<img src="{{ asset('images/accountant.png') }}" alt="user profile">
                                 </a>
                                 <ul class="dropdown-menu shadow-lg" aria-labelledby="user-dropdown-toggle">
                                     <li>
@@ -48,60 +48,39 @@
 									</li>
                                 </ul>
                             </div>
+                            <!--//app-user-dropdown-->
                         </div>
+                        <!--//app-utilities-->
                     </div>
+                    <!--//row-->
                 </div>
+                <!--//app-header-content-->
             </div>
         </div>
         <div id="app-sidepanel" class="app-sidepanel">
             <div id="sidepanel-drop" class="sidepanel-drop"></div>
             <div class="sidepanel-inner d-flex flex-column">
                 <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
-                <a class="app-logo" href="{{ route('guard.rfid-monitoring.index') }}">
+                <a class="app-logo" href="/">
                     <img class="img-fluid" src="{{ asset('images/logo.png') }}" alt="logo">
                 </a>
 
                 <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
                     <ul class="app-menu list-unstyled accordion" id="menu-accordion">
                         <li class="nav-item">
-                            <a class="nav-link {{ isRouteActive(['guard.rfid-monitoring.index']) }}" href="{{ route('guard.rfid-monitoring.index') }}">
-								<i class="fa fa-book"></i>
-                                <span class="nav-link-text">RFID Monitoring</span>
+                            <a class="nav-link {{ isRouteActive(['payments.expenses']) }}" href="{{ route('payments.expenses') }}">
+                                <i class="fa fa-hand-holding-dollar"></i> Expenses
                             </a>
                         </li>
-                        <li class="nav-item has-submenu">
-                            <a
-                                class="nav-link submenu-toggle collapsed {{ isRouteActive(['guard.visitors.monitoring', 'guard.visitors.list']) }}"
-                                href="#"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#nav-settings-menu"
-                                aria-expanded="false"
-                                aria-controls="nav-settings-menu"
-                            >
-                                <span class="nav-link-text">
-                                    <i class="fa fa-walking"></i> Visitors
-                                </span>
-                                <span class="submenu-arrow">
-                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"></path>
-                                    </svg>
-                                </span>
-					        </a>
-
-                            <div id="nav-settings-menu" class="submenu nav-settings-menu {{ isRouteShown(['guard.visitors.monitoring', 'guard.visitors.list']) }}" data-bs-parent="#menu-accordion">
-						        <ul class="submenu-list list-unstyled ps-4">
-							        <li class="submenu-item">
-                                        <a class="submenu-link text-dark {{ isRouteActive(['guard.visitors.monitoring']) }}" href="{{ route('guard.visitors.monitoring') }}">
-                                            <i class="fa fa-eye"></i> Monitoring
-                                        </a>
-                                    </li>
-							        <li class="submenu-item">
-                                        <a class="submenu-link text-dark {{ isRouteActive(['guard.visitors.list']) }}" href="{{ route('guard.visitors.list') }}">
-                                            <i class="fa fa-list"></i> List
-                                        </a>
-                                    </li>
-						        </ul>
-					        </div>
+                        <li class="nav-item">
+                            <a class="nav-link {{ isRouteActive(['payments.list']) }}" href="{{ route('payments.list') }}">
+                                <i class="fa fa-money-bill"></i> List
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ isRouteActive(['payments.types']) }}" href="{{ route('payments.types') }}">
+                                <i class="fa fa-cogs"></i> Types
+                            </a>
                         </li>
                     </ul>
                 </nav>

@@ -28,8 +28,6 @@ class LoginController extends Controller
      */
     protected function redirectTo()
     {
-        $redirect = RouteServiceProvider::DASHBOARD;
-
         switch (auth()->user()->role) {
             case 'Admin':
                 $redirect = RouteServiceProvider::DASHBOARD;
@@ -40,7 +38,7 @@ class LoginController extends Controller
                 break;
 
             default:
-                # code...
+                $redirect = RouteServiceProvider::TREASURER;
                 break;
         }
 

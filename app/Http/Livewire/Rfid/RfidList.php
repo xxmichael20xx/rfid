@@ -86,10 +86,16 @@ class RfidList extends Component
     public function mount()
     {
         // get all vehicles
-        $vehicles = HomeOwnerVehicle::with(['rfid', 'homeOwner'])->get();
+        $vehicles = HomeOwnerVehicle::with(['rfid'])->get();
         $this->unassignedVehicles = [];
 
         foreach ($vehicles as $vehicle) {
+            $homeOwner = HomeOwner::where('id', $vehicle->home_owner_id)->first();
+
+            if (! $homeOwner) {
+                continue;
+            }
+
             $homeOwner = $vehicle->homeOwner->last_full_name;
             $available = [
                 'vehicle_id' => $vehicle->id,
@@ -105,7 +111,7 @@ class RfidList extends Component
         }
 
         // get the list of Rfids
-        $this->rfids = Rfid::with(['vehicle', 'vehicle.homeOwner'])->get();
+        $this->rfids = Rfid::with(['vehicle'])->get();
     }
 
     public function render()

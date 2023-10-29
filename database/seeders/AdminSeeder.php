@@ -45,5 +45,21 @@ class AdminSeeder extends Seeder
             $user->role = 'Guard';
             $user->save();
         }
+
+        // Treasurer account
+        $email = 'treasurer@test.com';
+        $password = 'Password1';
+
+        // check if admin account exists
+        if (! User::where('email', $email)->first()) {
+            // create a new admin user
+            $user = new User;
+            $user->first_name = 'Treasurer';
+            $user->last_name = 'Test';
+            $user->email = $email;
+            $user->password = bcrypt($password);
+            $user->role = 'Treasurer';
+            $user->save();
+        }
     }
 }
