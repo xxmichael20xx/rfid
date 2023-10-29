@@ -56,7 +56,7 @@ class HomeOwner extends Model
 
     public function getLastFullNameAttribute()
     {
-        return $this->middle_name . ', ' . $this->first_name . ' ' . $this->last_name;
+        return $this->last_name . ', ' . $this->first_name . ' ' . $this->middle_name;
     }
 
     public function getProfilePathAttribute()
