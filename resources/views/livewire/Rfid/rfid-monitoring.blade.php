@@ -26,10 +26,10 @@
                                         <tbody>
                                             @forelse ($monitorings as $data)
                                                 <tr>
-                                                    <td class="cell">{{ $data->rfid }}</td>
-                                                    <td class="cell">{{ $data->rfidData->vehicle->homeOwner->last_full_name }}</td>
-                                                    <td class="cell">{{ $data->date }}</td>
-                                                    <td class="cell">{{ $data->time_in }} | {{ $data->time_out }}</td>
+                                                    <td class="cell">{{ $data['rfid'] }}</td>
+                                                    <td class="cell">{{ $data['home_owner'] }}</td>
+                                                    <td class="cell">{{ $data['date'] }}</td>
+                                                    <td class="cell">{{ $data['time_in'] }} | {{ $data['time_out'] }}</td>
                                                 </tr>
                                             @empty
                                                 <tr>
