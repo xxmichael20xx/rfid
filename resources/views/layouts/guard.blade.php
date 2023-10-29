@@ -34,12 +34,22 @@
                                 </a>
                                 <ul class="dropdown-menu shadow-lg" aria-labelledby="user-dropdown-toggle">
                                     <li>
+                                        <a
+                                            href="#!"
+                                            class="dropdown-item"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#updateAccount"
+                                        >
+                                            <i class="fa fa-user"></i> Update Account
+                                        </a>
+									</li>
+                                    <li>
 										<a
 											class="dropdown-item"
 											href="{{ route('logout') }}"
 											onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
 										>
-											<i class="fa fa-sign-out"></i> {{ __('Logout') }}
+											<i class="fa fa-sign-out"></i> Logout
 										</a>
 
 										<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -109,6 +119,8 @@
             </div>
         </div>
     </header>
+    
+    @livewire('update-account')
 
     <div class="app-wrapper">
         <div class="app-content pt-3 p-md-3 p-lg-4">

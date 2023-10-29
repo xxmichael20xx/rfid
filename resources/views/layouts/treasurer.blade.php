@@ -34,12 +34,22 @@
                                 </a>
                                 <ul class="dropdown-menu shadow-lg" aria-labelledby="user-dropdown-toggle">
                                     <li>
+                                        <a
+                                            href="#!"
+                                            class="dropdown-item"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#updateAccount"
+                                        >
+                                            <i class="fa fa-user"></i> Update Account
+                                        </a>
+									</li>
+                                    <li>
 										<a
 											class="dropdown-item"
 											href="{{ route('logout') }}"
 											onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
 										>
-											<i class="fa fa-sign-out"></i> {{ __('Logout') }}
+											<i class="fa fa-sign-out"></i> Logout
 										</a>
 
 										<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -48,20 +58,16 @@
 									</li>
                                 </ul>
                             </div>
-                            <!--//app-user-dropdown-->
                         </div>
-                        <!--//app-utilities-->
                     </div>
-                    <!--//row-->
                 </div>
-                <!--//app-header-content-->
             </div>
         </div>
         <div id="app-sidepanel" class="app-sidepanel">
             <div id="sidepanel-drop" class="sidepanel-drop"></div>
             <div class="sidepanel-inner d-flex flex-column">
                 <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
-                <a class="app-logo" href="/">
+                <a class="app-logo" href="{{ route('payments.expenses') }}">
                     <img class="img-fluid" src="{{ asset('images/logo.png') }}" alt="logo">
                 </a>
 
@@ -88,6 +94,8 @@
             </div>
         </div>
     </header>
+    
+    @livewire('update-account')
 
     <div class="app-wrapper">
         <div class="app-content pt-3 p-md-3 p-lg-4">
