@@ -164,7 +164,7 @@ class RfidChart extends Component
     public function exportData()
     {
         $timestamp = now()->format('Y-m-d_Hi'); // Current timestamp in the format: yyyy-mm-dd_HHmm
-        $filename = 'rfid_monitoring_' . $timestamp . '_' . Str::snake($this->title). '.xlsx';
+        $filename = 'rfid_monitoring_' . $timestamp . '_' . Str::replace(' ', '_', $this->title) . '.xlsx';
 
         return Excel::download(new ExportRfid($this->data), $filename);
     }

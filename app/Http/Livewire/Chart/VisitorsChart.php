@@ -163,7 +163,7 @@ class VisitorsChart extends Component
     public function exportData()
     {
         $timestamp = now()->format('Y-m-d_Hi'); // Current timestamp in the format: yyyy-mm-dd_HHmm
-        $filename = 'visitors_' . $timestamp . '_' . Str::snake($this->title). '.xlsx';
+        $filename = 'visitors_' . $timestamp . '_' . Str::replace(' ', '_', $this->title). '.xlsx';
 
         return Excel::download(new ExportVisitors($this->data), $filename);
     }
