@@ -47,7 +47,7 @@
                             }
                         })
     
-                        Livewire.emit('validateQrCode', '11_1698159530_Fvjv')
+                        Livewire.emit('validateQrCode', decodedText)
                     }
                 }
     
