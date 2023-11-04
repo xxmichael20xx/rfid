@@ -220,72 +220,18 @@
                                             </span>
                                         @enderror
                                     </div>
+                                    @if ($errors->any())
+                                        @foreach ($errors->keys() as $key)
+                                            @if ($key == 'form.block_lots')
+                                                @foreach ($errors->get($key) as $message)
+                                                    <span class="invalid-feedback d-block" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                @endforeach
+                                            @endif
+                                        @endforeach
+                                    @endif
                                 </div>
-                            </div>
-
-                            <div class="row mb-3 mt-5">
-                                <div class="col-6">
-                                    <label>Vehicles</label>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <button type="button" class="btn btn-info text-white" wire:click="addVehicle">Add Vehicle</button>
-                                </div>
-                                @foreach ($form['vehicles'] as $vehiclesKey => $item)
-                                    <div class="col-12 my-2 @if($vehiclesKey > 0) border-top @endif">
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <div class="input-container">
-                                                    <label>Vehicle #{{ $vehiclesKey + 1 }}: Plate Number</label>
-                                                    <input
-                                                        type="text"
-                                                        class="form-control @error('form.vehicles.'.$vehiclesKey.'.plate_number') is-invalid @enderror"
-                                                        wire:model.lazy="form.vehicles.{{ $vehiclesKey }}.plate_number">
-                                                    @error('form.vehicles.'.$vehiclesKey.'.plate_number')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ str_replace('form.', '', $message) }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="input-container">
-                                                    <label>Vehicle #{{ $vehiclesKey + 1 }}: Car Type</label>
-                                                    <input
-                                                        type="text"
-                                                        class="form-control @error('form.vehicles.'.$vehiclesKey.'.car_type') is-invalid @enderror"
-                                                        wire:model.lazy="form.vehicles.{{ $vehiclesKey }}.car_type">
-                                                    @error('form.vehicles.'.$vehiclesKey.'.car_type')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ str_replace('form.', '', $message) }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-4">
-                                                <div class="input-container">
-                                                    <label>Vehicle #{{ $vehiclesKey + 1 }}: RFID</label>
-                                                    <input
-                                                        type="text"
-                                                        class="form-control @error('form.vehicles.'.$vehiclesKey.'.rfid') is-invalid @enderror"
-                                                        wire:model.lazy="form.vehicles.{{ $vehiclesKey }}.rfid">
-                                                    @error('form.vehicles.'.$vehiclesKey.'.rfid')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ str_replace('form.', '', $message) }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                    <small class="text-help">Note: Please click the RFID input before tapping the RFID</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                @if ($vehiclesKey > 0)
-                                                    <a type="#!" class="text-danger clickable" wire:click="removeVehicle({{ $vehiclesKey }})">
-                                                        <i class="fa fa-times"></i> Remove vehicle
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
                             </div>
 
                             <div class="row mt-5 mb-3">
@@ -311,7 +257,7 @@
                                             @endforelse
                                         </select>
 
-                                        @error('form.block_lots')
+                                        @error('form.payments')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ str_replace('form.', '', $message) }}</strong>
                                             </span>

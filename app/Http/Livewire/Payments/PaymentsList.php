@@ -215,12 +215,13 @@ class PaymentsList extends Component
         // Check if the current payment amount isn't the same on the form
         // and check if the form is marked as paid
         // If yes, then a confirmation dialog will occur
-        if ($this->minPayFormAmount !== (int) $this->payForm['amount'] && (bool) $this->payForm['is_paid']) {
+        /* if ($this->minPayFormAmount !== (int) $this->payForm['amount'] && (bool) $this->payForm['is_paid']) {
             $this->emit('pre-submit.pay-form');
         } else {
             $this->payFormSubmit();
-        }
+        } */
 
+        $this->payFormSubmit();
     }
 
     /**
@@ -245,6 +246,8 @@ class PaymentsList extends Component
             'reference' => $this->payForm['reference'],
         ];
 
+        $paymentProceed = true;
+
         // If the pay form is marked as paid, then set the paid data
         if ($this->payForm['is_paid']) {
             $paymentUpdateData = array_merge($paymentUpdateData, [
@@ -252,23 +255,36 @@ class PaymentsList extends Component
                 'date_paid' => now(),
                 'status' => 'paid'
             ]);
+
+            if ((int) $payment->amount !== $this->payForm['amount']) {
+                $paymentProceed = false;
+
+                $this->emit('show.dialog', [
+                    'icon' => 'warning',
+                    'title' => 'Insufficient Amount',
+                    'message' => 'The payment amount is insufficient. Must not be less than ' . number_format($payment->amount),
+                    'reload' => false
+                ]);
+            }
         }
 
-        // Update the payment
-        $payment->update($paymentUpdateData);
-
-        if ($this->payForm['is_paid']) {
-            // Create new payment if payment is recurring
-            $this->processRecurringPayment($payment);
+        if ($paymentProceed) {
+            // Update the payment
+            $payment->update($paymentUpdateData);
+    
+            if ($this->payForm['is_paid']) {
+                // Create new payment if payment is recurring
+                $this->processRecurringPayment($payment);
+            }
+    
+            // Emit a new event for the notification
+            $this->emit('show.dialog', [
+                'icon' => 'success',
+                'title' => 'Payment Success',
+                'message' => 'Payment has been successfully recorded',
+                'reload' => true
+            ]);
         }
-
-        // Emit a new event for the notification
-        $this->emit('show.dialog', [
-            'icon' => 'success',
-            'title' => 'Payment Success',
-            'message' => 'Payment has been successfully recorded',
-            'reload' => true
-        ]);
     }
 
     /**

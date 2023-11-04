@@ -19,7 +19,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public const HOME = '/home';
     public const DASHBOARD = '/dashboard';
-    public const GUARD = '/guard/rfid-monitoring';
+    public const GUARD = '/guard/dashboard';
     public const TREASURER = '/payments/expenses';
 
     /**

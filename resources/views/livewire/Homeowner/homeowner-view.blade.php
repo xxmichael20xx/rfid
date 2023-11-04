@@ -244,7 +244,7 @@
                     <div class="row mb-3">
                         <div class="col-12 d-flex justify-content-between mb-3">
                             <p class="card-title h5">Manage Vehicles</p>
-                            <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#newVehicleModal">
+                            <button type="button" class="btn btn-success text-white" id="newVehicleModalBtn">
                                 <i class="fa fa-plus"></i> Add New
                             </button>
                         </div>
@@ -258,7 +258,8 @@
                                     <thead class="bg-portal-green">
                                         <tr>
                                             <th class="cell">Plate Number</th>
-                                            <th class="cell">Car Type (Name)</th>
+                                            <th class="cell">Car Type</th>
+                                            <th class="cell">Name</th>
                                             <th class="cell">RFID</th>
                                             <th class="cell">Actions</th>
                                         </tr>
@@ -275,6 +276,7 @@
                                             <tr>
                                                 <td class="cell">{{ $vehicle->plate_number }}</td>
                                                 <td class="cell">{{ $vehicle->car_type }}</td>
+                                                <td class="cell">{{ $vehicle->car_name }}</td>
                                                 <td class="cell">{{ $rfid }}</td>
                                                 <td class="cell d-flex">
                                                     <button
@@ -712,44 +714,77 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="input-container mb-3">
-                                    <label for="plate_number">Plate Number<span class="required">*</span></label>
-                                    <input
-                                        id="plate_number"
-                                        name="plate_number"
-                                        type="text"
-                                        class="form-control @error('createVehicleForm.plate_number') is-invalid @enderror"
-                                        wire:model.lazy="createVehicleForm.plate_number"
-                                        autofocus>
-                                    
-                                    @error('createVehicleForm.plate_number')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
+                        <div class="container">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="input-container mb-3">
+                                        <label for="plate_number">Plate Number<span class="required">*</span></label>
+                                        <input
+                                            id="plate_number"
+                                            name="plate_number"
+                                            type="text"
+                                            class="form-control @error('createVehicleForm.plate_number') is-invalid @enderror"
+                                            wire:model.lazy="createVehicleForm.plate_number">
+                                        
+                                        @error('createVehicleForm.plate_number')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+    
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="input-container mb-3 d-flex flex-column" wire:ignore>
+                                        <label for="car_type_name">Cart Type & Name<span class="required">*</span></label>
+                                        <select
+                                            id="car_type_name"
+                                            class="form-control @error('createVehicleForm.car_type_name') is-invalid @enderror"
+                                            wire:model.lazy="createVehicleForm.car_type_name"
+                                            multiple>
+                                            @forelse ($cars as $key => $car)
+                                                <optgroup label="{{ $key }}">
+                                                    @foreach ($car as $carKey => $carName)
+                                                        <option value="{{ $key }}||{{ $carName }}">{{ $carName }}</option>
+                                                    @endforeach
+                                                </optgroup>
+                                            @empty
+                                                <option value="" disabled>No available car to select</option>
+                                            @endforelse
+                                        </select>
+                                        
+                                        @error('createVehicleForm.car_type_name')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="input-container mb-3">
-                                    <label for="car_type">Cart Type (Name)<span class="required">*</span></label>
-                                    <input
-                                        id="car_type"
-                                        name="car_type"
-                                        type="text"
-                                        class="form-control @error('createVehicleForm.car_type') is-invalid @enderror"
-                                        wire:model.lazy="createVehicleForm.car_type"
-                                        autofocus>
-                                    
-                                    @error('createVehicleForm.car_type')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-container mb-3">
+                                        <label for="rfid_create">RFID</label>
+                                        <input
+                                            id="rfid_create"
+                                            name="rfid"
+                                            type="text"
+                                            class="form-control @error('createVehicleForm.rfid') is-invalid @enderror"
+                                            wire:model.lazy="createVehicleForm.rfid"
+                                            autofocus>
+                                        
+                                        @error('createVehicleForm.rfid')
+                                            <span class="invalid-feedback mb-3" role="alert">
+                                                <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
+                                            </span>
+                                        @enderror
+                                        <small class="text-help">
+                                            <span>Note: Please click the RFID input before tapping the RFID</span>
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -770,7 +805,7 @@
                 
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="newVehicleModalLabel">Assign Block & Lot</h1>
+                        <h1 class="modal-title fs-5" id="newBlockAndLotModalLabel">Assign Block & Lot</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -819,7 +854,7 @@
                 
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="newVehicleModalLabel">Update Vehicle</h1>
+                        <h1 class="modal-title fs-5" id="updateVehicleModalLabel">Update Vehicle</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -846,17 +881,25 @@
 
                         <div class="row mb-3">
                             <div class="col-12">
-                                <div class="input-container mb-3">
-                                    <label for="car_type">Cart Type (Name)<span class="required">*</span></label>
-                                    <input
-                                        id="car_type"
-                                        name="car_type"
-                                        type="text"
-                                        class="form-control @error('updateVehicleForm.car_type') is-invalid @enderror"
-                                        wire:model.lazy="updateVehicleForm.car_type"
-                                        autofocus>
+                                <div class="input-container mb-3 d-flex flex-column" wire:ignore>
+                                    <label for="car_type_name_u">Cart Type & Name<span class="required">*</span></label>
+                                    <select
+                                        id="car_type_name_u"
+                                        class="form-control @error('updateVehicleForm.car_type_name_u') is-invalid @enderror"
+                                        wire:model.lazy="updateVehicleForm.car_type_name_u"
+                                        multiple>
+                                        @forelse ($cars as $key => $car)
+                                            <optgroup label="{{ $key }}">
+                                                @foreach ($car as $carKey => $carName)
+                                                    <option value="{{ $key }}||{{ $carName }}">{{ $carName }}</option>
+                                                @endforeach
+                                            </optgroup>
+                                        @empty
+                                            <option value="" disabled>No available car to select</option>
+                                        @endforelse
+                                    </select>
                                     
-                                    @error('updateVehicleForm.car_type')
+                                    @error('updateVehicleForm.car_type_name_u')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('update vehicle form.', '', $message) }}</strong>
                                         </span>
@@ -913,9 +956,9 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="input-container mb-3">
-                                    <label for="last_name">Last Name<span class="required">*</span></label>
+                                    <label for="last_name_visitor">Last Name<span class="required">*</span></label>
                                     <input
-                                        id="last_name"
+                                        id="last_name_visitor"
                                         name="last_name"
                                         type="text"
                                         class="form-control @error('visitorForm.last_name') is-invalid @enderror"
@@ -929,9 +972,9 @@
                             </div>
                             <div class="col-12">
                                 <div class="input-container mb-3">
-                                    <label for="first_name">First Name<span class="required">*</span></label>
+                                    <label for="first_name_visitor">First Name<span class="required">*</span></label>
                                     <input
-                                        id="first_name"
+                                        id="first_name_visitor"
                                         name="first_name"
                                         type="text"
                                         class="form-control @error('visitorForm.first_name') is-invalid @enderror"
@@ -1038,6 +1081,12 @@
                 Livewire.on('update.vehicle-prepare', () => {
                     const updateVehicleModal = new bootstrap.Modal('#updateVehicleModal', {})
                     updateVehicleModal.show()
+
+                    setTimeout(function() {
+                        $('#car_type_name_u').select2({
+                            maximumSelectionLength: 1
+                        })
+                    }, 500)
                 })
 
                 /** Initialize select2 */
@@ -1059,6 +1108,43 @@
                     const id = e.params.data.id
 
                     Livewire.emit('unSelectLot', id)
+                })
+
+                /** Initialize the car type & name select2 */
+                $(document).on('click', '#newVehicleModalBtn', function() {
+                    const newVehicleModal = new bootstrap.Modal('#newVehicleModal', {})
+                    newVehicleModal.show()
+
+                    setTimeout(function() {
+                        $('#car_type_name').select2({
+                            maximumSelectionLength: 1
+                        })
+                    }, 500)
+                })
+                
+                $('#car_type_name').on('select2:select', function (e) {
+                    const id = e.params.data.id
+
+                    Livewire.emit('selectCarTypeName', id)
+                })
+
+                $('#car_type_name').on('select2:unselect', function (e) {
+                    const id = e.params.data.id
+
+                    Livewire.emit('unselectCarTypeName', id)
+                })
+
+                /** Initialize the car type & name select2 */
+                $('#car_type_name_u').on('select2:select', function (e) {
+                    const id = e.params.data.id
+
+                    Livewire.emit('selectCarTypeNameUpdate', id)
+                })
+
+                $('#car_type_name_u').on('select2:unselect', function (e) {
+                    const id = e.params.data.id
+
+                    Livewire.emit('unselectCarTypeNameUpdate', id)
                 })
             })
         </script>

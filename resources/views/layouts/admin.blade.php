@@ -199,7 +199,9 @@
                 }).then(() => {
                     // check if the event has a redirect
                     if (typeof e.redirect !== 'undefined') {
-                        window.location.href = e.redirect
+                        if (e.redirect) {
+                            window.location.href = e.redirect
+                        }
                     }
 
                     // check if event has a reload

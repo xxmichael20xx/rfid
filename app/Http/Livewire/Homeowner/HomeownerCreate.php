@@ -10,6 +10,8 @@ use App\Models\Lot;
 use App\Models\Payment;
 use App\Models\PaymentType;
 use App\Models\Rfid;
+use App\Rules\BlockLots;
+use App\Rules\LegalBirthDate;
 use App\Rules\NotFutureDate;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -69,8 +71,8 @@ class HomeownerCreate extends Component
             'form.first_name' => $nameRules,
             'form.last_name' => $nameRules,
             'form.middle_name' => ['string', 'min:2', 'max:30'],
-            'form.date_of_birth' => ['required', 'date', new NotFutureDate],
-            'form.block_lots' => ['required', 'array', 'min:1'],
+            'form.date_of_birth' => ['required', 'date', new NotFutureDate, new LegalBirthDate],
+            'form.block_lots' => [new BlockLots],
             'form.contact_no' => ['required', 'regex:/^09\d{9}$/', Rule::unique('home_owners', 'contact_no')],
             'form.email' => ['nullable', 'email'],
             'form.profile' => ['nullable', 'image'],
@@ -133,9 +135,6 @@ class HomeownerCreate extends Component
         // add the selected block & lots
         $this->processBlockAndLots($newHomeOwner->id);
 
-        // add vehicles
-        $this->processVehicles($newHomeOwner->id);
-
         // add payments
         $this->processPayments($newHomeOwner->id);
         
@@ -144,7 +143,7 @@ class HomeownerCreate extends Component
             'icon' => 'success',
             'title' => 'Create Success',
             'message' => 'New Home Owner has been successfully created!',
-            'redirect' => route('homeowners.list')
+            'redirect' => route('homeowners.view', ['id' => $newHomeOwner->id])
         ]);
     }
 

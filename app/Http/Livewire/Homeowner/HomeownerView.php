@@ -12,6 +12,7 @@ use App\Models\Rfid;
 use App\Models\Visitor;
 use App\Rules\NotFutureDate;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -23,7 +24,11 @@ class HomeownerView extends Component
         'deleteBlockLot',
         'deleteVehicle',
         'selectLot',
-        'unSelectLot'
+        'unSelectLot',
+        'selectCarTypeName',
+        'unselectCarTypeName',
+        'selectCarTypeNameUpdate',
+        'unselectCarTypeNameUpdate',
     ];
 
     public $data;
@@ -40,16 +45,15 @@ class HomeownerView extends Component
     public $updateForm = null;
     public $toView = null;
 
-    public $createVehicleForm = [
-        'plate_number' => '',
-        'car_type' => ''
-    ];
+    public $createVehicleForm;
     public $updateVehicleForm;
     public $availableLBlockLots = [];
     public $blockLotForm = [];
 
     public $homeOwnerId;
     public $visitorForm;
+
+    public $cars;
 
     public function create()
     {
@@ -169,17 +173,27 @@ class HomeownerView extends Component
         // validate the form
         $this->validate([
             'createVehicleForm.plate_number' => ['required', Rule::unique('home_owner_vehicles', 'plate_number')],
-            'createVehicleForm.car_type' => ['required'],
+            'createVehicleForm.car_type_name' => ['required'],
+            'createVehicleForm.rfid' => ['sometimes', 'nullable', Rule::unique('rfids', 'rfid')],
         ]);
+
+        list($carType, $carName) = explode('||', $this->createVehicleForm['car_type_name']);
 
         // create new vehicle
         $newVehicle = HomeOwnerVehicle::create([
             'home_owner_id' => $this->data->id,
             'plate_number' => $this->createVehicleForm['plate_number'],
-            'car_type' => $this->createVehicleForm['car_type']
+            'car_type' => $carType,
+            'car_name' => $carName,
         ]);
 
         if ($newVehicle) {
+            $this->createVehicleForm = [
+                'plate_number' => '',
+                'car_type_name' => '',
+                'rfid' => ''
+            ];
+
             $this->emit('show.dialog', [
                 'icon' => 'success',
                 'title' => 'Register Success',
@@ -206,10 +220,13 @@ class HomeownerView extends Component
         $vehicle = HomeOwnerVehicle::with('rfid')
             ->find($payload)
             ->toArray();
+        $carType = data_get($vehicle, 'car_type');
+        $carName = data_get($vehicle, 'car_name');
+
         $this->updateVehicleForm = [
             'id' => data_get($vehicle, 'id'),
             'plate_number' => data_get($vehicle, 'plate_number'),
-            'car_type' => data_get($vehicle, 'car_type'),
+            'car_type_name_u' => $carType . '||' . $carName,
             'rfid_id' => data_get($vehicle, 'rfid.id'),
             'rfid' => data_get($vehicle, 'rfid.rfid'),
         ];
@@ -224,7 +241,7 @@ class HomeownerView extends Component
                 'required',
                 Rule::unique('home_owner_vehicles', 'plate_number')->ignore($this->updateVehicleForm['id'], 'id')
             ],
-            'updateVehicleForm.car_type' => ['required'],
+            'updateVehicleForm.car_type_name_u' => ['required'],
             'updateVehicleForm.rfid' => [
                 'sometimes',
                 'nullable',
@@ -232,10 +249,15 @@ class HomeownerView extends Component
             ],
         ]);
 
+        list($carType, $carName) = explode('||', $this->updateVehicleForm['car_type_name_u']);
+
+        $updateVehicleRawData = [
+            'plate_number' => data_get($this->updateVehicleForm, 'plate_number'),
+            'car_type' => $carType,
+            'car_name' => $carName,
+        ];
         $updateVehicle = HomeOwnerVehicle::find($this->updateVehicleForm['id']);
-        $updateVehicle->update(
-            Arr::only($this->updateVehicleForm, ['plate_number', 'car_type'])
-        );
+        $updateVehicle->update($updateVehicleRawData);
 
         // process update or delete rfid
         $this->processRfid();
@@ -255,7 +277,9 @@ class HomeownerView extends Component
 
         $currentRfid = Rfid::find($rfid_id);
         if (empty($rfid)) {
-            $currentRfid->forceDelete();
+            if ($currentRfid) {
+                $currentRfid->forceDelete();
+            }
         } else {
             if ($currentRfid) {
                 $currentRfid->update(compact('rfid'));
@@ -346,6 +370,26 @@ class HomeownerView extends Component
         return redirect($route);
     }
 
+    public function selectCarTypeName($id)
+    {
+        $this->createVehicleForm['car_type_name'] = $id;
+    }
+
+    public function unselectCarTypeName()
+    {
+        $this->createVehicleForm['car_type_name'] = '';
+    }
+
+    public function selectCarTypeNameUpdate($id)
+    {
+        $this->updateVehicleForm['car_type_name_u'] = $id;
+    }
+
+    public function unselectCarTypeNameUpdate()
+    {
+        $this->updateVehicleForm['car_type_name_u'] = '';
+    }
+
     public function mount($id)
     {
         $this->homeOwnerId = $id;
@@ -374,6 +418,16 @@ class HomeownerView extends Component
             'last_name' => '',
             'first_name' => ''
         ];
+
+        // set the create vehicle form
+        $this->createVehicleForm = [
+            'plate_number' => '',
+            'car_type_name' => '',
+            'rfid' => ''
+        ];
+
+        // set the cars data from config files
+        $this->cars = Config::get('cars.car_types');
     }
 
     public function render()

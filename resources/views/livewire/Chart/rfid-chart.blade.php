@@ -12,20 +12,20 @@
                     </button>
                 @endif
 
-                <label for="visitor-chart-change" class="lead fw-bold mb-2 text-center">Visitors Chart</label>
+                <label for="rfid-chart-change" class="lead fw-bold mb-2 text-center">RFID Chart</label>
                 <div class="col-2 mx-auto">
                     <select
                         wire:change="change"
                         class="form-select"
-                        id="visitor-chart-change"
-                        name="visitor-chart-change"
+                        id="rfid-chart-change"
+                        name="rfid-chart-change"
                         wire:model.lazy="type">
                         <option value="days" selected>Last 7 Days</option>
                         <option value="weeks">Last 4 Weeks</option>
                         <option value="months">Last 4 Months</option>
                     </select>
                 </div>
-                <canvas width="100%" id="visitor-chart" class="p-5 pb-0"></canvas>
+                <canvas width="100%" id="rfid-chart" class="p-5 pb-0"></canvas>
             </div>
         </div>
     </div>
@@ -33,7 +33,7 @@
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             const chart = new Chart(
-                document.getElementById('visitor-chart'),
+                document.getElementById('rfid-chart'),
                 {
                     type: 'bar',
                     data: {
@@ -47,10 +47,13 @@
                 }
             )
 
-            Livewire.on('updateVisitorChart', data => {
+            Livewire.on('updateRfidhart', data => {
                 chart.data = data
                 chart.update()
             })
         })
     </script>
+</div>
+<div>
+    {{-- Stop trying to control. --}}
 </div>

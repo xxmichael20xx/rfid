@@ -74,6 +74,12 @@
                 <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
                     <ul class="app-menu list-unstyled accordion" id="menu-accordion">
                         <li class="nav-item">
+                            <a class="nav-link {{ isRouteActive(['guard.dashboard']) }}" href="{{ route('guard.dashboard') }}">
+								<i class="fa fa-tachometer-alt"></i>
+                                <span class="nav-link-text">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link {{ isRouteActive(['guard.rfid-monitoring.index']) }}" href="{{ route('guard.rfid-monitoring.index') }}">
 								<i class="fa fa-book"></i>
                                 <span class="nav-link-text">RFID Monitoring</span>

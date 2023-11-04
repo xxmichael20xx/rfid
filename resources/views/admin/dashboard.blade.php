@@ -69,6 +69,7 @@
                     <div class="row mb-3">
                         <div class="col-12 text-center">
                             <p class="card-title h5">Recent Visitors</p>
+                            <hr class="theme-separator">
                         </div>
                     </div>
                     <div class="row">

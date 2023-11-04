@@ -12,7 +12,8 @@ class HomeOwnerVehicle extends Model
     protected $fillable = [
         'home_owner_id',
         'plate_number',
-        'car_type'
+        'car_type',
+        'car_name',
     ];
 
     public function rfid()

@@ -31,7 +31,7 @@
                                     <table class="table app-table-hover mb-0 text-left visitors-table">
                                         <thead class="bg-portal-green">
                                             <tr>
-                                                <th class="cell">Home Owner Id</th>
+                                                <th class="cell">RFID</th>
                                                 <th class="cell">Name</th>
                                                 <th class="cell">Date</th>
                                                 <th class="cell">Time In | Time Out</th>
@@ -256,7 +256,7 @@
                 let previewCaptureType = document.getElementById('previewCaptureType')
 
                 /** Define pusher event to file RFID Tap */
-                let channel = window.Echo.channel('my-channel')
+                /* let channel = window.Echo.channel('my-channel')
                 channel.listen('.scan-id', function({ id }) {
                     if (id || id !== '') {
                         Livewire.emit('validateEntry', id)
@@ -268,7 +268,7 @@
                             text: 'The scanned id is invalid!'
                         })
                     }
-                })
+                }) */
 
                 /** Define validated home owner data */
                 Livewire.on('homeowner-data', () => {

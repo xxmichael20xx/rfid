@@ -10,6 +10,7 @@ use App\Http\Livewire\Activity\ActivityCreate;
 use App\Http\Livewire\Activity\ActivityUpdate;
 use App\Http\Livewire\BlockManagement\BlockManagementList;
 use App\Http\Livewire\BlockManagement\BlockManagementCreate;
+use App\Http\Livewire\Guard\GuardDashboard;
 use App\Http\Livewire\Guard\Rfid\GuardRfidMonitoring;
 use App\Http\Livewire\Guard\Visitor\GuardVisitorList;
 use App\Http\Livewire\Guard\Visitor\GuardVisitorMonitoring;
@@ -137,6 +138,8 @@ Route::middleware('auth.guard')
         Route::name('guard.')
             ->prefix('guard')
             ->group(function() {
+                Route::get('/dashboard', GuardDashboard::class)->name('dashboard');
+
                 /** Define RFID monitoring routes */
                 Route::name('rfid-monitoring.')
                     ->group(function() {

@@ -2,16 +2,17 @@
 
 namespace App\Http\Livewire\Chart;
 
-use App\Exports\ExportVisitors;
-use App\Models\Visitor;
+use App\Exports\ExportRfid;
+use App\Models\RfidMonitoring;
 use Carbon\Carbon;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
 
-class VisitorsChart extends Component
+class RfidChart extends Component
 {
-    public $dateFormat = 'Y-m-d H:i:s';
+    
+    public $dateFormat = 'm/d/Y';
 
     public $title;
     public $type;
@@ -44,7 +45,7 @@ class VisitorsChart extends Component
     public function change()
     {
         $this->setData();
-        $this->emit('updateVisitorChart', [
+        $this->emit('updateRfidhart', [
             'labels' => $this->labels,
             'datasets' => [[
                 'label' => $this->title,
@@ -90,7 +91,7 @@ class VisitorsChart extends Component
             $endDateFormat = $endDate->copy()->format($this->dateFormat);
 
             // Retrieve records for the current day within the date range
-            $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat])->get();
+            $records = RfidMonitoring::whereBetween('date', [$startDateFormat, $endDateFormat])->get();
 
             $this->data = array_merge($this->data, $records->toArray());
 
@@ -99,7 +100,7 @@ class VisitorsChart extends Component
             $this->rows[] = $records->count();
         }
 
-        $this->title = 'Visitors this past 7 days';
+        $this->title = 'RFID Records this past 7 days';
     }
 
     /**
@@ -119,7 +120,7 @@ class VisitorsChart extends Component
             $endDateFormat = $endDate->copy()->format($this->dateFormat);
 
             // Retrieve records for the current 1-week interval
-            $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat])->get();
+            $records = RfidMonitoring::whereBetween('date', [$startDateFormat, $endDateFormat])->get();
 
             $this->data = array_merge($this->data, $records->toArray());
 
@@ -128,7 +129,7 @@ class VisitorsChart extends Component
             $this->rows[] = $records->count();
         }
 
-        $this->title = 'Visitors this past 4 weeks';
+        $this->title = 'RFID Records this past 4 weeks';
     }
 
     /**
@@ -148,7 +149,7 @@ class VisitorsChart extends Component
             $endDateFormat = $endDate->copy()->format($this->dateFormat);
 
             // Retrieve records for the current month
-            $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat])->get();
+            $records = RfidMonitoring::whereBetween('date', [$startDateFormat, $endDateFormat])->get();
 
             $this->data = array_merge($this->data, $records->toArray());
 
@@ -157,19 +158,19 @@ class VisitorsChart extends Component
             $this->rows[] = $records->count();
         }
 
-        $this->title = 'Visitors this past 4 months';
+        $this->title = 'RFID Records this past 4 months';
     }
 
     public function exportData()
     {
         $timestamp = now()->format('Y-m-d_Hi'); // Current timestamp in the format: yyyy-mm-dd_HHmm
-        $filename = 'visitors_' . $timestamp . '_' . Str::snake($this->title). '.xlsx';
+        $filename = 'rfid_monitoring_' . $timestamp . '_' . Str::snake($this->title). '.xlsx';
 
-        return Excel::download(new ExportVisitors($this->data), $filename);
+        return Excel::download(new ExportRfid($this->data), $filename);
     }
 
     public function render()
     {
-        return view('livewire.Chart.visitors-chart');
+        return view('livewire.Chart.rfid-chart');
     }
 }
