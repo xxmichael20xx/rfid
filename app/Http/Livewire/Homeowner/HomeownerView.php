@@ -188,6 +188,14 @@ class HomeownerView extends Component
         ]);
 
         if ($newVehicle) {
+            // create rfid
+            if ($rfid = $this->createVehicleForm['rfid']) {
+                Rfid::create([
+                    'vehicle_id' => $newVehicle->id,
+                    'rfid' => $rfid
+                ]);
+            }
+
             $this->createVehicleForm = [
                 'plate_number' => '',
                 'car_type_name' => '',
