@@ -256,7 +256,7 @@ class PaymentsList extends Component
                 'status' => 'paid'
             ]);
 
-            if ((int) $payment->amount !== $this->payForm['amount']) {
+            if ((int) $payment->amount > $this->payForm['amount']) {
                 $paymentProceed = false;
 
                 $this->emit('show.dialog', [
