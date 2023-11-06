@@ -41,8 +41,13 @@ Route::middleware('auth:sanctum')
         /** API for Homw Owner - Visitor */
         Route::prefix('qr')
             ->group(function() {
+                // List the visitors
                 Route::get('visitor/list', [ApiHomeOwnerController::class, 'visitorList']);
+
+                // Create new visitor
                 Route::post('visitor/add', [ApiHomeOwnerController::class, 'visitorAdd']);
+
+                // Download the QR for the vistor
                 Route::post('download', [ApiHomeOwnerController::class, 'downloadQr']);
             });
     });
