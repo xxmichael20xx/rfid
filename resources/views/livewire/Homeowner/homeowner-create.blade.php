@@ -123,7 +123,7 @@
                             <div class="row mb-3">
                                 <div class="col-4">
                                     <div class="input-container mb-3">
-                                        <label for="email">Email</label>
+                                        <label for="email">Email<span class="required">*</span></label>
                                         <input
                                             id="email"
                                             name="email"

@@ -31,7 +31,7 @@ class ActivitiesController extends Controller
         }
 
         // check if URL has "?filter=today"
-        if ($filter = data_get($_GET, 'filter')) {
+        if ($filter = request()->get('filter')) {
             if ($filter == 'today') {
                 $activities = Activity::whereDate('start_date', $today)
                     ->orWhereDate('end_date', $today)
@@ -44,5 +44,54 @@ class ActivitiesController extends Controller
         }
 
         return view('admin.Activity.list', compact('activities', 'search', 'filter'));
+    }
+
+    /**
+     * Callback for API all
+     */
+    public function all()
+    {
+        $activities = Activity::orderBy('end_date', 'DESC')->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $activities
+        ]);
+    }
+
+    /**
+     * Callback for the API today
+     */
+    public function today()
+    {
+        $today = Carbon::today()->format('Y-m-d');
+
+        $activities = Activity::whereDate('start_date', $today)
+            ->orWhereDate('end_date', $today)
+            ->orWhere(function($query) use($today) {
+                $query->where('start_date', '<=', $today)->where('end_date', '>=', $today);
+            })->get();
+        
+        return response()->json([
+            'status' => true,
+            'data' => $activities
+        ]);
+    }
+
+    /**
+     * Callback for the API search
+     */
+    public function search($s)
+    {
+        $likeSearch = '%'.$s.'%';
+        $activities = Activity::where('title', 'LIKE', $likeSearch)
+            ->orWhere('location', 'LIKE', $likeSearch)
+            ->orderBy('created_at', 'DESC')
+            ->get();
+        
+        return response()->json([
+            'status' => true,
+            'data' => $activities
+        ]);
     }
 }

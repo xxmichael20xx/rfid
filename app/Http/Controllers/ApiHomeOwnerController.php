@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HomeOwner;
 use App\Models\Visitor;
 use App\Services\QRService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-class QRController extends Controller
+class ApiHomeOwnerController extends Controller
 {
     /**
      * QRService instance
@@ -24,8 +26,71 @@ class QRController extends Controller
         $this->qrService = new QRService;
     }
 
+    /**
+     * List all visitors
+     */
+    public function visitorList()
+    {
+        // get all visitors
+        $visitors = $this->getHomeOwner()->visitors;
+
+        return response()->json([
+            'status' => true,
+            'message' => 'List of visitors',
+            'data' => $visitors
+        ]);
+    }
+
+    /**
+     * Add a new visitor
+     */
+    public function visitorAdd(Request $request)
+    {
+        $request->validate([
+            'first_name' => ['required'],
+            'last_name' => ['required'],
+        ]);
+
+        // get the current home owner
+        $homeOwnerId = $this->getHomeOwner()->id;
+
+        // crate the visitor data
+        $token = sprintf('%s_%s_%s', $homeOwnerId, time(), Str::random(4));
+
+        // create new visitor
+        Visitor::create([
+            'home_owner_id' => $homeOwnerId,
+            'first_name' => $request->get('first_name'),
+            'last_name' => $request->get('last_name'),
+            'token' => $token,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Visitor has been created!'
+        ]);
+    }
+
+    /**
+     * Get the current Home Owner
+     */
+    public function getHomeOwner()
+    {
+        $email = request()->user()->email;
+        return HomeOwner::with(['visitors'])
+            ->where('email', $email)
+            ->first();
+    }
+
+    /**
+     * Download the QR Code
+     */
     public function downloadQr(Request $request)
     {
+        $request->validate([
+            'id' => ['required', Rule::exists('visitors', 'id')]
+        ]);
+
         [$codeName, $codeUrl] = $this->qrService->googleQr($request->id);
 
         // Fetch the image data from the URL

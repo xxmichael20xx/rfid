@@ -91,6 +91,13 @@ class VisitorsChart extends Component
 
             // Retrieve records for the current day within the date range
             $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat])->get();
+            
+            // $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat]);
+            // To check the SQL Query
+            // dd(
+            //     $records->toSql(),
+            //     $records->getBindings()
+            // );
 
             $this->data = array_merge($this->data, $records->toArray());
 

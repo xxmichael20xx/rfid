@@ -10,10 +10,14 @@ use App\Models\Lot;
 use App\Models\Payment;
 use App\Models\PaymentType;
 use App\Models\Rfid;
+use App\Models\User;
+use App\Notifications\UserAccountCreated;
 use App\Rules\BlockLots;
 use App\Rules\LegalBirthDate;
 use App\Rules\NotFutureDate;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -74,7 +78,7 @@ class HomeownerCreate extends Component
             'form.date_of_birth' => ['required', 'date', new NotFutureDate, new LegalBirthDate],
             'form.block_lots' => [new BlockLots],
             'form.contact_no' => ['required', 'regex:/^09\d{9}$/', Rule::unique('home_owners', 'contact_no')],
-            'form.email' => ['nullable', 'email'],
+            'form.email' => ['required', 'email', Rule::unique('home_owners', 'email')],
             'form.profile' => ['nullable', 'image'],
             'form.vehicles.*.plate_number' => [
                 'sometimes',
@@ -137,6 +141,9 @@ class HomeownerCreate extends Component
 
         // add payments
         $this->processPayments($newHomeOwner->id);
+
+        // create a user account
+        $this->createAccount($newHomeOwner->toArray());
         
         // dispatch a javacript event to trigger the notification
         $this->emit('show.dialog', [
@@ -193,6 +200,27 @@ class HomeownerCreate extends Component
                 }
             }
         }
+    }
+
+    /**
+     * Create a new account
+     */
+    public function createAccount($homeOwner)
+    {
+        $accountData = Arr::only($homeOwner, [
+            'first_name',
+            'last_name',
+            'middle_name',
+            'email'
+        ]);
+
+        $password = Str::random(12);
+        data_set($accountData, 'password', bcrypt($password));
+        data_set($accountData, 'role', 'User');
+
+        $user = User::create($accountData);
+
+        $user->notify(new UserAccountCreated($password));
     }
 
     /**

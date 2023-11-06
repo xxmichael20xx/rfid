@@ -18,7 +18,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-4">
-                            <p class="card-title h5">List of Activityes</p>
+                            <p class="card-title h5">List of Activities</p>
                         </div>
                         <div class="col-8 text-right">
                             <div class="row justify-content-end">
