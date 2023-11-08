@@ -45,6 +45,6 @@ class Payment extends Model
 
     public function paymentType()
     {
-        return $this->hasOne(PaymentType::class, 'id', 'type_id');
+        return $this->hasOne(PaymentType::class, 'id', 'type_id')->withTrashed();
     }
 }
