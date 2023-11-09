@@ -122,7 +122,12 @@ class BlockManagementList extends Component
         $lotId = data_get($this->editLotForm, 'id');
         $this->validate([
             'editLotForm.id' => ['required', Rule::exists('lots', 'id')],
-            'editLotForm.lot' => ['required', Rule::unique('lots', 'lot')->ignore($lotId)],
+            'editLotForm.lot' => [
+                'required',
+                'numeric',
+                'min:1',
+                Rule::unique('lots', 'lot')->ignore($lotId)
+            ],
             'editLotForm.details' => ['nullable'],
         ]);
 
