@@ -77,7 +77,18 @@ class BlockManagementList extends Component
     public function createLots()
     {
         $this->validate([
-            'lotForm.lots.*.lot' => ['required', 'distinct']
+            'lotForm.lots.*.lot' => [
+                'required',
+                'numeric',
+                'min:1',
+                'distinct'
+            ]
+        ], [
+            'lotForm.lots.*.lot.required' => 'The lot name field is required.',
+            'lotForm.lots.*.lot.numeric' => 'The lot name should be number.',
+            'lotForm.lots.*.lot.min' => 'The lot name should at least 1.',
+            'lotForm.lots.*.lot.distinct' => 'The lot name should be unique.',
+            'lotForm.lots.*.lot.unique' => 'The lot name already taken.'
         ]);
 
         $block = Block::find(data_get($this->lotForm, 'block'));
