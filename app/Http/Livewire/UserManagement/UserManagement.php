@@ -70,7 +70,9 @@ class UserManagement extends Component
     public function mount()
     {
         $userId = auth()->user()->id;
-        $this->users = User::where('id', '<>', $userId)->get();
+        $this->users = User::where('id', '<>', $userId)
+            ->where('Role', '<>', 'User')
+            ->get();
 
         if ($search = request()->get('search')) {
             $this->search = $search;

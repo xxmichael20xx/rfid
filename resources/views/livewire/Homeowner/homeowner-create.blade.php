@@ -16,7 +16,7 @@
                     <div class="container">
                         <form method="POST" wire:submit.prevent="create" class="col-12">
                             @csrf
-                            
+
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <p class="card-title h5">Profile Details</p>
@@ -130,7 +130,7 @@
                                             type="email"
                                             class="form-control @error('form.email') is-invalid @enderror"
                                             wire:model.lazy="form.email">
-            
+
                                         @error('form.email')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ str_replace('form.', '', $message) }}</strong>
@@ -147,7 +147,7 @@
                                             type="number"
                                             class="form-control @error('form.contact_no') is-invalid @enderror"
                                             wire:model.lazy="form.contact_no">
-            
+
                                         @error('form.contact_no')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ str_replace('form.', '', $message) }}</strong>
@@ -204,9 +204,9 @@
                                             class="form-control @error('form.block_lots') is-invalid @enderror"
                                             wire:model.lazy="form.block_lots">
                                             @forelse ($availableLBlockLots as $key => $availableLBlockLot)
-                                                <optgroup label="{{ $key }}">
+                                                <optgroup label="Block {{ $key }}">
                                                     @foreach ($availableLBlockLot as $lotKey => $lot)
-                                                        <option value="{{ $lot }}">{{ $lotKey }}</option>
+                                                        <option value="{{ $lot }}">Lot {{ $lotKey }}</option>
                                                     @endforeach
                                                 </optgroup>
                                             @empty
@@ -267,7 +267,7 @@
                                     </div>
                                 </div>
                             </div>
-        
+
                             <div class="row">
                                 <div class="col-12 d-flex justify-content-end">
                                     <div>

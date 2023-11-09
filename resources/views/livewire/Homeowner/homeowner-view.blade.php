@@ -115,14 +115,14 @@
                                                         data-name="{{ $profile->full_name }}">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
-        
+
                                                     <button
                                                         type="button"
                                                         class="btn btn-info text-white p-2 ms-2"
                                                         wire:click="setUpdate({{ $profile->id }})">
                                                         <i class="fa fa-pencil"></i>
                                                     </button>
-        
+
                                                     <div wire:ignore>
                                                         @livewire('profile.profile-view', ['profileId' => $profile->id])
                                                     </div>
@@ -181,14 +181,14 @@
                                     <tbody>
                                         @forelse ($data->grouped_block_lots as $groupedKey => $groupedBlockLots)
                                             <tr>
-                                                <td class="cell">{{ $groupedKey }}</td>
-                                                <td class="cell">{{ $groupedBlockLots[0]['lotName'] }}</td>
+                                                <td class="cell">Block {{ $groupedKey }}</td>
+                                                <td class="cell">Lot {{ $groupedBlockLots[0]['lotName'] }}</td>
                                                 <td class="cell d-flex">
                                                     <button
                                                         type="button"
                                                         class="btn btn-danger text-white p-2 delete-lot"
                                                         data-id="{{ $groupedBlockLots[0]['id'] }}"
-                                                        data-lot="{{ $groupedBlockLots[0]['lotName'] }}"
+                                                        data-lot="Lot {{ $groupedBlockLots[0]['lotName'] }}"
                                                     >
                                                         <i class="fa fa-trash"></i>
                                                     </button>
@@ -198,13 +198,13 @@
                                                 @if ($groupedBlockLotKey > 0)
                                                     <tr>
                                                         <td></td>
-                                                        <td>{{ $groupedBlockLot['lotName'] }}</td>
+                                                        <td>Lot {{ $groupedBlockLot['lotName'] }}</td>
                                                         <td class="cell d-flex">
                                                             <button
                                                                 type="button"
                                                                 class="btn btn-danger text-white p-2 delete-lot"
                                                                 data-id="{{ $groupedBlockLot['id'] }}"
-                                                                data-lot="{{ $groupedBlockLot['lotName'] }}"
+                                                                data-lot="Lot {{ $groupedBlockLot['lotName'] }}"
                                                             >
                                                                 <i class="fa fa-trash"></i>
                                                             </button>
@@ -387,7 +387,7 @@
         <div class="modal-dialog modal-dialog--md-max">
             <form method="POST" wire:submit.prevent="create">
                 @csrf
-                
+
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="newProfileModalLabel">New Family Members Form</h1>
@@ -405,7 +405,7 @@
                                         class="form-control @error('createForm.last_name') is-invalid @enderror"
                                         wire:model.lazy="createForm.last_name"
                                         autofocus>
-                                    
+
                                     @error('createForm.last_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -422,7 +422,7 @@
                                         type="text"
                                         class="form-control @error('createForm.first_name') is-invalid @enderror"
                                         wire:model.lazy="createForm.first_name">
-        
+
                                     @error('createForm.first_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -439,7 +439,7 @@
                                         type="text"
                                         class="form-control @error('createForm.middle_name') is-invalid @enderror"
                                         wire:model.lazy="createForm.middle_name">
-        
+
                                     @error('createForm.middle_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -448,7 +448,7 @@
                                 </div>
                             </div>
                         </div>
-    
+
                         <div class="row mb-3">
                             <div class="col-4">
                                 <div class="input-container mb-3">
@@ -460,7 +460,7 @@
                                         class="form-control @error('createForm.date_of_birth') is-invalid @enderror"
                                         data-age="age"
                                         wire:model.lazy="createForm.date_of_birth">
-        
+
                                     @error('createForm.date_of_birth')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -491,7 +491,7 @@
                                         type="number"
                                         class="form-control @error('createForm.contact_no') is-invalid @enderror"
                                         wire:model.lazy="createForm.contact_no">
-        
+
                                     @error('createForm.contact_no')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -524,7 +524,7 @@
                                         class="form-control form-control--textarea @error('createForm.notes') is-invalid @enderror"
                                         wire:model.lazy="createForm.notes"
                                         rows="5"></textarea>
-        
+
                                     @error('createForm.notes')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
@@ -547,7 +547,7 @@
         <div class="modal-dialog modal-dialog--md-max">
             <form method="POST" wire:submit.prevent="update">
                 @csrf
-                
+
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="updateProfileModalLabel">Update Family Member Form</h1>
@@ -565,7 +565,7 @@
                                         class="form-control @error('updateForm.last_name') is-invalid @enderror"
                                         wire:model.lazy="updateForm.last_name"
                                         autofocus>
-        
+
                                     @error('updateForm.last_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('update form.', '', $message) }}</strong>
@@ -582,7 +582,7 @@
                                         type="text"
                                         class="form-control @error('updateForm.first_name') is-invalid @enderror"
                                         wire:model.lazy="updateForm.first_name">
-        
+
                                     @error('updateForm.first_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('update form.', '', $message) }}</strong>
@@ -599,7 +599,7 @@
                                         type="text"
                                         class="form-control @error('updateForm.middle_name') is-invalid @enderror"
                                         wire:model.lazy="updateForm.middle_name">
-        
+
                                     @error('updateForm.middle_name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('update form.', '', $message) }}</strong>
@@ -608,7 +608,7 @@
                                 </div>
                             </div>
                         </div>
-    
+
                         <div class="row mb-3">
                             <div class="col-4">
                                 <div class="input-container mb-3">
@@ -620,7 +620,7 @@
                                         class="form-control @error('updateForm.date_of_birth') is-invalid @enderror"
                                         data-age="update_age"
                                         wire:model.lazy="updateForm.date_of_birth">
-        
+
                                     @error('updateForm.date_of_birth')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('update form.', '', $message) }}</strong>
@@ -640,7 +640,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mb-3">
                             <div class="col-4">
                                 <div class="input-container mb-3">
@@ -651,7 +651,7 @@
                                         type="number"
                                         class="form-control @error('updateForm.contact_no') is-invalid @enderror"
                                         wire:model.lazy="updateForm.contact_no">
-        
+
                                     @error('updateForm.contact_no')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('update form.', '', $message) }}</strong>
@@ -684,7 +684,7 @@
                                         class="form-control form-control--textarea @error('updateForm.notes') is-invalid @enderror"
                                         wire:model.lazy="updateForm.notes"
                                         rows="5"></textarea>
-        
+
                                     @error('updateForm.notes')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('update form.', '', $message) }}</strong>
@@ -707,7 +707,7 @@
         <div class="modal-dialog">
             <form method="POST" wire:submit.prevent="createVehicle">
                 @csrf
-                
+
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="newVehicleModalLabel">New Vehicle</h1>
@@ -725,7 +725,7 @@
                                             type="text"
                                             class="form-control @error('createVehicleForm.plate_number') is-invalid @enderror"
                                             wire:model.lazy="createVehicleForm.plate_number">
-                                        
+
                                         @error('createVehicleForm.plate_number')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
@@ -734,7 +734,7 @@
                                     </div>
                                 </div>
                             </div>
-    
+
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="input-container mb-3 d-flex flex-column" wire:ignore>
@@ -754,7 +754,7 @@
                                                 <option value="" disabled>No available car to select</option>
                                             @endforelse
                                         </select>
-                                        
+
                                         @error('createVehicleForm.car_type_name')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
@@ -775,7 +775,7 @@
                                             class="form-control @error('createVehicleForm.rfid') is-invalid @enderror"
                                             wire:model.lazy="createVehicleForm.rfid"
                                             autofocus>
-                                        
+
                                         @error('createVehicleForm.rfid')
                                             <span class="invalid-feedback mb-3" role="alert">
                                                 <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
@@ -802,7 +802,7 @@
         <div class="modal-dialog">
             <form method="POST" wire:submit.prevent="addBlockLot">
                 @csrf
-                
+
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="newBlockAndLotModalLabel">Assign Block & Lot</h1>
@@ -819,9 +819,9 @@
                                         class="form-control @error('blockLotForm') is-invalid @enderror"
                                         wire:model.lazy="blockLotForm">
                                         @forelse ($availableLBlockLots as $key => $availableLBlockLot)
-                                            <optgroup label="{{ $key }}">
+                                            <optgroup label="Blot {{ $key }}">
                                                 @foreach ($availableLBlockLot as $lotKey => $lot)
-                                                    <option value="{{ $lot }}">{{ $lotKey }}</option>
+                                                    <option value="{{ $lot }}">Lot {{ $lotKey }}</option>
                                                 @endforeach
                                             </optgroup>
                                         @empty
@@ -851,7 +851,7 @@
         <div class="modal-dialog">
             <form method="POST" wire:submit.prevent="updateVehicle">
                 @csrf
-                
+
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="updateVehicleModalLabel">Update Vehicle</h1>
@@ -869,7 +869,7 @@
                                         class="form-control @error('updateVehicleForm.plate_number') is-invalid @enderror"
                                         wire:model.lazy="updateVehicleForm.plate_number"
                                         autofocus>
-                                    
+
                                     @error('updateVehicleForm.plate_number')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create vehicle form.', '', $message) }}</strong>
@@ -898,7 +898,7 @@
                                             <option value="" disabled>No available car to select</option>
                                         @endforelse
                                     </select>
-                                    
+
                                     @error('updateVehicleForm.car_type_name_u')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('update vehicle form.', '', $message) }}</strong>
@@ -919,7 +919,7 @@
                                         class="form-control @error('updateVehicleForm.rfid') is-invalid @enderror"
                                         wire:model.lazy="updateVehicleForm.rfid"
                                         autofocus>
-                                    
+
                                     @error('updateVehicleForm.rfid')
                                         <span class="invalid-feedback mb-3" role="alert">
                                             <strong>{{ str_replace('update vehicle form.', '', $message) }}</strong>
@@ -946,7 +946,7 @@
         <div class="modal-dialog">
             <form method="POST" wire:submit.prevent="createVisitorQr">
                 @csrf
-                
+
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="newVisitorQrLabel">New Visitor QR</h1>
@@ -1121,7 +1121,7 @@
                         })
                     }, 500)
                 })
-                
+
                 $('#car_type_name').on('select2:select', function (e) {
                     const id = e.params.data.id
 

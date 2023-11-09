@@ -4,6 +4,7 @@ namespace App\Http\Livewire\BlockManagement;
 
 use App\Models\Block;
 use App\Models\Lot;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
 use Livewire\Component;
@@ -25,10 +26,16 @@ class BlockManagementList extends Component
             ]
         ]
     ];
+
     public $editLotForm = [
         'id' => '',
         'lot' => '',
         'details' => ''
+    ];
+
+    public $editBlockForm = [
+        'id' => '',
+        'block' => ''
     ];
 
     /**
@@ -142,6 +149,14 @@ class BlockManagementList extends Component
         ];
     }
 
+    public function cancelEditBlock()
+    {
+        $this->editBlockForm = [
+            'id' => '',
+            'block' => ''
+        ];
+    }
+
     public function setActiveBlock($id)
     {
         if ($block = Block::with('lots')->find($id)) {
@@ -177,6 +192,42 @@ class BlockManagementList extends Component
                 'reload' => true
             ]);
         }
+    }
+
+    public function prepareBlockEdit($id)
+    {
+        $editBlock = Block::find($id);
+
+        $this->editBlockForm = [
+            'id' => $id,
+            'block' => $editBlock->block
+        ];
+
+        $this->emit('block.update-prepared');
+    }
+
+    public function updateBlock()
+    {
+        $blockId = $this->editBlockForm['id'];
+
+        // validate the block form
+        $this->validate([
+            'editBlockForm.block' => [
+                'required',
+                Rule::unique('blocks', 'block')->ignore($blockId)
+            ]
+        ]);
+
+        $editBlock = Block::find($blockId);
+        $editBlock->update(Arr::only($this->editBlockForm, 'block'));
+
+        // emit a new event for the notification
+        $this->emit('show.dialog', [
+            'icon' => 'success',
+            'title' => 'Update success',
+            'message' => 'Block has been updated!',
+            'reload' => true
+        ]);
     }
 
     public function mount()

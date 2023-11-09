@@ -36,7 +36,7 @@ class HomeownerCreate extends Component
     public $availableLBlockLots = [];
 
     /**
-     * The model for the home owner form
+     * The model for the homeowner form
      */
     public $form = [
         'first_name' => '',
@@ -65,7 +65,7 @@ class HomeownerCreate extends Component
 
     /**
      * Add the validation rules for createing
-     * a new home owner
+     * a new homeowner
      */
     protected function rules()
     {
@@ -125,7 +125,7 @@ class HomeownerCreate extends Component
         // and if new home owner is created
         $newHomeOwner = HomeOwner::create($this->form);
         if (! $newHomeOwner) {
-             // dispatch a javacript event to trigger the notification
+             // dispatch a javascript event to trigger the notification
             $this->emit('show.dialog', [
                 'icon' => 'info',
                 'title' => 'Create Failed',
@@ -144,8 +144,8 @@ class HomeownerCreate extends Component
 
         // create a user account
         $this->createAccount($newHomeOwner->toArray());
-        
-        // dispatch a javacript event to trigger the notification
+
+        // dispatch a javascript event to trigger the notification
         $this->emit('show.dialog', [
             'icon' => 'success',
             'title' => 'Create Success',
@@ -329,7 +329,7 @@ class HomeownerCreate extends Component
 
         $this->paymentTypes = PaymentType::orderBy('type', 'asc')->get();
     }
-    
+
     /**
      * Render the .blade.php file
      */

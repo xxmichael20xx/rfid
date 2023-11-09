@@ -25,22 +25,24 @@
                             </div>
 
                             <div class="row mb-3">
-                                <div class="col-12">
+                                <div class="col-4">
                                     <div class="input-container mb-3">
                                         <label for="block">Block<span class="required">*</span></label>
-                                        <input
-                                            id="block"
-                                            name="block"
-                                            type="text"
-                                            class="form-control @error('newBlock.block') is-invalid @enderror"
-                                            wire:model.lazy="newBlock.block"
-                                            autofocus>
-            
-                                        @error('newBlock.block')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ str_replace('new block.', '', $message) }}</strong>
-                                            </span>
-                                        @enderror
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text">Block</span>
+                                            <input
+                                                id="block"
+                                                name="block"
+                                                type="number"
+                                                class="form-control @error('newBlock.block') is-invalid @enderror"
+                                                wire:model.lazy="newBlock.block"
+                                                autofocus>
+                                            @error('newBlock.block')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ str_replace('new block.', '', $message) }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -51,7 +53,7 @@
                                             class="form-control form-control--textarea mt-2 @error('newBlock.details') is-invalid @enderror"
                                             wire:model.lazy="newBlock.details"
                                             placeholder="Enter block details"></textarea>
-            
+
                                         @error('newBlock.details')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ str_replace('new block.', '', $message) }}</strong>
@@ -60,7 +62,7 @@
                                     </div>
                                 </div>
                             </div>
-    
+
                             <div class="row mb-2">
                                 <div class="col-12">
                                     <label>Lots<span class="required">*</span></label>
@@ -71,26 +73,29 @@
                                             <div class="col-4">
                                                 <div class="input-container">
                                                     <label>Lot #{{ $newBlockKey + 1 }} name</label>
-                                                    <input
-                                                        type="text"
-                                                        class="form-control @error('newBlock.lots.'.$newBlockKey.'.lot') is-invalid @enderror"
-                                                        wire:model.lazy="newBlock.lots.{{ $newBlockKey }}.lot">
-                                                    @error('newBlock.lots.'.$newBlockKey.'.lot')
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text" id="basic-addon1">Lot</span>
+                                                        <input
+                                                            type="number"
+                                                            class="form-control @error('newBlock.lots.'.$newBlockKey.'.lot') is-invalid @enderror"
+                                                            wire:model.lazy="newBlock.lots.{{ $newBlockKey }}.lot">
+                                                        @error('newBlock.lots.'.$newBlockKey.'.lot')
                                                         <span class="invalid-feedback" role="alert">
                                                             <strong>{{ str_replace('new block.', '', $message) }}</strong>
                                                         </span>
-                                                    @enderror
+                                                        @enderror
+                                                    </div>
                                                 </div>
                                             </div>
                                             @if ($newBlockKey > 0)
-                                                <div class="col-8 d-flex justify-content-start align-items-end">
+                                                <div class="col-8 d-flex justify-content-start align-items-center">
                                                     <button type="button" class="btn btn-danger text-white ms-3" wire:click="removeLot({{ $newBlockKey }})">
                                                         <i class="fa fa-times"></i>
                                                     </button>
                                                 </div>
                                             @endif
                                         </div>
-    
+
                                         <div class="input-container">
                                             <label>Lot #{{ $newBlockKey + 1 }} details</label>
                                             <textarea
@@ -102,7 +107,7 @@
                                     </div>
                                 @endforeach
                             </div>
-                            
+
                             <div class="row mt-3">
                                 <div class="col-12 d-flex justify-content-between">
                                     <button type="button" class="btn btn-info text-white" wire:click="addLot">Add Lot</button>

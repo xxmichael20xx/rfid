@@ -28,11 +28,15 @@ class BlockManagementCreate extends Component
         return [
             'newBlock.block' => [
                 'required',
+                'numeric',
+                'min:1',
                 Rule::unique('blocks', 'block')
             ],
             'newBlock.details' => 'nullable',
             'newBlock.lots.*.lot' => [
                 'required',
+                'numeric',
+                'min:1',
                 'distinct',
                 Rule::unique('lots', 'lot')
             ]
@@ -45,6 +49,8 @@ class BlockManagementCreate extends Component
         $this->validate($this->rules(), [
             'newBlock.block.unique' => 'The block name is already taken.',
             'newBlock.lots.*.lot.required' => 'The lot name field is required.',
+            'newBlock.lots.*.lot.numeric' => 'The lot name should be number.',
+            'newBlock.lots.*.lot.min' => 'The lot name should at least 1.',
             'newBlock.lots.*.lot.distinct' => 'The lot name should be unique.',
             'newBlock.lots.*.lot.unique' => 'The lot name already taken.',
         ]);
