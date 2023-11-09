@@ -238,7 +238,7 @@ class HomeownerView extends Component
             'rfid_id' => data_get($vehicle, 'rfid.id'),
             'rfid' => data_get($vehicle, 'rfid.rfid'),
         ];
-        
+
         $this->emit('update.vehicle-prepare');
     }
 
@@ -339,7 +339,7 @@ class HomeownerView extends Component
         $this->emit('show.dialog', [
             'icon' => 'success',
             'title' => 'Assignment Success',
-            'message' => 'Blot & Lot has been successfully assigned!',
+            'message' => 'Block & Lot has been successfully assigned!',
             'reload' => true
         ]);
     }

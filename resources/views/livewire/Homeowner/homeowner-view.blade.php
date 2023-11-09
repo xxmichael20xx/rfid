@@ -819,7 +819,7 @@
                                         class="form-control @error('blockLotForm') is-invalid @enderror"
                                         wire:model.lazy="blockLotForm">
                                         @forelse ($availableLBlockLots as $key => $availableLBlockLot)
-                                            <optgroup label="Blot {{ $key }}">
+                                            <optgroup label="Block {{ $key }}">
                                                 @foreach ($availableLBlockLot as $lotKey => $lot)
                                                     <option value="{{ $lot }}">Lot {{ $lotKey }}</option>
                                                 @endforeach
