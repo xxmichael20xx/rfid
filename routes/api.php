@@ -28,6 +28,12 @@ Route::post('user/login', [ApiLoginController::class, 'login']);
 /** API for generating and downloading a QR */
 Route::get('download-qr', [QRController::class, 'downloadQr'])->name('download.qr');
 
+/** API for adding and generator QR code */
+Route::middleware('auth:sanctum')
+    ->group(function() {
+        Route::post('app/download-qr', [QRController::class, 'downloadAppQr'])->name('download.qr');
+    });
+
 Route::middleware('auth:sanctum')
     ->group(function() {
         /** API for Activities */
@@ -37,7 +43,7 @@ Route::middleware('auth:sanctum')
                 Route::get('today', [ActivitiesController::class, 'today']);
                 Route::get('search/{s}', [ActivitiesController::class, 'search']);
             });
-        
+
         /** API for Homw Owner - Visitor */
         Route::prefix('qr')
             ->group(function() {

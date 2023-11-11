@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HomeOwner;
 use App\Models\Visitor;
 use App\Services\QRService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class QRController extends Controller
@@ -24,9 +26,27 @@ class QRController extends Controller
         $this->qrService = new QRService;
     }
 
+    public function downloadAppQr(Request $request)
+    {
+        $user = $request->user();
+        $token = sprintf('%s_%s_%s', $user->home_owner_id, time(), Str::random(4));
+        $visitor = Visitor::create(array_merge($request->toArray(), [
+            'token' => $token,
+            'home_owner_id' => $user->home_owner_id
+        ]));
+
+        return $this->qrGenerate($visitor->id);
+    }
+
     public function downloadQr(Request $request)
     {
-        [$codeName, $codeUrl] = $this->qrService->googleQr($request->id);
+        return $this->qrGenerate($request->id);
+
+    }
+
+    protected function qrGenerate($id)
+    {
+        [$codeName, $codeUrl] = $this->qrService->googleQr($id);
 
         // Fetch the image data from the URL
         $imageData = Http::get($codeUrl)->body();
@@ -53,7 +73,7 @@ class QRController extends Controller
         Storage::putFileAs('images/qr', $uploadedFile, $codeName);
 
         // Update the Visitor QR data
-        $visitorToken = Visitor::find($request->id);
+        $visitorToken = Visitor::find($id);
         $visitorToken->update([
             'qr_image' => 'images/qr/' . $codeName
         ]);
