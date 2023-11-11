@@ -217,7 +217,7 @@ class HomeownerCreate extends Component
         $password = 'Password1';
         data_set($accountData, 'password', bcrypt($password));
         data_set($accountData, 'role', 'User');
-        data_set($accountData, 'home_owner_id', $homeOwner->id);
+        data_set($accountData, 'home_owner_id', data_get($homeOwner, 'id'));
 
         $user = User::create($accountData);
 
