@@ -205,4 +205,38 @@ class ApiHomeOwnerController extends Controller
             'data' => $officers
         ]);
     }
+
+    public function getCurrentUser(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'status' => true,
+            'data' => $user
+        ]);
+    }
+
+    public function updateCurrentUser(Request $request)
+    {
+        $user = $request->user();
+
+        // validate the request
+        $request->validate([
+            'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
+            'password' => ['nullable']
+        ]);
+
+        $user->update([$request->only('email')]);
+
+        if ($password = $request->password) {
+            $user->update([
+                'password' => bcrypt($password)
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Account updated'
+        ]);
+    }
 }

@@ -36,6 +36,16 @@ Route::middleware('auth:sanctum')
 
 Route::middleware('auth:sanctum')
     ->group(function() {
+        /** API for Account */
+        Route::prefix('account')
+            ->group(function() {
+                // Get current user
+                Route::get('get', [ApiHomeOwnerController::class, 'getCurrentUser']);
+
+                // Update user
+                ROute::post('update', [ApiHomeOwnerController::class, 'updateCurrentUser']);
+            });
+
         /** API for Activities */
         Route::prefix('activities')
             ->group(function() {
