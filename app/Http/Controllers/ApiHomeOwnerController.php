@@ -198,9 +198,11 @@ class ApiHomeOwnerController extends Controller
             ->orderBy('last_name', 'DESC')
             ->get();
 
+        $officers = $admin->merge($guards)->merge($treasurers);
+
         return response()->json([
             'status' => true,
-            'data' => array_merge($admin, $guards, $treasurers)
+            'data' => $officers
         ]);
     }
 }
