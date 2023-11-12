@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,4 +30,20 @@ class Activity extends Model
     protected $casts = [
         'metadata' => 'json'
     ];
+
+    /**
+     * Attributes to be appended
+     */
+    protected $appends = [
+        'event_date'
+    ];
+
+    public function getEventDateAttribute()
+    {
+        if ($this->start_date === $this->end_date) {
+            return Carbon::parse($this->start_date)->format('M d, Y');
+        } else {
+            return Carbon::parse($this->start_date)->format('M d') . ' - '. Carbon::parse($this->end_date)->format('M d, Y');
+        }
+    }
 }
