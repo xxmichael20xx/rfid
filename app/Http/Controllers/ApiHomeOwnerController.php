@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HomeOwner;
+use App\Models\Notification;
 use App\Models\Visitor;
 use App\Services\QRService;
 use Illuminate\Http\Request;
@@ -132,5 +133,36 @@ class ApiHomeOwnerController extends Controller
 
         // Create a response with the image data and headers
         return response($imageData, 200, $headers);
+    }
+
+    public function notificationsAll(Request $request)
+    {
+        $user = $request->user();
+        $homeOwnerId = $user->home_owner_id;
+
+        $notifications = Notification::where('home_owner_id', $homeOwnerId)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $notifications
+        ]);
+    }
+
+    public function notificationsUnread(Request $request)
+    {
+        $user = $request->user();
+        $homeOwnerId = $user->home_owner_id;
+
+        $notifications = Notification::where('home_owner_id', $homeOwnerId)
+            ->where('is_read', false)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $notifications
+        ]);
     }
 }

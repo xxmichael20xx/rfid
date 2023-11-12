@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Payments;
 
 use App\Exports\PaymentListExport;
 use App\Models\HomeOwner;
+use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\PaymentRemit;
 use App\Models\PaymentType;
@@ -271,12 +272,12 @@ class PaymentsList extends Component
         if ($paymentProceed) {
             // Update the payment
             $payment->update($paymentUpdateData);
-    
+
             if ($this->payForm['is_paid']) {
                 // Create new payment if payment is recurring
                 $this->processRecurringPayment($payment);
             }
-    
+
             // Emit a new event for the notification
             $this->emit('show.dialog', [
                 'icon' => 'success',
@@ -324,7 +325,7 @@ class PaymentsList extends Component
                     $newPaymentData[$key] = $value;
                 }
             }
-            
+
             // Create new recurring payment
             Payment::create($newPaymentData);
         }
@@ -374,6 +375,24 @@ class PaymentsList extends Component
             ]);
             return;
         }
+
+        $paymentData = Payment::find(data_get($payment, 'id'));
+        $dueDate = Carbon::parse($paymentData->due_date);
+        $diffInDays = Carbon::now()->diffInDays($dueDate);
+
+        $title = 'Payment Reminder';
+        $amount = number_format($paymentData->amount, 2);
+        $paymentType = $paymentData->paymentType->type;
+        $content = <<<HTML
+            <p>Payment '$paymentType' is due in <b>$diffInDays</b> with an amount of ₱$amount.</p>
+        HTML;
+
+        // Create new notification
+        Notification::create([
+            'home_owner_id' => $billerId,
+            'title' => $title,
+            'content' => $content
+        ]);
 
         $homeOwner->notify(new PaymentReminder($payment, $homeOwner));
         // Dispatch event for the notification

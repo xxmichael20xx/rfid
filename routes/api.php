@@ -44,7 +44,7 @@ Route::middleware('auth:sanctum')
                 Route::get('search/{s}', [ActivitiesController::class, 'search']);
             });
 
-        /** API for Homw Owner - Visitor */
+        /** API for HomeOwner - Visitor */
         Route::prefix('qr')
             ->group(function() {
                 // List the visitors
@@ -53,7 +53,17 @@ Route::middleware('auth:sanctum')
                 // Create new visitor
                 Route::post('visitor/add', [ApiHomeOwnerController::class, 'visitorAdd']);
 
-                // Download the QR for the vistor
+                // Download the QR for the visitor
                 Route::post('download', [ApiHomeOwnerController::class, 'downloadQr']);
+            });
+
+        /** API for HomeOwner - Notifications */
+        Route::prefix('notifications')
+            ->group(function() {
+                // List all
+                Route::get('all', [ApiHomeOwnerController::class, 'notificationsAll']);
+
+                // List unread notifications
+                Route::get('unread', [ApiHomeOwnerController::class, 'notificationsUnread']);
             });
     });

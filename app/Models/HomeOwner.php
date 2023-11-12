@@ -72,7 +72,7 @@ class HomeOwner extends Model
         foreach ($blockLots as $blockLot) {
             $block = Block::find($blockLot->block);
             $lot = Lot::find($blockLot->lot);
-            
+
             $blockName = $block->block;
 
             if (! isset($groupedBlockLots[$blockName])) {
@@ -123,6 +123,16 @@ class HomeOwner extends Model
     public function visitors()
     {
         return $this->hasMany(Visitor::class, 'home_owner_id', 'id');
+    }
+
+    public function unreadNotifs()
+    {
+        return $this->hasMany(Notification::class, 'home_owner_id', 'id')->where('id_read', false);
+    }
+
+    public function allNotifs()
+    {
+        return $this->hasMany(Notification::class, 'home_owner_id', 'id');
     }
 
     protected function profile(): Attribute
