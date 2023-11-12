@@ -146,6 +146,7 @@ class ApiHomeOwnerController extends Controller
 
         return response()->json([
             'status' => true,
+            'total' => $notifications->count(),
             'data' => $notifications
         ]);
     }
@@ -162,6 +163,7 @@ class ApiHomeOwnerController extends Controller
 
         return response()->json([
             'status' => true,
+            'total' => $notifications->count(),
             'data' => $notifications
         ]);
     }
