@@ -378,12 +378,11 @@ class PaymentsList extends Component
 
         $paymentData = Payment::find(data_get($payment, 'id'));
         $dueDate = Carbon::parse($paymentData->due_date);
-        $diffInDays = Carbon::now()->diffInDays($dueDate);
 
         $title = 'Payment Reminder';
         $amount = number_format($paymentData->amount, 2);
         $paymentType = $paymentData->paymentType->type;
-        $content = sprintf('Payment `%s` is due in `%s` with an amount of ₱`%s`.', $paymentType, $diffInDays, number_format($amount, 2));
+        $content = sprintf('Payment `%s` is due on `%s` with an amount of ₱`%s`.', $paymentType, $dueDate->format('M d, Y'), number_format($amount, 2));
 
         // Create new notification
         Notification::create([
