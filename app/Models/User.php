@@ -22,7 +22,10 @@ class User extends Authenticatable
         'middle_name',
         'email',
         'password',
-        'role'
+        'role',
+        'home_owner_id',
+        'contact_phone',
+        'contact_email'
     ];
 
     /**

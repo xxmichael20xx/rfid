@@ -8,7 +8,10 @@ use Livewire\Component;
 
 class UserManagement extends Component
 {
-    protected $listeners = ['updateRole'];
+    protected $listeners = [
+        'updateRole',
+        'deleteUser'
+    ];
 
     public $users;
     public $search;
@@ -19,8 +22,12 @@ class UserManagement extends Component
         'middle_name',
         'email',
         'password',
-        'role' => ''
+        'role' => '',
+        'contact_phone',
+        'contact_email'
     ];
+
+    public $updateForm;
     public $roles = ['Admin', 'Guard', 'Treasurer'];
 
     public function create()
@@ -33,7 +40,15 @@ class UserManagement extends Component
             'createForm.middle_name' => ['nullable', 'string', 'min:2', 'max:30'],
             'createForm.email' => ['required', 'email', Rule::unique('users', 'email')],
             'createForm.password' => ['required', 'string', 'min:8'],
-            'createForm.role' => ['required']
+            'createForm.role' => ['required'],
+            'createForm.contact_phone' => [
+                'required',
+                'regex:/^09\d{9}$/',
+                Rule::unique('users', 'contact_phone')
+            ],
+            'createForm.contact_email' => ['required', 'email', Rule::unique('users', 'contact_email')],
+        ], [
+            'createForm.contact_phone' => 'Contact number format is invalid, valid format is: 09123456789'
         ]);
 
         // create new user
@@ -63,6 +78,68 @@ class UserManagement extends Component
             'icon' => 'success',
             'title' => 'Update Success',
             'message' => 'User role has been updated!',
+            'reload' => true
+        ]);
+    }
+
+    public function deleteUser($id)
+    {
+        // fetch the user
+        $user = User::find($id);
+
+        // delete the user
+        $user->delete();
+
+        // emit a new event for the notification
+        $this->emit('show.dialog', [
+            'icon' => 'success',
+            'title' => 'Delete Success',
+            'message' => 'User has been successfully deleted!',
+            'reload' => true
+        ]);
+
+    }
+
+    public function prepareUpdate($id)
+    {
+        $user = User::find($id);
+        $this->updateForm = $user->toArray();
+
+        $this->emit('show.prepared-user');
+    }
+
+    public function update()
+    {
+        $userId = data_get($this->updateForm, 'id');
+        $nameRules = ['required', 'string', 'min:2', 'max:30'];
+
+        $this->validate([
+            'updateForm.first_name' => $nameRules,
+            'updateForm.last_name' => $nameRules,
+            'updateForm.middle_name' => ['nullable', 'string', 'min:2', 'max:30'],
+            'updateForm.role' => ['required'],
+            'updateForm.contact_phone' => [
+                'required',
+                'regex:/^09\d{9}$/',
+                Rule::unique('users', 'contact_phone')->ignore(data_get($this->updateForm, 'id'))
+            ],
+            'updateForm.contact_email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'contact_email')->ignore(data_get($this->updateForm, 'id'))
+            ],
+        ], [
+            'updateForm.contact_phone' => 'Contact number format is invalid, valid format is: 09123456789'
+        ]);
+
+        $user = User::find($userId);
+        $user->update($this->updateForm);
+
+        // emit a new event for the notification
+        $this->emit('show.dialog', [
+            'icon' => 'success',
+            'title' => 'Update Success',
+            'message' => 'User has been updated!',
             'reload' => true
         ]);
     }

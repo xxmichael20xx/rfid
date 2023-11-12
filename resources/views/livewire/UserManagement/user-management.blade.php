@@ -53,8 +53,19 @@
                                                     <td class="cell">{{ ucfirst($data->role) }}</td>
                                                     <td class="cell">{{ $data->email }}</td>
                                                     <td class="cell">
-                                                        <button type="button" class="btn btn-success text-white update-role" data-id="{{ $data->id }}">
-                                                            <i class="fa fa-pencil"></i> Update role
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-success text-white p-2"
+                                                            wire:click="prepareUpdate({{ $data->id }})"
+                                                        >
+                                                            <i class="fa fa-pencil"></i>
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-danger text-white p-2 prepare-delete"
+                                                            data-id="{{ $data->id }}"
+                                                        >
+                                                            <i class="fa fa-trash"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -74,8 +85,6 @@
         </div>
     </div>
 
-    {{-- Modals --}}
-    <!-- newUserModal Modal -->
     <div class="modal fade" id="newUserModal" tabindex="-1" aria-labelledby="newUserModalLabel" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog--md">
             <form method="POST" wire:submit.prevent="create">
@@ -194,9 +203,198 @@
                                             <option value="" disabled>No available role</option>
                                         @endforelse
                                     </select>
-        
+
                                     @error('createForm.role')
                                         <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5 mb-3">
+                            <div class="col-12">
+                                <p class="card-title h5">Contact Details</p>
+                                <hr class="theme-separator">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <div class="input-container mb-3">
+                                    <label for="contact_email">Email<span class="required">*</span></label>
+                                    <input
+                                        id="contact_email"
+                                        name="contact_email"
+                                        type="email"
+                                        class="form-control @error('createForm.contact_email') is-invalid @enderror"
+                                        wire:model.lazy="createForm.contact_email">
+
+                                    @error('createForm.contact_email')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="input-container mb-3">
+                                    <label for="contact_phone">Phone<span class="required">*</span></label>
+                                    <input
+                                        id="contact_phone"
+                                        name="contact_phone"
+                                        type="number"
+                                        class="form-control @error('createForm.contact_phone') is-invalid @enderror"
+                                        wire:model.lazy="createForm.contact_phone">
+
+                                    @error('createForm.contact_phone')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success text-white">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="updateUserModal" tabindex="-1" aria-labelledby="updateUserModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog--md">
+            <form method="POST" wire:submit.prevent="update">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="updateUserModalLabel">New User Form</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <div class="input-container mb-3">
+                                    <label for="first_name">First Name<span class="required">*</span></label>
+                                    <input
+                                        id="first_name"
+                                        name="first_name"
+                                        type="text"
+                                        class="form-control @error('updateForm.first_name') is-invalid @enderror"
+                                        wire:model.lazy="updateForm.first_name"
+                                        autofocus>
+
+                                    @error('updateForm.first_name')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="input-container mb-3">
+                                    <label for="last_name">Last Name<span class="required">*</span></label>
+                                    <input
+                                        id="last_name"
+                                        name="last_name"
+                                        type="text"
+                                        class="form-control @error('updateForm.last_name') is-invalid @enderror"
+                                        wire:model.lazy="updateForm.last_name">
+
+                                    @error('updateForm.last_name')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="input-container mb-3">
+                                    <label for="middle_name">Middle Name</label>
+                                    <input
+                                        id="middle_name"
+                                        name="middle_name"
+                                        type="text"
+                                        class="form-control @error('updateForm.middle_name') is-invalid @enderror"
+                                        wire:model.lazy="updateForm.middle_name">
+
+                                    @error('updateForm.middle_name')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="input-container mb-3">
+                                    <label for="role">Role<span class="required">*</span></label>
+                                    <select
+                                        name="role"
+                                        id="role"
+                                        class="form-select"
+                                        wire:model.lazy="updateForm.role">
+                                        <option value="" selected disabled>Select role</option>
+                                        @forelse ($roles as $role)
+                                            <option value="{{ $role }}">{{ $role }}</option>
+                                        @empty
+                                            <option value="" disabled>No available role</option>
+                                        @endforelse
+                                    </select>
+
+                                    @error('updateForm.role')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5 mb-3">
+                            <div class="col-12">
+                                <p class="card-title h5">Contact Details</p>
+                                <hr class="theme-separator">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <div class="input-container mb-3">
+                                    <label for="contact_email">Email<span class="required">*</span></label>
+                                    <input
+                                        id="contact_email"
+                                        name="contact_email"
+                                        type="email"
+                                        class="form-control @error('updateForm.contact_email') is-invalid @enderror"
+                                        wire:model.lazy="updateForm.contact_email">
+
+                                    @error('updateForm.contact_email')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('create form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="input-container mb-3">
+                                    <label for="contact_phone">Phone<span class="required">*</span></label>
+                                    <input
+                                        id="contact_phone"
+                                        name="contact_phone"
+                                        type="number"
+                                        class="form-control @error('updateForm.contact_phone') is-invalid @enderror"
+                                        wire:model.lazy="updateForm.contact_phone">
+
+                                    @error('updateForm.contact_phone')
+                                    <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
                                         </span>
                                     @enderror
@@ -241,7 +439,7 @@
                     } else {
                         urlSearch.set(key, value)
                     }
-                    
+
                     currentUrl.search = '?' + urlSearch.toString()
                     return currentUrl
                 }
@@ -274,6 +472,31 @@
                             Livewire.emit('updateRole', { id: id, role: selectedOption })
                         }
                     });
+                })
+
+                /** Define event to show update modal */
+                Livewire.on('show.prepared-user', function() {
+                    const updateUserModal = new bootstrap.Modal('#updateUserModal', {})
+                    updateUserModal.show()
+                })
+
+                /** Define click event to delete user */
+                $(document).on('click', '.prepare-delete', function() {
+                    const id = $(this).data('id')
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Are you sure?',
+                        text: 'User will be deleted and can\'t be undone!',
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, confirm!',
+                        cancelButtonText: 'Cancel'
+                    }).then(function(e) {
+                        if (e.isConfirmed) {
+                            Livewire.emit('deleteUser', id)
+                        }
+                    })
                 })
             })
         </script>
