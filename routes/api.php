@@ -66,4 +66,11 @@ Route::middleware('auth:sanctum')
                 // List unread notifications
                 Route::get('unread', [ApiHomeOwnerController::class, 'notificationsUnread']);
             });
+
+        /** API for Officers */
+        Route::prefix('officers')
+            ->group(function() {
+                // List all
+                Route::get('all', [ApiHomeOwnerController::class, 'officersAll']);
+            });
     });

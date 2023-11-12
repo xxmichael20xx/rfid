@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HomeOwner;
 use App\Models\Notification;
+use App\Models\User;
 use App\Models\Visitor;
 use App\Services\QRService;
 use Illuminate\Http\Request;
@@ -135,11 +136,15 @@ class ApiHomeOwnerController extends Controller
         return response($imageData, 200, $headers);
     }
 
+    /**
+     * Get all the homeowners notifications
+     */
     public function notificationsAll(Request $request)
     {
         $user = $request->user();
         $homeOwnerId = $user->home_owner_id;
 
+        // fetch all notifications
         $notifications = Notification::where('home_owner_id', $homeOwnerId)
             ->latest()
             ->get();
@@ -158,6 +163,9 @@ class ApiHomeOwnerController extends Controller
         ]);
     }
 
+    /**
+     * Fetch all unread notifications of the homeowner
+     */
     public function notificationsUnread(Request $request)
     {
         $user = $request->user();
@@ -172,6 +180,27 @@ class ApiHomeOwnerController extends Controller
             'status' => true,
             'total' => $notifications->count(),
             'data' => $notifications
+        ]);
+    }
+
+    /**
+     * Get all officers
+     */
+    public function officersAll(Request $request)
+    {
+        $admin = User::where('role', 'Admin')
+            ->orderBy('last_name', 'DESC')
+            ->get();
+        $guards = User::where('role', 'Guard')
+            ->orderBy('last_name', 'DESC')
+            ->get();
+        $treasurers = User::where('roke', 'Treasurer')
+            ->orderBy('last_name', 'DESC')
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => array_merge($admin, $guards, $treasurers)
         ]);
     }
 }
