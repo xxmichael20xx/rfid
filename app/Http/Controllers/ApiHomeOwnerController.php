@@ -144,6 +144,13 @@ class ApiHomeOwnerController extends Controller
             ->latest()
             ->get();
 
+        // Update all notifications as read
+        Notification::where('home_owner_id', $homeOwnerId)
+            ->latest()
+            ->update([
+                'is_read' => true
+            ]);
+
         return response()->json([
             'status' => true,
             'total' => $notifications->count(),
