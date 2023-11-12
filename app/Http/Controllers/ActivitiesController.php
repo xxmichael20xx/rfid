@@ -73,7 +73,7 @@ class ActivitiesController extends Controller
                 $query->where('start_date', '<=', $today)->where('end_date', '>=', $today);
             })->get();
 
-        $upcomingActivities = Activity::whereDate('state_date', '>', $today)->get();
+        $upcomingActivities = Activity::whereDate('start_date', '>', $today)->get();
 
         return response()->json([
             'status' => true,
