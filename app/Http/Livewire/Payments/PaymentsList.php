@@ -382,7 +382,7 @@ class PaymentsList extends Component
         $title = 'Payment Reminder';
         $amount = number_format($paymentData->amount, 2);
         $paymentType = $paymentData->paymentType->type;
-        $content = sprintf('Payment `%s` is due on `%s` with an amount of ₱`%s`.', $paymentType, $dueDate->format('M d, Y'), number_format($amount, 2));
+        $content = sprintf('Payment `%s` is due on `%s` with an amount of ₱`%s`.', $paymentType, $dueDate->format('M d, Y'), $amount);
 
         // Create new notification
         Notification::create([
