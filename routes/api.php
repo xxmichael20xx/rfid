@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')
         /** API for Activities */
         Route::prefix('activities')
             ->group(function() {
+                Route::get('grouped', [ActivitiesController::class, 'grouped']);
                 Route::get('all', [ActivitiesController::class, 'all']);
                 Route::get('today', [ActivitiesController::class, 'today']);
                 Route::get('search/{s}', [ActivitiesController::class, 'search']);

@@ -60,6 +60,29 @@ class ActivitiesController extends Controller
     }
 
     /**
+     * Fetch grouped Activities
+     * In-progress and Future
+     */
+    public function grouped()
+    {
+        $today = Carbon::today()->format('Y-m-d');
+
+        $activitiesToday = Activity::whereDate('start_date', $today)
+            ->orWhereDate('end_date', $today)
+            ->orWhere(function($query) use($today) {
+                $query->where('start_date', '<=', $today)->where('end_date', '>=', $today);
+            })->get();
+
+        $upcomingActivities = Activity::whereDate('state_date', '>', $today)->get();
+
+        return response()->json([
+            'status' => true,
+            'today' => $activitiesToday,
+            'upcomming' => $upcomingActivities
+        ]);
+    }
+
+    /**
      * Callback for the API today
      */
     public function today()
@@ -71,7 +94,7 @@ class ActivitiesController extends Controller
             ->orWhere(function($query) use($today) {
                 $query->where('start_date', '<=', $today)->where('end_date', '>=', $today);
             })->get();
-        
+
         return response()->json([
             'status' => true,
             'data' => $activities
@@ -88,7 +111,7 @@ class ActivitiesController extends Controller
             ->orWhere('location', 'LIKE', $likeSearch)
             ->orderBy('created_at', 'DESC')
             ->get();
-        
+
         return response()->json([
             'status' => true,
             'data' => $activities

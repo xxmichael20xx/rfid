@@ -20,7 +20,6 @@ use App\Http\Livewire\Homeowner\HomeownerView;
 use App\Http\Livewire\Payments\PaymentsExpenses;
 use App\Http\Livewire\Payments\PaymentsList;
 use App\Http\Livewire\Payments\PaymentsOverview;
-use App\Http\Livewire\Payments\PaymentsRecurring;
 use App\Http\Livewire\Payments\PaymentsTypes;
 use App\Http\Livewire\Profile\ProfileList;
 use App\Http\Livewire\Rfid\RfidList;
@@ -49,17 +48,20 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-        
+
+/** Route for testing */
+Route::get('test', [TestController::class, 'template']);
+
 /** Define login page */
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth.admin')
     ->group(function() {
         Route::get('/home', [HomeController::class, 'index'])->name('home');
-        
+
         /** Define dashboard page */
         Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-        
+
         /** Define homeowners pages */
         Route::name('homeowners.')
             ->prefix('homeowners')
@@ -69,16 +71,16 @@ Route::middleware('auth.admin')
                 Route::get('update/{id}', HomeownerUpdate::class)->name('update');
                 Route::get('view/{id}', HomeownerView::class)->name('view');
             });
-        
-        
+
+
         /** Define profiles pages */
         Route::name('profiles.')
             ->prefix('profiles')
             ->group(function() {
                 Route::get('/', ProfileList::class)->name('list');
             });
-        
-        
+
+
         /** Define activities pages */
         Route::name('activities.')
             ->prefix('activities')
@@ -87,7 +89,7 @@ Route::middleware('auth.admin')
                 Route::get('new', ActivityCreate::class)->name('create');
                 Route::get('update/{id}', ActivityUpdate::class)->name('update');
             });
-        
+
         /** Define block management pages */
         Route::name('block-management.')
             ->prefix('block-management')
@@ -95,7 +97,7 @@ Route::middleware('auth.admin')
                 Route::get('/', BlockManagementList::class)->name('list');
                 Route::get('create', BlockManagementCreate::class)->name('create');
             });
-        
+
         /** Define RFID pages */
         Route::name('rfid.')
             ->prefix('rfid')
@@ -110,7 +112,7 @@ Route::middleware('auth.admin')
             ->group(function() {
                 Route::get('/', UserManagement::class)->name('index');
             });
-        
+
         /** Define User Management pages */
         Route::name('visitor-monitoring.')
             ->prefix('visitor-monitoring')
