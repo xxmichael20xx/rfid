@@ -57,13 +57,13 @@
                                                     <td class="cell">{{ $data->vehicles->count() }}</td>
                                                     <td class="cell d-flex">
                                                         @livewire('homeowner.homeowner-delete', ['modelId' => $data->id])
-                                                        
-                                                        <a href="{{ route('homeowners.update', ['id' => $data->id]) }}" class="btn btn-info text-white p-2 ms-2">
-                                                            <i class="fa fa-pencil"></i>
-                                                        </a>
-                
+
                                                         <a href="{{ route('homeowners.view', ['id' => $data->id]) }}" class="btn btn-success text-white p-2 ms-2">
                                                             <i class="fa fa-eye"></i>
+                                                        </a>
+
+                                                        <a href="{{ route('homeowners.update', ['id' => $data->id]) }}" class="btn btn-info text-white p-2 ms-2">
+                                                            <i class="fa fa-pencil"></i>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -113,7 +113,7 @@
             } else {
                 urlSearch.set(key, value)
             }
-            
+
             currentUrl.search = '?' + urlSearch.toString()
             return currentUrl
         }
