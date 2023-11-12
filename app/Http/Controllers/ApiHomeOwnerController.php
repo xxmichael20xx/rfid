@@ -226,7 +226,9 @@ class ApiHomeOwnerController extends Controller
             'password' => ['nullable']
         ]);
 
-        $user->update([$request->only('email')]);
+        $user->update([
+            'email' => $request->email
+        ]);
 
         if ($password = $request->password) {
             $user->update([
