@@ -194,7 +194,7 @@ class ApiHomeOwnerController extends Controller
         $guards = User::where('role', 'Guard')
             ->orderBy('last_name', 'DESC')
             ->get();
-        $treasurers = User::where('roke', 'Treasurer')
+        $treasurers = User::where('role', 'Treasurer')
             ->orderBy('last_name', 'DESC')
             ->get();
 
