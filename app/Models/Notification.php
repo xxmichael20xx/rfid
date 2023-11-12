@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +26,21 @@ class Notification extends Model
     protected $casts = [
         'metadata' => 'json'
     ];
+
+    /**
+     * Attributes that will be appended
+     */
+    protected $appends = [
+        'formatted_date'
+    ];
+
+    /**
+     * Attribute methods
+     */
+    public function getFormattedDateAttribute()
+    {
+        return Carbon::parse($this->created_at)->diffForHumans();
+    }
 
     /**
      * Table relationships
