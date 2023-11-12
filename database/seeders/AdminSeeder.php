@@ -27,12 +27,13 @@ class AdminSeeder extends Seeder
             $user->last_name = 'Admin';
             $user->email = $email;
             $user->password = bcrypt($password);
+            $user->contact_email = $email;
+            $user->contact_phone = '09090909090';
             $user->save();
         }
 
         // Guard account
         $email = 'guard1@test.com';
-        $password = 'Password1';
 
         // check if admin account exists
         if (! User::where('email', $email)->first()) {
@@ -43,12 +44,13 @@ class AdminSeeder extends Seeder
             $user->email = $email;
             $user->password = bcrypt($password);
             $user->role = 'Guard';
+            $user->contact_email = $email;
+            $user->contact_phone = '09123456789';
             $user->save();
         }
 
         // Treasurer account
         $email = 'treasurer@test.com';
-        $password = 'Password1';
 
         // check if admin account exists
         if (! User::where('email', $email)->first()) {
@@ -59,6 +61,8 @@ class AdminSeeder extends Seeder
             $user->email = $email;
             $user->password = bcrypt($password);
             $user->role = 'Treasurer';
+            $user->contact_email = $email;
+            $user->contact_phone = '09234567890';
             $user->save();
         }
     }

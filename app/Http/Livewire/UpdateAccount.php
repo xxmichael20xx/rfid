@@ -15,16 +15,32 @@ class UpdateAccount extends Component
 
     public function updateAccount()
     {
+        $userId = $this->user->id;
+
         // validate the form
         $this->validate([
-            'form.email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->user->id, 'id')],
+            'form.email' => ['required', 'email', Rule::unique('users', 'email')->ignore($userId)],
             'form.new_password' => ['nullable', new NewPassword],
-            'form.current_password' => ['required', new CurrentPassword]
+            'form.current_password' => ['required', new CurrentPassword],
+            'form.contact_phone' => [
+                'required',
+                'regex:/^09\d{9}$/',
+                Rule::unique('users', 'contact_phone')->ignore($userId)
+            ],
+            'form.contact_email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'contact_email')->ignore($userId)
+            ],
+        ], [
+            'updateForm.contact_phone' => 'Contact number format is invalid, valid format is: 09123456789'
         ]);
 
         $user = User::find($this->user->id);
         $user->update([
-            'email' => $this->form['email']
+            'email' => $this->form['email'],
+            'contact_phone' => $this->form['contact_phone'],
+            'contact_email' => $this->form['contact_email'],
         ]);
 
         $newPassword = $this->form['new_password'];
@@ -52,6 +68,8 @@ class UpdateAccount extends Component
             'email' => $this->user->email,
             'new_password' => '',
             'current_password' => '',
+            'contact_email' => $this->user->contact_email,
+            'contact_phone' => $this->user->contact_phone,
         ];
     }
 
