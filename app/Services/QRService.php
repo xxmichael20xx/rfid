@@ -2,18 +2,17 @@
 
 namespace App\Services;
 
+use App\Models\Visitor;
 use Illuminate\Support\Str;
 
 class QRService
 {
     public function googleQr($id)
     {
-        // Generate a random 20-character string
-        $randomString = Str::random(32);
-
         // Append the current timestamp to the random string
+        $visitorData = Visitor::find($id);
         $timestamp = now()->timestamp;
-        $codeToken = $id . '_' . $randomString . $timestamp;
+        $codeToken = $visitorData->token;
         $codeName = 'qr_code_' . $timestamp . '.png';
         $codeUrl = 'https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=' . $codeToken;
 

@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-    
+
     @section('scripts')
         <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
         <script>
@@ -33,7 +33,7 @@
                     false
                 );
                 html5QrcodeScanner.render(onScanSuccess, onScanFailure)
-    
+
                 function onScanSuccess(decodedText, decodedResult) {
                     if (! hasQrScanned) {
                         hasQrScanned = true
@@ -46,11 +46,11 @@
                                 Swal.showLoading()
                             }
                         })
-    
+
                         Livewire.emit('validateQrCode', decodedText)
                     }
                 }
-    
+
                 function onScanFailure(error) {
                     console.warn(`Code scan error = ${error}`)
                 }

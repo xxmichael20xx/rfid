@@ -23,15 +23,25 @@
                         </div>
                         <div class="col-8 text-right">
                             <div class="row justify-content-end">
-                                <div class="col-4 d-flex flex-column">
+                                <form
+                                    class="col-4 d-flex flex-column"
+                                    action=""
+                                    method="GET"
+                                >
                                     <div class="input-container input-group me-2">
-                                        <input type="search" name="search" id="search" class="form-control" placeholder="Search..." value="{{ request()->get('search') }}">
-                                        <button class="btn btn-secondary" type="button" id="search-btn">Search</button>
+                                        <input
+                                            type="search" name="search"
+                                            id="search" class="form-control"
+                                            placeholder="Search..."
+                                            value="{{ request()->get('search') }}"
+                                            required
+                                        >
+                                        <button class="btn btn-secondary" type="submit" id="search-btn">Search</button>
                                     </div>
                                     @if (request()->get('search'))
                                         <a href="{{ route('homeowners.list') }}" class="text-help mt-2">Clear search/filters</a>
                                     @endif
-                                </div>
+                                </form>
                             </div>
                         </div>
                         <div class="col-12">
@@ -83,40 +93,4 @@
         </div>
     </div>
 </div>
-@endsection
-
-@section('scripts')
-<script>
-    $(document).ready(function() {
-        /** Add keydown event to search input */
-        const search = document.getElementById('search')
-        search.addEventListener('keydown', (event) => {
-            if (event.keyCode === 13 && search.value !== '') {
-                window.location.href = setUrlParam('search', search.value)
-            }
-        })
-
-        /** Definf click event to search */
-        $(document).on('click', '#search-btn', function() {
-            if (search.value) {
-                window.location.href = setUrlParam('search', search.value)
-            }
-        })
-
-        /** Define function set set the URL parameter */
-        function setUrlParam(key, value) {
-            let currentUrl = new URL(window.location.href)
-            let urlSearch = new URLSearchParams(currentUrl.search)
-
-            if (urlSearch.size < 1) {
-                urlSearch.append(key, value)
-            } else {
-                urlSearch.set(key, value)
-            }
-
-            currentUrl.search = '?' + urlSearch.toString()
-            return currentUrl
-        }
-    })
-</script>
 @endsection

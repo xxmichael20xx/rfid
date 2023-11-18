@@ -31,7 +31,7 @@ Route::get('download-qr', [QRController::class, 'downloadQr'])->name('download.q
 /** API for adding and generator QR code */
 Route::middleware('auth:sanctum')
     ->group(function() {
-        Route::post('app/download-qr', [QRController::class, 'downloadAppQr'])->name('download.qr');
+        Route::post('app/download-qr', [QRController::class, 'downloadAppQr'])->name('app.download.qr');
     });
 
 Route::middleware('auth:sanctum')

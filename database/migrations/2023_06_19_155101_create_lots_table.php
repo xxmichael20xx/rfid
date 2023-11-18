@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('block_id');
             $table->foreign('block_id')->references('id')->on('blocks');
-            $table->string('lot')->unique();
+            $table->string('lot');
             $table->text('details')->nullable();
             $table->string('availability')->default('available')->nullable();
             $table->json('metadata')->nullable();
