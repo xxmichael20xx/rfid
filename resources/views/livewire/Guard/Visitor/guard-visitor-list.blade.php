@@ -2,6 +2,12 @@
     <div class="row g-4 mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <h1 class="app-page-title">Visitor Monitoring</h1>
+
+            <div class="col-auto">
+                <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#addRequestModal">
+                    <i class="fa fa-info-circle"></i> Add Request
+                </button>
+            </div>
         </div>
     </div>
 
@@ -13,6 +19,31 @@
                         <div class="row">
                             <div class="col-4">
                                 <p class="card-title h5">List of Visitors</p>
+                            </div>
+                            <div class="col-8 text-right" wire:ignore>
+                                <div class="row justify-content-end">
+                                    <form
+                                        class="col-4 d-flex flex-column"
+                                        action=""
+                                        method="GET"
+                                    >
+                                        <div class="input-container input-group me-2">
+                                            <input
+                                                type="search"
+                                                name="search"
+                                                id="search"
+                                                class="form-control"
+                                                placeholder="Search..."
+                                                value="{{ request()->get('search') }}"
+                                                required
+                                            >
+                                            <button class="btn btn-secondary" type="submit" id="search-btn">Search</button>
+                                        </div>
+                                        @if (request()->get('search'))
+                                            <a href="{{ route('guard.visitors.list') }}" class="text-help mt-2">Clear search/filters</a>
+                                        @endif
+                                    </form>
+                                </div>
                             </div>
                             <div class="col-12">
                                 <hr class="theme-separator">
@@ -52,9 +83,7 @@
                                                         </span>
                                                     </td>
                                                     <td class="cell">
-                                                        @if($visitor->date_visited)
-                                                            {{ Carbon\Carbon::parse($visitor->date_visited)->format('M d, Y @ h:ia') }}
-                                                        @endif
+                                                        {{ Carbon\Carbon::parse($visitor->date_visited)->format('M d, Y @ h:ia') }}
                                                     </td>
                                                 </tr>
                                             @empty
@@ -73,10 +102,85 @@
         </div>
     </div>
 
+    <div class="modal fade" id="addRequestModal" tabindex="-1" aria-labelledby="addRequestModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog">
+            <form method="POST" wire:submit.prevent="submitRequest">
+                @csrf
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="addRequestModalLabel">Visitor - Request</h1>
+                        <button type="button" class="btn-close" id="request-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="home_owner_id">Homw Owner<span class="required">*</span></label>
+                                    <select
+                                        name="home_owner_id"
+                                        id="home_owner_id"
+                                        class="form-select"
+                                        wire:model.lazy="requestForm.home_owner_id"
+                                    >
+                                        <option value="" selected disabled>Select home owner</option>
+                                        @forelse ($homeOwners as $data)
+                                            <option value="{{ $data->id }}">{{ $data->last_full_name }}</option>
+                                        @empty
+                                            <option value="" disabled>No available home owner</option>
+                                        @endforelse
+                                    </select>
+
+                                    @error('requestForm.home_owner_id')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('request form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="details">Details</label>
+                                    <textarea
+                                        type="text"
+                                        class="form-control form-control--textarea mt-2 @error('requestForm.details') is-invalid @enderror"
+                                        wire:model.lazy="requestForm.details"
+                                        placeholder="Enter request details"></textarea>
+
+                                    @error('requestForm.details')
+                                    <span class="invalid-feedback" role="alert">
+                                                <strong>{{ str_replace('request form.', '', $message) }}</strong>
+                                            </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary text-white">Send Request</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     @section('scripts')
         <script>
             $(document).ready(function() {
+                /** Define event listener for request success */
+                Livewire.on('guard.request-success', function(e) {
+                    $('#request-btn-close').click()
 
+                    Swal.fire({
+                        icon: e.icon,
+                        title: e.title,
+                        text: e.message,
+                    })
+                })
             })
         </script>
     @endsection
