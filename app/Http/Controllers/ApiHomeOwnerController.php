@@ -213,7 +213,8 @@ class ApiHomeOwnerController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => $user
+            'user' => $user,
+            'home_data' => $user->home_data
         ]);
     }
 
