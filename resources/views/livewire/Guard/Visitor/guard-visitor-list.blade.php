@@ -51,7 +51,11 @@
                                                             {{ $visitor->for->last_full_name }}
                                                         </span>
                                                     </td>
-                                                    <td class="cell">{{ Carbon\Carbon::parse($visitor->date_visited)->format('M d, Y @ h:ia') }}</td>
+                                                    <td class="cell">
+                                                        @if($visitor->date_visited)
+                                                            {{ Carbon\Carbon::parse($visitor->date_visited)->format('M d, Y @ h:ia') }}
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                             @empty
                                                 <tr>
