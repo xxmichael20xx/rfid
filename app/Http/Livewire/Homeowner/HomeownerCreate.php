@@ -123,6 +123,10 @@ class HomeownerCreate extends Component
 
         // create a new home owner if validation is passed
         // and if new home owner is created
+        $middleName = $this->form['middle_name'];
+        if (empty($middleName) || $middleName == '') {
+            $this->form['middle_name'] = NULL;
+        }
         $newHomeOwner = HomeOwner::create($this->form);
         if (! $newHomeOwner) {
              // dispatch a javascript event to trigger the notification

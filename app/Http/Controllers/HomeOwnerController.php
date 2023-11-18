@@ -14,19 +14,26 @@ class HomeOwnerController extends Controller
      */
     public function list(Request $request)
     {
-        // get all home owners data from database
-        $homeOwners = HomeOwner::with(['blockLots', 'blockLots.block', 'blockLots.lot', 'vehicles'])->orderBy('created_at', 'DESC')->get();
+        // Start with the initial query to retrieve all home owners
+        $query = HomeOwner::with(['blockLots', 'blockLots.block', 'blockLots.lot', 'vehicles'])->orderBy('created_at', 'DESC');
 
-        // check if URL has "?search=keyword"
-        if ($search = data_get($_GET, 'search')) {
-            $likeSearch = '%'.$search.'%';
-                $homeOwners = HomeOwner::where(function($query) use ($likeSearch) {
+        // Check if URL has "?search=keyword"
+        if ($search = $request->input('search')) {
+            $likeSearch = '%' . $search . '%';
+            $query->where(function($query) use ($likeSearch) {
+                $query->where(function($query) use ($likeSearch) {
                     $query->where(DB::raw("CONCAT(last_name, ', ', first_name, COALESCE(', ', middle_name, ''))"), 'LIKE', $likeSearch)
-                            ->orWhere(DB::raw("CONCAT(first_name, COALESCE(' ', middle_name, ''), ' ', last_name)"), 'LIKE', $likeSearch);
+                        ->orWhere(function ($query) use ($likeSearch) {
+                            $query->whereNull('middle_name')
+                                ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $likeSearch);
+                        });
                 })
-                ->orderBy('created_at', 'DESC')
-                ->get();
+                ->orWhere(DB::raw("CONCAT(first_name, COALESCE(' ', middle_name, ''), ' ', last_name)"), 'LIKE', $likeSearch);
+            });
         }
+
+        // Get the results after applying the search conditions
+        $homeOwners = $query->get();
 
         return view('admin.Homeowner.list', compact('homeOwners', 'search'));
     }

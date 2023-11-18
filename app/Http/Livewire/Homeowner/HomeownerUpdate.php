@@ -83,7 +83,10 @@ class HomeownerUpdate extends Component
             }
         }
 
-        // set the selected lot
+        $middleName = $this->form['middle_name'];
+        if (empty($middleName) || $middleName == '') {
+            $this->model['middle_name'] = NULL;
+        }
         HomeOwner::find($this->model['id'])->update($this->model);
         
         // dispatch a javacript event to trigger the notification

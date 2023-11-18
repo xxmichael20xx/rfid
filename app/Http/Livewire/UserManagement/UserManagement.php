@@ -175,13 +175,17 @@ class UserManagement extends Component
             $this->users = User::where('id', '<>', $userId)
                 ->whereIn('role', $typeToGet)
                 ->where(function ($query) use ($likeSearch) {
-                    $query->where(DB::raw("CONCAT(last_name, ', ', first_name, COALESCE(', ', middle_name, ''))"), 'LIKE', $likeSearch)
-                        ->orWhere(DB::raw("CONCAT(first_name, COALESCE(' ', middle_name, ''), ' ', last_name)"), 'LIKE', $likeSearch);
-                })
-                ->orWhere(function($query) use ($likeSearch) {
-                    $query->where('email', 'LIKE', $likeSearch);
+                    $query->where(function ($query) use ($likeSearch) {
+                        $query->where(DB::raw("CONCAT(last_name, ', ', first_name, COALESCE(', ', middle_name, ''))"), 'LIKE', $likeSearch)
+                            ->orWhere(function ($query) use ($likeSearch) {
+                                $query->whereNull('middle_name')
+                                    ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $likeSearch);
+                            });
+                    })
+                    ->orWhere('email', 'LIKE', $likeSearch);
                 })
                 ->get();
+
         }
     }
 

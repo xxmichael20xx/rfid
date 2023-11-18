@@ -50,18 +50,24 @@ class GuardVisitorList extends Component
         $visitorQuery = Visitor::with('for')
             ->whereNotNull('date_visited');
 
-        if ($search = request('search')) {
-            $likeSearch = '%' . $search . '%';
-            $visitorQuery = $visitorQuery->where(function ($query) use ($likeSearch) {
-                $query->where(DB::raw("CONCAT(last_name, ', ', first_name)"), 'LIKE', $likeSearch)
-                    ->orWhere(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $likeSearch);
-            })->orWhereHas('for', function ($query) use ($likeSearch) {
-                $query->where(function ($query) use ($likeSearch) {
-                    $query->where(DB::raw("CONCAT(last_name, ', ', first_name, COALESCE(', ', middle_name, ''))"), 'LIKE', $likeSearch)
-                        ->orWhere(DB::raw("CONCAT(first_name, COALESCE(' ', middle_name, ''), ' ', last_name)"), 'LIKE', $likeSearch);
+            if ($search = request('search')) {
+                $likeSearch = '%' . $search . '%';
+                $visitorQuery = $visitorQuery->where(function ($query) use ($likeSearch) {
+                    $query->where(function ($query) use ($likeSearch) {
+                        $query->where(DB::raw("CONCAT(last_name, ', ', first_name)"), 'LIKE', $likeSearch)
+                            ->orWhere(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $likeSearch);
+                    })
+                    ->orWhereHas('for', function ($query) use ($likeSearch) {
+                        $query->where(function ($query) use ($likeSearch) {
+                            $query->where(DB::raw("CONCAT(last_name, ', ', first_name, COALESCE(', ', middle_name, ''))"), 'LIKE', $likeSearch)
+                                ->orWhere(function ($query) use ($likeSearch) {
+                                    $query->whereNull('middle_name')
+                                        ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $likeSearch);
+                                });
+                        });
+                    });
                 });
-            });
-        }
+            }
 
         $this->visitors = $visitorQuery
             ->orderByDesc('date_visited')
