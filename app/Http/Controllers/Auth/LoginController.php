@@ -32,13 +32,18 @@ class LoginController extends Controller
             case 'Admin':
                 $redirect = RouteServiceProvider::DASHBOARD;
                 break;
-            
+
             case 'Guard':
                 $redirect = RouteServiceProvider::GUARD;
                 break;
 
-            default:
+            case 'Treasurer':
                 $redirect = RouteServiceProvider::TREASURER;
+                break;
+
+            default:
+                $redirect = 'login';
+                auth()->logout();
                 break;
         }
 

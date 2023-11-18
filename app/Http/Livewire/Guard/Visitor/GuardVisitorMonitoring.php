@@ -5,9 +5,7 @@ namespace App\Http\Livewire\Guard\Visitor;
 use App\Models\Notification;
 use App\Models\Visitor;
 use App\Services\QRService;
-use Illuminate\Support\Facades\Response;
 use Livewire\Component;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class GuardVisitorMonitoring extends Component
 {
@@ -24,6 +22,8 @@ class GuardVisitorMonitoring extends Component
     public function __construct()
     {
         $this->qrService = new QRService;
+
+        parent::__construct();
     }
 
     /**
@@ -66,6 +66,8 @@ class GuardVisitorMonitoring extends Component
                     'title' => 'Welcome Visitor!',
                     'message' => 'Have a good day!'
                 ]);
+
+                $this->emitTo('guard.visitor.guard-homeowner-details', 'showHomeownerDetails', ['id' => $visitorToken->home_owner_id]);
             }
         }
     }

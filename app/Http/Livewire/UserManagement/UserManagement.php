@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire\UserManagement;
 
+use App\Models\HomeOwner;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
@@ -29,6 +31,8 @@ class UserManagement extends Component
 
     public $updateForm;
     public $roles = ['Admin', 'Guard', 'Treasurer'];
+
+    public $homeOwner;
 
     public function create()
     {
@@ -144,21 +148,39 @@ class UserManagement extends Component
         ]);
     }
 
+    public function previewView($id)
+    {
+        $this->homeOwner = HomeOwner::withTrashed()->find($id);
+
+        $this->emit('show.admin-homeowner');
+    }
+
     public function mount()
     {
+        if (! in_array(request('type'), ['officers', 'users'])) {
+            return redirect()->route('user-management.index', ['type' => 'officers']);
+        }
+
+        $typeToGet = (request('type') == 'officers') ? ['Guard', 'Treasurer'] : ['User'];
+
         $userId = auth()->user()->id;
         $this->users = User::where('id', '<>', $userId)
-            ->where('Role', '<>', 'User')
+            ->whereIn('role', $typeToGet)
             ->get();
 
         if ($search = request()->get('search')) {
             $this->search = $search;
 
-            $likeSearch = '%'.$search.'%';
+            $likeSearch = '%' . $search . '%';
             $this->users = User::where('id', '<>', $userId)
-                ->where('first_name', 'LIKE', $likeSearch)
-                ->orWhere('last_name', 'LIKE', $likeSearch)
-                ->orWhere('middle_name', 'LIKE', $likeSearch)
+                ->whereIn('role', $typeToGet)
+                ->where(function ($query) use ($likeSearch) {
+                    $query->where(DB::raw("CONCAT(last_name, ', ', first_name, COALESCE(', ', middle_name, ''))"), 'LIKE', $likeSearch)
+                        ->orWhere(DB::raw("CONCAT(first_name, COALESCE(' ', middle_name, ''), ' ', last_name)"), 'LIKE', $likeSearch);
+                })
+                ->orWhere(function($query) use ($likeSearch) {
+                    $query->where('email', 'LIKE', $likeSearch);
+                })
                 ->get();
         }
     }

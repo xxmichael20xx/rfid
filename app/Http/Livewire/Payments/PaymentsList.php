@@ -11,6 +11,7 @@ use App\Models\PaymentType;
 use App\Notifications\PaymentReminder;
 use App\Rules\NotPastDate;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
@@ -117,6 +118,11 @@ class PaymentsList extends Component
      */
     public $remitForm;
 
+    /*
+     * HomeOwner Block Lots
+     */
+    public $homeOwnerBlockLots;
+
     /**
      * Create a new payment
      */
@@ -125,6 +131,7 @@ class PaymentsList extends Component
         // Validate the form
         $this->validate([
             'form.home_owner_id' => ['required', Rule::exists('home_owners', 'id')],
+            'form.block_lot' => ['required'],
             'form.type_id' => ['required'],
             'form.mode' => ['required_if:form.is_paid,1,true,yes,checked'],
             'form.amount' => ['required', 'numeric', 'min:50'],
@@ -194,6 +201,7 @@ class PaymentsList extends Component
         $this->payForm = [
             'id' => $id,
             'billerName' => $payment->biller->last_full_name,
+            'blockLot' => $payment->block_lot_item,
             'paymentType' => $payment->paymentType->type,
             'amount' => $payment->amount,
             'mode' => empty($payment->mode) ? 'Cash' : $payment->mode,
@@ -351,9 +359,9 @@ class PaymentsList extends Component
 
         if ($paymentType->is_recurring) {
             $message = sprintf("Payment will occur %s", $recurringFrequency);
-        } else {
-            $message = '';
         }
+
+        $this->form['amount'] = $paymentType->amount;
 
         $this->recurringNotes = $message;
     }
@@ -447,6 +455,16 @@ class PaymentsList extends Component
     }
 
     /**
+     * Change the block & lots select options
+     */
+    public function changeCreatePaymentBiller()
+    {
+        $homeOwner = HomeOwner::find($this->form['home_owner_id']);
+
+        $this->homeOwnerBlockLots = $homeOwner->block_lot_items;
+    }
+
+    /**
      * Initialize component data
      */
     public function mount()
@@ -463,12 +481,15 @@ class PaymentsList extends Component
         // Set the value of paymentModes
         $this->paymentModes = ['Cash', 'Bank Transfer', 'GCash'];
 
+        $this->homeOwnerBlockLots = $this->homeOwners->first()->block_lot_items;
+    
         // Set the fields of the form
         $this->form = [
-            'home_owner_id' => $this->homeOwners[0]->id,
-            'type_id' => '',
-            'mode' => '',
-            'amount' => 0,
+            'home_owner_id' => $this->homeOwners->first()->id,
+            'block_lot' => $this->homeOwners->first()->block_lot_items->first()['id'],
+            'type_id' => $this->paymentTypes->first()->id,
+            'mode' => 'Cash',
+            'amount' => $this->paymentTypes->first()->amount,
             'due_date' => Carbon::now()->format('Y-m-d'),
             'reference' => '',
             'is_paid' => false,
@@ -509,12 +530,13 @@ class PaymentsList extends Component
             // Check if search query exists
             if ($search) {
                 $keyword = "%{$search}%";
-                $paymentsQuery->whereHas('biller', function($query) use($keyword) {
-                    $query->where('home_owners.first_name', 'LIKE', $keyword)
-                        ->orWhere('home_owners.last_name', 'LIKE', $keyword)
-                        ->orWhere('home_owners.middle_name', 'LIKE', $keyword);
+                $paymentsQuery->whereHas('biller', function ($query) use ($keyword) {
+                    $query->where(function ($query) use ($keyword) {
+                        $query->where(DB::raw("CONCAT(last_name, ', ', first_name, COALESCE(', ', middle_name, ''))"), 'LIKE', $keyword)
+                            ->orWhere(DB::raw("CONCAT(first_name, COALESCE(' ', middle_name, ''), ' ', last_name)"), 'LIKE', $keyword);
+                    });
                 })
-                ->orWHere('reference', 'LIKE', $keyword);
+                    ->orWhere('reference', 'LIKE', $keyword);
             }
 
             // Check if type query exists

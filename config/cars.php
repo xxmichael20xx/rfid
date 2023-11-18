@@ -69,7 +69,7 @@ return [
             'Indian Chief Vintage',
             'Moto Guzzi V7 III Stone',
         ],
-        '3_WHEELS' => [
+        '3-WHEELS' => [
             'Elio Motors Elio',
             'Arcimoto FUV (Fun Utility Vehicle)',
             'Polaris Slingshot',
@@ -82,7 +82,7 @@ return [
             'Trikke Pon-e 48V',
             'Traditional Tricycle',
         ],
-        '4_WHEELS' => [
+        '4-WHEELS' => [
             'Toyota Wigo',
             'Honda Brio',
             'Suzuki Celerio',

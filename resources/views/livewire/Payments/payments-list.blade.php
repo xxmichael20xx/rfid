@@ -73,11 +73,11 @@
                                             >
                                             <i class="fa fa-filter"></i> Filters
                                         </button>
-        
+
                                         <button type="button" class="btn btn-primary text-white" wire:click="exportToCsv">
                                             <i class="fa fa-cloud-arrow-down"></i> Export to CSV
                                         </button>
-        
+
                                         <div
                                             class="offcanvas offcanvas-end"
                                             tabindex="-1"
@@ -237,6 +237,7 @@
                                         <thead class="bg-portal-green">
                                             <tr>
                                                 <th class="cell">Name</th>
+                                                <th class="cell">Block & Lot</th>
                                                 <th class="cell">Association Payment</th>
                                                 <th class="cell">Amount</th>
                                                 <th class="cell">Due Date</th>
@@ -247,7 +248,8 @@
                                         <tbody>
                                             @forelse ($payments as $data)
                                                 <tr>
-                                                    <td class="cell">{{ $data->biller->full_name }}</td>
+                                                    <td class="cell">{{ $data->biller->last_full_name }}</td>
+                                                    <td class="cell">{{ $data->block_lot_item }}</td>
                                                     <td class="cell">{{ $data->paymentType->type }}</td>
                                                     <td class="cell">
                                                         ₱{{ number_format($data->amount, 2) }}
@@ -292,7 +294,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td class="cell text-center" colspan="6">No result(s)</td>
+                                                    <td class="cell text-center" colspan="7">No result(s)</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -382,14 +384,16 @@
                     </div>
                     <div class="modal-body">
                         <div class="row mb-3">
-                            <div class="col-12">
+                            <div class="col-6">
                                 <div class="input-container mb-3">
                                     <label for="home_owner_id">Biller<span class="required">*</span></label>
                                     <select
                                         name="home_owner_id"
                                         id="home_owner_id"
                                         class="form-select"
-                                        wire:model.lazy="form.home_owner_id">
+                                        wire:model.lazy="form.home_owner_id"
+                                        wire:change="changeCreatePaymentBiller"
+                                    >
                                         <option value="" selected disabled>Select biller</option>
                                         @forelse ($homeOwners as $data)
                                             <option value="{{ $data->id }}">{{ $data->last_full_name }}</option>
@@ -397,9 +401,32 @@
                                             <option value="" disabled>No available biller</option>
                                         @endforelse
                                     </select>
-        
+
                                     @error('form.home_owner_id')
                                         <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="input-container mb-3">
+                                    <label for="type_id">Block & Lot<span class="required">*</span></label>
+                                    <select
+                                        name="type_id"
+                                        id="type_id"
+                                        class="form-select"
+                                        wire:model.lazy="form.block_lot">
+                                        <option value="" disabled>Select block & lot</option>
+                                        @forelse ($homeOwnerBlockLots as $homeOwnerBlockLot)
+                                            <option value="{{ $homeOwnerBlockLot['id'] }}">{{ $homeOwnerBlockLot['block_lot'] }}</option>
+                                        @empty
+                                            <option value="" disabled>No available payment</option>
+                                        @endforelse
+                                    </select>
+
+                                    @error('form.type')
+                                    <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('form.', '', $message) }}</strong>
                                         </span>
                                     @enderror
@@ -423,7 +450,7 @@
                                             <option value="" disabled>No available payment</option>
                                         @endforelse
                                     </select>
-        
+
                                     @error('form.type')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('form.', '', $message) }}</strong>
@@ -446,7 +473,7 @@
                                             <option value="" disabled>No available payment mode</option>
                                         @endforelse
                                     </select>
-        
+
                                     @error('form.mode')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('form.', '', $message) }}</strong>
@@ -464,8 +491,9 @@
                                         name="amount"
                                         type="number"
                                         class="form-control @error('form.amount') is-invalid @enderror"
+                                        readonly
                                         wire:model.lazy="form.amount">
-        
+
                                     @error('form.amount')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('form.', '', $message) }}</strong>
@@ -482,7 +510,7 @@
                                         type="date"
                                         class="form-control @error('form.due_date') is-invalid @enderror"
                                         wire:model.lazy="form.due_date">
-        
+
                                     @error('form.due_date')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('form.', '', $message) }}</strong>
@@ -512,7 +540,7 @@
                                                 <option value="{{ $day }}">Every {{ getOrdinalSuffix($day) }}</option>
                                             @endforeach
                                         </select>
-            
+
                                         @error('form.recurring_date')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ str_replace('form.', '', $message) }}</strong>
@@ -587,6 +615,16 @@
                             </div>
                             <div class="col-6">
                                 <div class="input-container mb-3">
+                                    <label>Block & Lot</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        wire:model.lazy="payForm.blockLot"
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="input-container mb-3">
                                     <label>Association Payment</label>
                                     <input
                                         type="text"
@@ -606,8 +644,9 @@
                                         name="amount"
                                         type="number"
                                         class="form-control @error('payForm.amount') is-invalid @enderror"
+                                        readonly
                                         wire:model.lazy="payForm.amount">
-        
+
                                     @error('payForm.amount')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('pay form.', '', $message) }}</strong>
@@ -630,7 +669,7 @@
                                             <option value="" disabled>No available payment mode</option>
                                         @endforelse
                                     </select>
-        
+
                                     @error('payForm.mode')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('pay form.', '', $message) }}</strong>
@@ -702,7 +741,7 @@
                                         type="number"
                                         class="form-control @error('remitForm.amount') is-invalid @enderror"
                                         wire:model.lazy="remitForm.amount">
-        
+
                                     @error('remitForm.amount')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('remit form.', '', $message) }}</strong>
@@ -732,7 +771,7 @@
                     }
                 })
 
-                /** Definf click event to search */
+                /** Define click event to search */
                 $(document).on('click', '#search-btn', function() {
                     if (search.value) {
                         window.location.href = setUrlParam('search', search.value)
@@ -742,7 +781,7 @@
                 /** Define click events on update status button */
                 $(document).on('click', '.manage-payment', function() {
                     const id = $(this).data('id')
-                    
+
                     Livewire.emit('preparePayForm', id)
                 })
 
@@ -859,7 +898,7 @@
                     } else {
                         urlSearch.set(key, value)
                     }
-                    
+
                     currentUrl.search = '?' + urlSearch.toString()
                     return currentUrl
                 }

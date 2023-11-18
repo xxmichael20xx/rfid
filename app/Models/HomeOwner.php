@@ -43,7 +43,9 @@ class HomeOwner extends Model
         'last_full_name',
         'profile_path',
         'grouped_block_lots',
-        'age'
+        'age',
+        'block_lot_items',
+        'account',
     ];
 
     /**
@@ -93,6 +95,32 @@ class HomeOwner extends Model
         }
 
         return null;
+    }
+
+    public function getBlockLotItemsAttribute()
+    {
+        $blockLots = HomeOwnerBlockLot::where('home_owner_id', $this->id)->get();
+        if ($blockLots->count() < 1) {
+            return collect();
+        }
+
+        return collect($blockLots)->map(function($item) {
+            $blockId = $item->block;
+            $lotId = $item->lot;
+
+            $block = Block::withTrashed()->where('id', $blockId)->first();
+            $lot = Lot::withTrashed()->where('id', $lotId)->first();
+
+            return [
+                'id' => $item->id,
+                'block_lot' => sprintf('Block %s - Lot %s', $block->block, $lot->lot)
+            ];
+        });
+    }
+
+    public function getAccountAttribute()
+    {
+        return User::where('home_owner_id', $this->id)->first();
     }
 
     public function blockLots()

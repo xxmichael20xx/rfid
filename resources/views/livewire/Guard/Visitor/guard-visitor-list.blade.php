@@ -116,7 +116,7 @@
                         <div class="row mb-3">
                             <div class="col-12">
                                 <div class="input-container mb-3">
-                                    <label for="home_owner_id">Homw Owner<span class="required">*</span></label>
+                                    <label for="home_owner_id">Home Owner<span class="required">*</span></label>
                                     <select
                                         name="home_owner_id"
                                         id="home_owner_id"

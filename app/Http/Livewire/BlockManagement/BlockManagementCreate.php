@@ -37,8 +37,7 @@ class BlockManagementCreate extends Component
                 'required',
                 'numeric',
                 'min:1',
-                'distinct',
-                Rule::unique('lots', 'lot')
+                'distinct'
             ]
         ];
     }
@@ -52,7 +51,6 @@ class BlockManagementCreate extends Component
             'newBlock.lots.*.lot.numeric' => 'The lot name should be number.',
             'newBlock.lots.*.lot.min' => 'The lot name should at least 1.',
             'newBlock.lots.*.lot.distinct' => 'The lot name should be unique.',
-            'newBlock.lots.*.lot.unique' => 'The lot name already taken.',
         ]);
 
         // create new block

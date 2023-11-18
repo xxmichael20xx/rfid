@@ -1,12 +1,14 @@
 <div>
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-4" wire:ignore>
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="app-page-title">Manage Users</h1>
-            <div class="col-auto">
-                <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#newUserModal">
-                    <i class="fa fa-user-plus"></i> Add New
-                </button>
-            </div>
+            <h1 class="app-page-title">Manage {{ ucfirst(request('type')) }}</h1>
+            @if(request('type') == 'officers')
+                <div class="col-auto">
+                    <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#newUserModal">
+                        <i class="fa fa-user-plus"></i> Add New
+                    </button>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -16,20 +18,32 @@
                 <div class="card-body">
                     <div class="container">
                         <div class="row">
-                            <div class="col-4">
-                                <p class="card-title h5">List of Users</p>
+                            <div class="col-4" wire:ignore>
+                                <p class="card-title h5">List of {{ ucfirst(request('type')) }}</p>
                             </div>
                             <div class="col-8 text-right" wire:ignore>
                                 <div class="row justify-content-end">
-                                    <div class="col-4 d-flex flex-column">
+                                    <form
+                                        class="col-4 d-flex flex-column"
+                                        action=""
+                                        method="GET"
+                                    >
                                         <div class="input-container input-group me-2">
-                                            <input type="search" name="search" id="search" class="form-control" placeholder="Search..." value="{{ request()->get('search') }}">
-                                            <button class="btn btn-secondary" type="button" id="search-btn">Search</button>
+                                            <input
+                                                type="search"
+                                                name="search"
+                                                id="search"
+                                                class="form-control"
+                                                placeholder="Search..."
+                                                value="{{ request()->get('search') }}"
+                                                required
+                                            >
+                                            <button class="btn btn-secondary" type="submit" id="search-btn">Search</button>
                                         </div>
                                         @if (request()->get('search'))
-                                            <a href="{{ route('user-management.index') }}" class="text-help mt-2">Clear search/filters</a>
+                                            <a href="{{ route('user-management.index', ['type' => request('type')]) }}" class="text-help mt-2">Clear search/filters</a>
                                         @endif
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -37,11 +51,13 @@
                             </div>
                             <div class="col-12">
                                 <div class="table-responsive">
-                                    <table class="table app-table-hover mb-0 text-left visitors-table">
+                                    <table class="table app-table-hover mb-0 text-left visitors-table" wire:ignore>
                                         <thead class="bg-portal-green">
                                             <tr>
                                                 <th class="cell">Name</th>
-                                                <th class="cell">Role</th>
+                                                @if(request('type') == 'officers')
+                                                    <th class="cell">Role</th>
+                                                @endif
                                                 <th class="cell">Email</th>
                                                 <th class="cell">Action</th>
                                             </tr>
@@ -49,29 +65,45 @@
                                         <tbody>
                                             @forelse ($users as $data)
                                                 <tr>
-                                                    <td class="cell">{{ $data->full_name }}</td>
-                                                    <td class="cell">{{ ucfirst($data->role) }}</td>
+                                                    <td class="cell">{{ $data->last_full_name }}</td>
+                                                    @if(request('type') == 'officers')
+                                                        <td class="cell">{{ ucfirst($data->role) }}</td>
+                                                    @endif
                                                     <td class="cell">{{ $data->email }}</td>
                                                     <td class="cell">
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-success text-white p-2"
-                                                            wire:click="prepareUpdate({{ $data->id }})"
-                                                        >
-                                                            <i class="fa fa-pencil"></i>
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-danger text-white p-2 prepare-delete"
-                                                            data-id="{{ $data->id }}"
-                                                        >
-                                                            <i class="fa fa-trash"></i>
-                                                        </button>
+                                                        @if(request('type') == 'officers')
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-success text-white p-2"
+                                                                wire:click="prepareUpdate({{ $data->id }})"
+                                                            >
+                                                                <i class="fa fa-pencil"></i>
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-danger text-white p-2 prepare-delete"
+                                                                data-id="{{ $data->id }}"
+                                                            >
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        @else
+                                                            @if($data->home_owner_id)
+                                                                <button
+                                                                    type="button"
+                                                                    class="btn btn-success text-white p-2"
+                                                                    wire:click="previewView({{ $data->home_owner_id }})"
+                                                                >
+                                                                    <i class="fa fa-eye"></i>
+                                                                </button>
+                                                            @else
+                                                                No user account.
+                                                            @endif
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td class="cell text-center" colspan="4">No result(s)</td>
+                                                    <td class="cell text-center" colspan="@if(request('type') == 'officers') 4 @else 3 @endif">No result(s)</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -411,6 +443,67 @@
         </div>
     </div>
 
+    @if($homeOwner)
+        <div class="modal fade" id="showHomeownerDetailModal" tabindex="-1" aria-labelledby="showHomeownerDetailModalLabel" aria-hidden="true" wire:ignore.self>
+            <div class="modal-dialog modal-dialog--md">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6 mx-auto text-center">
+                                @if ($homeOwner?->profile)
+                                    <img
+                                        src="{{ $homeOwner?->profile }}"
+                                        alt="Home-Owner-Avatar"
+                                        class="img-fluid mb-3 rounded shadow"
+                                        style="width: 250px;"
+                                    />
+                                @endif
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6 mx-auto text-center">
+                                <p class="card-title h5">Home Owner: {{ $homeOwner?->last_full_name }}</p>
+                                <hr class="theme-separator">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="text-dark"><b>Date of Birth:</b> {{ $homeOwner?->date_of_birth }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="text-dark"><b>Age:</b> {{ $homeOwner?->age }} year(s) old</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="text-dark"><b>Gender:</b> {{ ucfirst($homeOwner?->gender) }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="text-dark"><b>Email:</b> {{ $homeOwner?->email ?? 'N/A' }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="text-dark"><b>Contact Number:</b> {{ $homeOwner?->contact_no }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="text-dark"><b>Account Email:</b> {{ $homeOwner->account->email }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="text-dark"><b>Member Since:</b> {{ \Carbon\Carbon::parse($homeOwner?->created_at)->format('M y, Y') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     @section('scripts')
         <script>
             $(document).ready(function() {
@@ -422,7 +515,7 @@
                     }
                 })
 
-                /** Definf click event to search */
+                /** Define click event to search */
                 $(document).on('click', '#search-btn', function() {
                     if (search.value) {
                         window.location.href = setUrlParam('search', search.value)
@@ -497,6 +590,12 @@
                             Livewire.emit('deleteUser', id)
                         }
                     })
+                })
+
+                /** Define event to display home owner details */
+                Livewire.on('show.admin-homeowner', function() {
+                    const showHomeownerDetailModal = new bootstrap.Modal('#showHomeownerDetailModal', {})
+                    showHomeownerDetailModal.show()
                 })
             })
         </script>

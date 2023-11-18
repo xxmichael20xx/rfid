@@ -160,18 +160,47 @@
                                 <span class="nav-link-text">Visitor Monitoring</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ isRouteActive(['user-management.index']) }}" href="{{ route('user-management.index') }}">
-								<i class="fa fa-users"></i>
-                                <span class="nav-link-text">User Management</span>
+
+                        <li class="nav-item has-submenu">
+                            <a
+                                class="nav-link submenu-toggle collapsed {{ isRouteActive(['user-management.index']) }}"
+                                href="#"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#nav-user-management"
+                                aria-expanded="false"
+                                aria-controls="nav-settings-menu"
+                            >
+                                <span class="nav-link-text">
+                                    <i class="fa fa-users"></i> User Management
+                                </span>
+                                <span class="submenu-arrow">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                                </span>
                             </a>
+
+                            <div id="nav-user-management" class="submenu nav-user-management {{ isRouteShown(['user-management.index']) }}" data-bs-parent="#menu-accordion">
+                                <ul class="submenu-list list-unstyled ps-4">
+                                    <li class="submenu-item">
+                                        <a class="submenu-link text-dark @if(request('type') == 'officers') active @endif" href="{{ route('user-management.index', ['type' => 'officers']) }}">
+                                            <i class="fa fa-user-secret"></i> Officers
+                                        </a>
+                                    </li>
+                                    <li class="submenu-item">
+                                        <a class="submenu-link text-dark @if(request('type') == 'users') active @endif" href="{{ route('user-management.index', ['type' => 'users']) }}">
+                                            <i class="fa fa-user-friends"></i> Users
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                     </ul>
                 </nav>
             </div>
         </div>
     </header>
-    
+
     @livewire('update-account')
 
     <div class="app-wrapper">
@@ -185,7 +214,7 @@
 
     @vite(['resources/js/app.js'])
     @livewireScripts
-    
+
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
     @yield('scripts')
 

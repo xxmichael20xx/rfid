@@ -25,10 +25,6 @@ class HomeownerView extends Component
         'deleteVehicle',
         'selectLot',
         'unSelectLot',
-        'selectCarTypeName',
-        'unselectCarTypeName',
-        'selectCarTypeNameUpdate',
-        'unselectCarTypeNameUpdate',
     ];
 
     public $data;
@@ -53,7 +49,11 @@ class HomeownerView extends Component
     public $homeOwnerId;
     public $visitorForm;
 
-    public $cars;
+    public $carTypes;
+    public $carNames;
+
+    public $defaultCarType;
+    public $defaultCarName;
 
     public function create()
     {
@@ -173,33 +173,23 @@ class HomeownerView extends Component
         // validate the form
         $this->validate([
             'createVehicleForm.plate_number' => ['required', Rule::unique('home_owner_vehicles', 'plate_number')],
-            'createVehicleForm.car_type_name' => ['required'],
-            'createVehicleForm.rfid' => ['sometimes', 'nullable', Rule::unique('rfids', 'rfid')],
+            'createVehicleForm.car_type' => ['required'],
+            'createVehicleForm.car_name' => ['required'],
         ]);
-
-        list($carType, $carName) = explode('||', $this->createVehicleForm['car_type_name']);
 
         // create new vehicle
         $newVehicle = HomeOwnerVehicle::create([
             'home_owner_id' => $this->data->id,
             'plate_number' => $this->createVehicleForm['plate_number'],
-            'car_type' => $carType,
-            'car_name' => $carName,
+            'car_type' => $this->createVehicleForm['car_type'],
+            'car_name' => $this->createVehicleForm['car_name'],
         ]);
 
         if ($newVehicle) {
-            // create rfid
-            if ($rfid = $this->createVehicleForm['rfid']) {
-                Rfid::create([
-                    'vehicle_id' => $newVehicle->id,
-                    'rfid' => $rfid
-                ]);
-            }
-
             $this->createVehicleForm = [
                 'plate_number' => '',
-                'car_type_name' => '',
-                'rfid' => ''
+                'car_type' => $this->defaultCarType,
+                'car_name' => $this->defaultCarName
             ];
 
             $this->emit('show.dialog', [
@@ -226,18 +216,18 @@ class HomeownerView extends Component
     public function prepareUpdateVehicle($payload)
     {
         $vehicle = HomeOwnerVehicle::with('rfid')
-            ->find($payload)
-            ->toArray();
-        $carType = data_get($vehicle, 'car_type');
-        $carName = data_get($vehicle, 'car_name');
+            ->find($payload);
 
         $this->updateVehicleForm = [
-            'id' => data_get($vehicle, 'id'),
-            'plate_number' => data_get($vehicle, 'plate_number'),
-            'car_type_name_u' => $carType . '||' . $carName,
-            'rfid_id' => data_get($vehicle, 'rfid.id'),
-            'rfid' => data_get($vehicle, 'rfid.rfid'),
+            'id' => $vehicle->id,
+            'plate_number' => $vehicle->plate_number,
+            'car_type_u' => $vehicle->car_type,
+            'car_name_u' => $vehicle->car_name
         ];
+
+        // set the cars data from config files
+        $this->carTypes = Config::get('cars.car_types');
+        $this->carNames = data_get($this->carTypes, 'SUV');
 
         $this->emit('update.vehicle-prepare');
     }
@@ -249,26 +239,20 @@ class HomeownerView extends Component
                 'required',
                 Rule::unique('home_owner_vehicles', 'plate_number')->ignore($this->updateVehicleForm['id'], 'id')
             ],
-            'updateVehicleForm.car_type_name_u' => ['required'],
-            'updateVehicleForm.rfid' => [
-                'sometimes',
-                'nullable',
-                Rule::unique('rfids', 'rfid')->ignore($this->updateVehicleForm['rfid_id'], 'id'),
-            ],
+            'updateVehicleForm.car_type_u' => ['required'],
+            'updateVehicleForm.car_type_u' => ['required']
         ]);
 
-        list($carType, $carName) = explode('||', $this->updateVehicleForm['car_type_name_u']);
-
         $updateVehicleRawData = [
-            'plate_number' => data_get($this->updateVehicleForm, 'plate_number'),
-            'car_type' => $carType,
-            'car_name' => $carName,
+            'plate_number' => $this->updateVehicleForm['plate_number'],
+            'car_type' => $this->updateVehicleForm['car_type_u'],
+            'car_name' => $this->updateVehicleForm['car_name_u'],
         ];
         $updateVehicle = HomeOwnerVehicle::find($this->updateVehicleForm['id']);
         $updateVehicle->update($updateVehicleRawData);
 
         // process update or delete rfid
-        $this->processRfid();
+        // $this->processRfid();
 
         $this->emit('show.dialog', [
             'icon' => 'success',
@@ -378,24 +362,25 @@ class HomeownerView extends Component
         return redirect($route);
     }
 
-    public function selectCarTypeName($id)
+    /**
+     * Update the car names based on
+     * selected car type.
+     */
+    public function createChangeCarType()
     {
-        $this->createVehicleForm['car_type_name'] = $id;
+        $cars = config('cars.car_types');
+        $carType = $this->createVehicleForm['car_type'];
+        $this->carNames = data_get($cars, $carType);
     }
 
-    public function unselectCarTypeName()
+    /**
+     * Reset the cars
+     */
+    public function resetCars()
     {
-        $this->createVehicleForm['car_type_name'] = '';
-    }
-
-    public function selectCarTypeNameUpdate($id)
-    {
-        $this->updateVehicleForm['car_type_name_u'] = $id;
-    }
-
-    public function unselectCarTypeNameUpdate()
-    {
-        $this->updateVehicleForm['car_type_name_u'] = '';
+        // set the cars data from config files
+        $this->carTypes = Config::get('cars.car_types');
+        $this->carNames = data_get($this->carTypes, 'SUV');
     }
 
     public function mount($id)
@@ -427,15 +412,20 @@ class HomeownerView extends Component
             'first_name' => ''
         ];
 
+        // set the cars data from config files
+        $this->carTypes = Config::get('cars.car_types');
+        $this->carNames = data_get($this->carTypes, 'SUV');
+
         // set the create vehicle form
         $this->createVehicleForm = [
             'plate_number' => '',
-            'car_type_name' => '',
-            'rfid' => ''
+            'car_type' => 'SUV',
+            'car_name' => data_get($this->carNames, '0')
         ];
 
-        // set the cars data from config files
-        $this->cars = Config::get('cars.car_types');
+        // set default car type and name
+        $this->defaultCarType = 'SUV';
+        $this->defaultCarName = data_get($this->carNames, '0');
     }
 
     public function render()

@@ -110,7 +110,7 @@ Route::middleware('auth.admin')
         Route::name('user-management.')
             ->prefix('user-management')
             ->group(function() {
-                Route::get('/', UserManagement::class)->name('index');
+                Route::get('{type}', UserManagement::class)->name('index');
             });
 
         /** Define User Management pages */
@@ -150,6 +150,7 @@ Route::middleware('auth.guard')
 
                 /** Define Visitor monitoring routes */
                 Route::name('visitors.')
+                    ->prefix('visitors')
                     ->group(function() {
                         Route::get('monitoring', GuardVisitorMonitoring::class)->name('monitoring');
                         Route::get('list', GuardVisitorList::class)->name('list');

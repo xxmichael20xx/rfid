@@ -15,6 +15,7 @@ class Payment extends Model
      */
     protected $fillable = [
         'home_owner_id',
+        'block_lot',
         'type_id',
         'mode',
         'amount',
@@ -26,6 +27,7 @@ class Payment extends Model
         'recurring_date',
         'status',
         'metadata',
+        'block_lot_item'
     ];
 
     /**
@@ -34,6 +36,22 @@ class Payment extends Model
     protected $casts = [
         'metadata' => 'json'
     ];
+
+    public function getBlockLotItemAttribute()
+    {
+        if (! $this->block_lot) {
+            return 'No lot selected.';
+        }
+
+        $blockLot = HomeOwnerBlockLot::find($this->block_lot);
+        $blockId = $blockLot->block;
+        $lotId = $blockLot->lot;
+
+        $block = Block::withTrashed()->where('id', $blockId)->first();
+        $lot = Lot::withTrashed()->where('id', $lotId)->first();
+
+        return sprintf('Block %s - Lot %s', $block->block, $lot->lot);
+    }
 
     /**
      * Define model relationships
@@ -46,5 +64,10 @@ class Payment extends Model
     public function paymentType()
     {
         return $this->hasOne(PaymentType::class, 'id', 'type_id')->withTrashed();
+    }
+
+    public function blockLot()
+    {
+        return $this->belongsTo(HomeOwnerBlockLot::class, 'block_lot', 'id');
     }
 }
