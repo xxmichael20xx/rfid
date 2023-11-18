@@ -240,7 +240,7 @@ class ApiHomeOwnerController extends Controller
             $homeOwner->profile = Storage::putFileAs('images/home-owners', $profileUpdate, $profileUpdate->hashName());
         }
 
-        $homeOwner->phone_number = $request->contact_no;
+        $homeOwner->contact_no = $request->phone;
 
         // update the home owner
         $homeOwner->save();
