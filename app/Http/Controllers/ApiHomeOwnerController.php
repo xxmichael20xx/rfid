@@ -9,6 +9,7 @@ use App\Models\Visitor;
 use App\Services\QRService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -209,12 +210,13 @@ class ApiHomeOwnerController extends Controller
     public function getCurrentUser(Request $request)
     {
         $userId = $request->user()->id;
-        $user = User::find($userId);
+        $user = User::find($userId)->toArray();
+        $homeData = Arr::pull($user, 'home_data');
 
         return response()->json([
             'status' => true,
             'user' => $user,
-            'home_data' => $user->home_data
+            'home_data' => $homeData
         ]);
     }
 
