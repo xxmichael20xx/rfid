@@ -233,7 +233,8 @@ class ApiHomeOwnerController extends Controller
         ]);
 
         return response()->json(
-            $request->all()
+            $request->hasFile('profile'),
+            $request->file('profile')->getClientOriginalName()
         );
 
         $user->update([
