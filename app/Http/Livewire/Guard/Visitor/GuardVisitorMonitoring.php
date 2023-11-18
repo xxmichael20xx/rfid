@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Guard\Visitor;
 
+use App\Models\Notification;
 use App\Models\Visitor;
 use App\Services\QRService;
 use Illuminate\Support\Facades\Response;
@@ -50,6 +51,13 @@ class GuardVisitorMonitoring extends Component
             } else {
                 $visitorToken->update([
                     'date_visited' => now()
+                ]);
+
+                // create new notification
+                Notification::create([
+                    'home_owner_id' => $visitorToken->home_owner_id,
+                    'title' => 'Visitor Entry',
+                    'content' => 'You have a visitor with a name of "' . $visitorToken->last_full_name . '"'
                 ]);
 
                 // emit a new event for the notification
