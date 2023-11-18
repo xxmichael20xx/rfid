@@ -3,6 +3,8 @@
 namespace App\Http\Livewire\Activity;
 
 use App\Models\Activity;
+use App\Models\HomeOwner;
+use App\Models\Notification;
 use App\Rules\NotPastDate;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -45,7 +47,8 @@ class ActivityCreate extends Component
 
         // create a new activity if validation is passed
         // and if new activity is created
-        if (! Activity::create($this->form)) {
+        $newActivity = Activity::create($this->form);
+        if (! $newActivity) {
              // dispatch a javacript event to trigger the notification
             $this->emit('show.dialog', [
                 'icon' => 'info',
@@ -53,6 +56,9 @@ class ActivityCreate extends Component
                 'message' => 'Failed to create new Activity!'
             ]);
         }
+
+        // create new notification to all home owners
+        $this->notifyAll($newActivity);
         
         // dispatch a javacript event to trigger the notification
         $this->emit('show.dialog', [
@@ -61,6 +67,23 @@ class ActivityCreate extends Component
             'message' => 'New activity has been successfully created!',
             'redirect' => route('activities.list')
         ]);
+    }
+
+    public function notifyAll($newActivity)
+    {
+        $homeOwners = HomeOwner::all();
+        $title = 'New Activity';
+        $content = 'Activity "'. $newActivity->title .'" will start on '. $newActivity->start_date .' and will end on '. $newActivity->end_date .'!';
+        $content .= ' The location is at "'. $newActivity->location .'", See you there!';
+
+        $homeOwners->each(function($item) use ($title, $content) {
+            // create notification
+            Notification::create([
+                'home_owner_id' => $item->id,
+                'title' => $title,
+                'content' => $content
+            ]);
+        });
     }
     
     /**
