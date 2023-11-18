@@ -12,6 +12,7 @@ class GuardVisitorList extends Component
     public function mount()
     {
         $this->visitors = Visitor::with('for')
+            ->where('date_visited', '<>', null)
             ->orderBy('date_visited', 'DESC')
             ->get();
     }
