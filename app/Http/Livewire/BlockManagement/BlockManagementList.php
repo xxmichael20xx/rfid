@@ -136,8 +136,7 @@ class BlockManagementList extends Component
             'editLotForm.lot' => [
                 'required',
                 'numeric',
-                'min:1',
-                Rule::unique('lots', 'lot')->ignore($lotId)
+                'min:1'
             ],
             'editLotForm.details' => ['nullable'],
         ]);
