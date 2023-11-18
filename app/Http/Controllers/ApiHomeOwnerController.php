@@ -226,9 +226,15 @@ class ApiHomeOwnerController extends Controller
 
         // validate the request
         $request->validate([
+            'phone' => ['required'],
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
-            'password' => ['nullable']
+            'password' => ['nullable'],
+            'profile' => ['sometimes', 'image', 'mimes:jpeg,png,jpg']
         ]);
+
+        return response()->json(
+            $request->all()
+        );
 
         $user->update([
             'email' => $request->email
