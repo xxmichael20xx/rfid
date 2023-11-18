@@ -54,7 +54,7 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-6">
-                                <p class="text-dark"><b>Member Since:</b> {{ \Carbon\Carbon::parse($data->created_at)->format('M y, Y') }}</p>
+                                <p class="text-dark"><b>Member Since:</b> {{ \Carbon\Carbon::parse($data->created_at)->format('M d, Y') }}</p>
                             </div>
                         </div>
                     </div>
