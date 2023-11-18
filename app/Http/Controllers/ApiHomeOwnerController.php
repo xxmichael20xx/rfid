@@ -208,7 +208,8 @@ class ApiHomeOwnerController extends Controller
 
     public function getCurrentUser(Request $request)
     {
-        $user = $request->user();
+        $userId = $request->user()->id;
+        $user = User::find($userId);
 
         return response()->json([
             'status' => true,

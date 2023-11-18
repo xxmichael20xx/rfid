@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -50,15 +51,29 @@ class User extends Authenticatable
     protected $appends = [
         'full_name',
         'last_full_name',
+        'home_data',
     ];
 
     public function getLastFullNameAttribute()
     {
         return $this->last_name.', '.$this->first_name.' '.$this->middle_name;
     }
+
     public function getFullNameAttribute()
     {
         return $this->first_name.' '.$this->middle_name.' '.$this->last_name;
+    }
+
+    public function getHomeDataAttribute()
+    {
+        if ($this->role !== 'User') {
+            return null;
+        }
+
+        return DB::table('home_owners')
+            ->select(['id', 'date_of_birth', 'email', 'contact_no', 'profile'])
+            ->where('id', $this->home_owner_id)
+            ->first();
     }
 
     public function isAdmin()
