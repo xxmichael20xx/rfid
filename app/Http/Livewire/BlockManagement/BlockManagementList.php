@@ -76,12 +76,17 @@ class BlockManagementList extends Component
 
     public function createLots()
     {
+        $blockId = data_get($this->lotForm, 'block');
+    
         $this->validate([
             'lotForm.lots.*.lot' => [
                 'required',
                 'numeric',
                 'min:1',
-                'distinct'
+                'distinct',
+                Rule::unique('lots')->where(function($query) use ($blockId) {
+                    return $query->where('block_id', $blockId);
+                })
             ]
         ], [
             'lotForm.lots.*.lot.required' => 'The lot name field is required.',
@@ -91,7 +96,7 @@ class BlockManagementList extends Component
             'lotForm.lots.*.lot.unique' => 'The lot name already taken.'
         ]);
 
-        $block = Block::find(data_get($this->lotForm, 'block'));
+        $block = Block::find($blockId);
 
         if (! $block) {
             $this->emit('create.failed.no-data');
@@ -131,17 +136,22 @@ class BlockManagementList extends Component
     public function updateLot()
     {
         $lotId = data_get($this->editLotForm, 'id');
+        $lot = Lot::find($lotId);
+        $blockId = $lot->block_id;
+
         $this->validate([
             'editLotForm.id' => ['required', Rule::exists('lots', 'id')],
             'editLotForm.lot' => [
                 'required',
                 'numeric',
-                'min:1'
+                'min:1',
+                Rule::unique('lots', 'lot')->where(function($query) use ($blockId) {
+                    return $query->where('block_id', $blockId);
+                })->ignore($lotId)
             ],
             'editLotForm.details' => ['nullable'],
         ]);
 
-        $lot = Lot::find($lotId);
         $lot->update([
             'lot' => data_get($this->editLotForm, 'lot'),
             'details' => data_get($this->editLotForm, 'details'),
