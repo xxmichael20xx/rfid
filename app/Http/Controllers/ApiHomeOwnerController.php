@@ -232,16 +232,18 @@ class ApiHomeOwnerController extends Controller
             'profile' => ['sometimes', 'image', 'mimes:jpeg,png,jpg']
         ]);
 
+        // get home owner data
+        $homeOwner = HomeOwner::find($request->homeId);
+
         if ($profileUpdate = $request->file('profile')) {
             // Store the file in the 'images/home-owners' directory with a hashed name
-            $path = Storage::putFileAs('images/home-owners', $profileUpdate, $profileUpdate->hashName());
-
-            // get home owner data
-            $homeOwner = HomeOwner::find($request->homeId);
-            $homeOwner->profile = $path;
-            $homeOwner->save();
+            $homeOwner->profile = Storage::putFileAs('images/home-owners', $profileUpdate, $profileUpdate->hashName());
         }
 
+        $homeOwner->phone_number = $request->contact_no;
+
+        // update the home owner
+        $homeOwner->save();
 
         $user->update([
             'email' => $request->email
