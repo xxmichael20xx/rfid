@@ -87,6 +87,7 @@ class RfidList extends Component
     {
         // get all vehicles
         $vehicles = HomeOwnerVehicle::with(['rfid'])->get();
+        $firstVehicle = '';
         $this->unassignedVehicles = [];
 
         foreach ($vehicles as $vehicle) {
@@ -107,8 +108,14 @@ class RfidList extends Component
                     $this->unassignedVehicles[$homeOwner] = [];
                 }
                 $this->unassignedVehicles[$homeOwner][] = $available;
+
+                if (! $firstVehicle) {
+                    $firstVehicle = $vehicle->id;
+                }
             }
         }
+
+        $this->rfidForm['vehicle_id'] = $firstVehicle;
 
         // get the list of Rfids
         $this->rfids = Rfid::with(['vehicle'])->get();

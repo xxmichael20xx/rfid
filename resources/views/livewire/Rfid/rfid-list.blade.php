@@ -104,10 +104,10 @@
                                 <div class="row mb-3" wire:ignore>
                                     <div class="col-12">
                                         <div class="input-container mb-3">
-                                            <label for="vehicle_id">Home Owner<span class="required">*</span></label>
+                                            <label for="vehicle_id">Home Owner - Vehicle<span class="required">*</span></label>
                                             <select
                                                 id="vehicle_id"
-                                                class="form-control @error('form.vehicle_id') is-invalid @enderror"
+                                                class="form-control @error('rfidForm.vehicle_id') is-invalid @enderror"
                                                 wire:model.lazy="form.vehicle_id">
                                                 @forelse ($unassignedVehicles as $key => $unassignedVehicle)
                                                     <optgroup label="{{ $key }}">
