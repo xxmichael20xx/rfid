@@ -108,16 +108,6 @@ class PaymentsList extends Component
      */
     public $cashOnHand;
 
-    /**
-     * List of Payment Remit
-     */
-    public $paymentRemits;
-
-    /**
-     * Form for remit
-     */
-    public $remitForm;
-
     /*
      * HomeOwner Block Lots
      */
@@ -409,52 +399,6 @@ class PaymentsList extends Component
     }
 
     /**
-     * Create a new remit
-     */
-    public function submitRemit()
-    {
-        // Validate the form
-        $this->validate([
-            'remitForm.amount' => ['required', 'numeric', 'min: 100', 'max:' . $this->cashOnHand]
-        ]);
-
-        // Add the remit
-        PaymentRemit::create($this->remitForm);
-
-        // Emit a new event for the notification
-        $this->emit('show.dialog', [
-            'icon' => 'success',
-            'title' => 'Remit Added',
-            'message' => 'Remit has been successfully added!',
-            'reload' => true
-        ]);
-    }
-
-    public function deleteRemit($id)
-    {
-        $remit = PaymentRemit::find($id);
-
-        if (! $remit) {
-            // emit a new event for the notification
-            $this->emit('show.dialog', [
-                'icon' => 'warning',
-                'title' => 'Data not found',
-                'message' => 'Remit data not found!',
-            ]);
-        }
-
-        $remit->delete();
-
-        // emit a new event for the notification
-        $this->emit('show.dialog', [
-            'icon' => 'success',
-            'title' => 'Delete success',
-            'message' => 'Remit has been deleted!',
-            'reload' => true
-        ]);
-    }
-
-    /**
      * Change the block & lots select options
      */
     public function changeCreatePaymentBiller()
@@ -577,16 +521,10 @@ class PaymentsList extends Component
 
         $this->dueToday = Payment::whereDate('due_date', Carbon::now())->count();
 
-        $this->paymentRemits = PaymentRemit::latest()->get();
-
         $tempCashOnHand = Payment::where('mode', 'Cash')->where('status', 'paid')->sum('amount');
         $tempRemit = PaymentRemit::sum('amount');
 
         $this->cashOnHand = $tempCashOnHand - $tempRemit;
-
-        $this->remitForm = [
-            'amount' => '0'
-        ];
     }
 
     /**

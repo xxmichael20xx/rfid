@@ -13,6 +13,7 @@ class PaymentRemit extends Model
      * Attributes that will be fillable
      */
     protected $fillable = [
+        'title',
         'amount',
         'date_remitted'
     ];
