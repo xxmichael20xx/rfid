@@ -29,7 +29,7 @@ class HomeownerUpdate extends Component
         return [
             'model.first_name' => $nameRules,
             'model.last_name' => $nameRules,
-            'model.middle_name' => ['string', 'min:2', 'max:30'],
+            'model.middle_name' => ['nullable', 'min:2', 'max:30'],
             'model.gender' => ['required'],
             'model.contact_no' => [
                 'required',
@@ -83,7 +83,7 @@ class HomeownerUpdate extends Component
             }
         }
 
-        $middleName = $this->form['middle_name'];
+        $middleName = $this->model['middle_name'];
         if (empty($middleName) || $middleName == '') {
             $this->model['middle_name'] = NULL;
         }
