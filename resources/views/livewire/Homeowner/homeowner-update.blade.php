@@ -187,6 +187,58 @@
                                     </div>
                                 </div>
                             </div>
+
+                            @if (count($lotsCarousels) > 0)
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <p class="card-title h5">Block & Lots Mapping</p>
+                                        <hr class="theme-separator">
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div
+                                            id="lotCarousels"
+                                            class="carousel slide"
+                                            data-bs-ride="true"
+                                            style="max-height: 500px;"
+                                        >
+                                            <div class="carousel-indicators">
+                                                @foreach ($lotsCarousels as $lotsCarouselKey => $lotsCarousel)
+                                                    <button
+                                                        type="button"
+                                                        data-bs-target="#lotCarousels"
+                                                        data-bs-slide-to="{{ $lotsCarouselKey }}"
+                                                        class="{{ ($lotsCarouselKey) == 0 ? 'active' : '' }}"
+                                                        aria-current="true"
+                                                        aria-label="Slide {{ $lotsCarouselKey }}"
+                                                    ></button>
+                                                @endforeach
+                                            </div>
+                                            <div class="carousel-inner">
+                                                @foreach ($lotsCarousels as $lotsCarouselKey => $lotsCarousel)
+                                                    <div class="carousel-item text-center {{ ($lotsCarouselKey) == 0 ? 'active' : '' }}">
+                                                        <img
+                                                            src="{{ $lotsCarousel['image'] }}"
+                                                            class="img-fluid"
+                                                        />
+                                                        <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0, 0, 0, .60);">
+                                                            <h5 class="text-white">{{ $lotsCarousel['name'] }}</h5>
+                                                          </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#lotCarousels" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" data-bs-target="#lotCarousels" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
         
                             <div class="row">
                                 <div class="col-12 d-flex justify-content-between">

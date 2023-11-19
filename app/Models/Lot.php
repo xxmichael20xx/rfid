@@ -15,6 +15,7 @@ class Lot extends Model
         'lot',
         'details',
         'availability',
+        'image',
         'metadata'
     ];
 

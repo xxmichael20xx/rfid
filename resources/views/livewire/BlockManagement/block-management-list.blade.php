@@ -176,11 +176,6 @@
                                                     wire:model.lazy="lotForm.lots.{{ $lotFormKey }}.lot">
                                             </div>
                                         </div>
-                                        @if ($lotFormKey > 0)
-                                            <button type="button" class="btn btn-danger text-white ms-3" wire:click="removeLot({{ $lotFormKey }})">
-                                                <i class="fa fa-times"></i>
-                                            </button>
-                                        @endif
                                     </div>
                                     @error('lotForm.lots.'.$lotFormKey.'.lot')
                                         <span class="invalid-feedback d-block" role="alert">
@@ -196,6 +191,36 @@
                                             wire:model.lazy="lotForm.lots.{{ $lotFormKey }}.details"
                                             placeholder="Lot #{{ $lotFormKey + 1 }} details"></textarea>
                                     </div>
+
+                                    @if ($lotForm['lots'][$lotFormKey]['image'])
+                                        <img
+                                            src="{{ $lotForm['lots'][$lotFormKey]['image']->temporaryUrl() }}"
+                                            alt="Image Preview"
+                                            class="img-fluid mb-3 mt-3 rounded shadow"
+                                            style="width: 250px;"
+                                        />
+                                    @endif
+                                    <div class="input-container mb-3">
+                                        <label class="form-label">Lot #{{ $lotFormKey + 1 }} map</label>
+                                        <input
+                                            type="file"
+                                            class="form-control @error('lotForm.lots.'.$lotFormKey.'.image') is-invalid @enderror"
+                                            wire:model.lazy="lotForm.lots.{{ $lotFormKey }}.image"
+                                            accept="image/*"
+                                        >
+
+                                        @error('lotForm.lots.'.$lotFormKey.'.image')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ str_replace('lot form.', '', $message) }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    @if ($lotFormKey > 0)
+                                        <p class="text-danger clickable" wire:click="removeLot({{ $lotFormKey }})">
+                                            <i class="fa fa-times"></i> Remove lot
+                                        </p>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
@@ -256,6 +281,44 @@
                                         class="form-control form-control--textarea-sm mt-2 @error('editLotForm.details') is-invalid @enderror"
                                         wire:model.lazy="editLotForm.details"
                                         placeholder="Lot details"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                @php
+                                    $editLotFormImage = data_get($editLotForm, 'image', null);
+                                @endphp
+                                @if ($editLotFormImage)
+                                    @php
+                                        $editLogImageSrc = match(str_starts_with($editLotFormImage, 'images/lots')) {
+                                            true => '/uploads/' . $editLotFormImage,
+                                            default => $editLotFormImage->temporaryUrl()
+                                        };
+                                    @endphp
+
+                                    <img
+                                        src="{{ $editLogImageSrc }}"
+                                        alt="Image Preview"
+                                        class="img-fluid mb-3 rounded shadow"
+                                        style="width: 250px;"
+                                    />
+                                @endif
+                                <div class="mb-3">
+                                    <label class="form-label">Map</label>
+                                    <input
+                                        type="file"
+                                        class="form-control @error('editLotForm.image') is-invalid @enderror"
+                                        wire:model.lazy="editLotForm.image"
+                                        accept="image/*"
+                                    >
+
+                                    @error('editLotForm.image')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('edit lot form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>

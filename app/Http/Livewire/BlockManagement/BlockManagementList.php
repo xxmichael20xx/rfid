@@ -5,12 +5,16 @@ namespace App\Http\Livewire\BlockManagement;
 use App\Models\Block;
 use App\Models\Lot;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class BlockManagementList extends Component
 {
+    use WithFileUploads;
+
     /**
      * Define list variables
      */
@@ -22,7 +26,8 @@ class BlockManagementList extends Component
         'lots' => [
             [
                 'lot' => '',
-                'details' => ''
+                'details' => '',
+                'image' => ''
             ]
         ]
     ];
@@ -30,7 +35,8 @@ class BlockManagementList extends Component
     public $editLotForm = [
         'id' => '',
         'lot' => '',
-        'details' => ''
+        'details' => '',
+        'image' => '',
     ];
 
     public $editBlockForm = [
@@ -51,7 +57,8 @@ class BlockManagementList extends Component
     public function addLot() {
         $this->lotForm['lots'][] = [
             'lot' => '',
-            'details' => ''
+            'details' => '',
+            'image' => ''
         ];
     }
 
@@ -68,7 +75,8 @@ class BlockManagementList extends Component
             'lots' => [
                 [
                     'lot' => '',
-                    'details' => ''
+                    'details' => '',
+                    'image' => ''
                 ]
             ]
         ];
@@ -87,7 +95,8 @@ class BlockManagementList extends Component
                 Rule::unique('lots')->where(function($query) use ($blockId) {
                     return $query->where('block_id', $blockId);
                 })
-            ]
+            ],
+            'lotForm.lots.*.image' => ['nullable', 'image']
         ], [
             'lotForm.lots.*.lot.required' => 'The lot name field is required.',
             'lotForm.lots.*.lot.numeric' => 'The lot name should be number.',
@@ -105,10 +114,17 @@ class BlockManagementList extends Component
 
         // add the lots of the block
         foreach ($this->lotForm['lots'] as $newLot) {
+            $newLotImageUrl = null;
+
+            if ($newLotImage = data_get($newLot, 'image')) {
+                $newLotImageUrl = Storage::putFileAs('images/lots', $newLotImage, $newLotImage->hashName());
+            }
+
             Lot::create([
                 'block_id' => $block->id,
                 'lot' => $newLot['lot'],
                 'details' => $newLot['details'],
+                'newLotImage' => $newLotImageUrl
             ]);
         }
 
@@ -127,7 +143,8 @@ class BlockManagementList extends Component
         $this->editLotForm = [
             'id' => $id,
             'lot' => $lot->lot,
-            'details' => $lot->details
+            'details' => $lot->details,
+            'image' => $lot->image
         ];
 
         $this->emit('lot.prepared');
@@ -150,11 +167,19 @@ class BlockManagementList extends Component
                 })->ignore($lotId)
             ],
             'editLotForm.details' => ['nullable'],
+            'editLotForm.image' => ['nullable', 'image']
         ]);
+
+        $editLotImage = data_get($this->editLotForm, 'image');
+
+        if (! str_starts_with($editLotImage, 'images/lots')) {
+            $editLotImage = Storage::putFileAs('images/lots', $editLotImage, $editLotImage->hashName());
+        }
 
         $lot->update([
             'lot' => data_get($this->editLotForm, 'lot'),
             'details' => data_get($this->editLotForm, 'details'),
+            'image' => $editLotImage,
         ]);
 
         // dispatch a javacript event to trigger the notification

@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Homeowner;
 
 use App\Models\Block;
 use App\Models\HomeOwner;
+use App\Models\HomeOwnerBlockLot;
 use App\Models\Lot;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -17,6 +18,7 @@ class HomeownerUpdate extends Component
 
     public $model;
     public $modelFullName;
+    public $lotsCarousels;
 
     /**
      * Add the validation rules for createing
@@ -100,8 +102,23 @@ class HomeownerUpdate extends Component
 
     public function mount($id)
     {
-        $this->model = HomeOwner::find($id)->toArray();
+        $homeOwner = HomeOwner::find($id);
+        $this->model = $homeOwner->toArray();
         $this->modelFullName = $this->model['full_name'];
+
+        // set the lot carousel
+        $blockLots = $homeOwner->blockLots;
+        $this->lotsCarousels = collect($blockLots)->map(function($item) {
+            $block = Block::find($item->block);
+            $lot = Lot::find($item->lot);
+
+            if ($lotImage = $lot->image) {
+                return [
+                    'name' => sprintf('Block %s - Lot %s', $block->block, $lot->lot),
+                    'image' => '/uploads/' . $lotImage
+                ];
+            }
+        })->filter()->all();
     }
 
     public function render()

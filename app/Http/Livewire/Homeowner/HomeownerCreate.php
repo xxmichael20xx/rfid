@@ -17,7 +17,6 @@ use App\Rules\LegalBirthDate;
 use App\Rules\NotFutureDate;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Component;

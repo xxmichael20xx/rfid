@@ -69,8 +69,8 @@
                                 </div>
                                 @foreach ($newBlock['lots'] as $newBlockKey => $newBlockLot)
                                     <div class="col-12 my-2 @if($newBlockKey > 0) border-top @endif">
-                                        <div class="row">
-                                            <div class="col-4">
+                                        <div class="row pt-2">
+                                            <div class="col-6">
                                                 <div class="input-container">
                                                     <label>Lot #{{ $newBlockKey + 1 }} name</label>
                                                     <div class="input-group mb-3">
@@ -80,29 +80,58 @@
                                                             class="form-control @error('newBlock.lots.'.$newBlockKey.'.lot') is-invalid @enderror"
                                                             wire:model.lazy="newBlock.lots.{{ $newBlockKey }}.lot">
                                                         @error('newBlock.lots.'.$newBlockKey.'.lot')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ str_replace('new block.', '', $message) }}</strong>
-                                                        </span>
+                                                            <span class="invalid-feedback" role="alert">
+                                                                <strong>{{ str_replace('new block.', '', $message) }}</strong>
+                                                            </span>
                                                         @enderror
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-6">
+                                                <div class="input-container">
+                                                    <label>Lot #{{ $newBlockKey + 1 }} details</label>
+                                                    <textarea
+                                                        type="text"
+                                                        class="form-control form-control--textarea-sm @error('newBlock.lots.'.$newBlockKey.'.details') is-invalid @enderror"
+                                                        wire:model.lazy="newBlock.lots.{{ $newBlockKey }}.details"
+                                                        placeholder="Lot #{{ $newBlockKey + 1 }} details"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                @php
+                                                    $lotImageKey = sprintf('newBlock.lots.%s.image', $newBlockKey);
+                                                @endphp
+                                                @if ($newBlock['lots'][$newBlockKey]['image'])
+                                                    <img
+                                                        src="{{ $newBlock['lots'][$newBlockKey]['image']->temporaryUrl() }}"
+                                                        alt="Image Preview"
+                                                        class="img-fluid mb-3 rounded shadow"
+                                                        style="width: 250px;"
+                                                    />
+                                                @endif
+                                                <div class="mb-3">
+                                                    <label class="form-label">Location Map</label>
+                                                    <input
+                                                        type="file"
+                                                        class="form-control @error($lotImageKey) is-invalid @enderror"
+                                                        wire:model.lazy="newBlock.lots.{{ $newBlockKey }}.image"
+                                                        accept="image/*"
+                                                    >
+
+                                                    @error($lotImageKey)
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ str_replace('new block.', '', $message) }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
                                             @if ($newBlockKey > 0)
-                                                <div class="col-8 d-flex justify-content-start align-items-center">
-                                                    <button type="button" class="btn btn-danger text-white ms-3" wire:click="removeLot({{ $newBlockKey }})">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
+                                                <div class="col-12">
+                                                    <p class="text-danger clickable" wire:click="removeLot({{ $newBlockKey }})">
+                                                        <i class="fa fa-times"></i> Remove lot
+                                                    </p>
                                                 </div>
                                             @endif
-                                        </div>
-
-                                        <div class="input-container">
-                                            <label>Lot #{{ $newBlockKey + 1 }} details</label>
-                                            <textarea
-                                                type="text"
-                                                class="form-control form-control--textarea-sm mt-2 @error('newBlock.lots.'.$newBlockKey.'.details') is-invalid @enderror"
-                                                wire:model.lazy="newBlock.lots.{{ $newBlockKey }}.details"
-                                                placeholder="Lot #{{ $newBlockKey + 1 }} details"></textarea>
                                         </div>
                                     </div>
                                 @endforeach

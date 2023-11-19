@@ -4,11 +4,15 @@ namespace App\Http\Livewire\BlockManagement;
 
 use App\Models\Block;
 use App\Models\Lot;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class BlockManagementCreate extends Component
 {
+    use WithFileUploads;
+
     /**
      * Define form variables
      */
@@ -18,7 +22,8 @@ class BlockManagementCreate extends Component
         'lots' => [
             [
                 'lot' => '',
-                'details' => ''
+                'details' => '',
+                'image' => '',
             ]
         ]
     ];
@@ -38,7 +43,8 @@ class BlockManagementCreate extends Component
                 'numeric',
                 'min:1',
                 'distinct'
-            ]
+            ],
+            'newBlock.lots.*.image' => ['nullable', 'image']
         ];
     }
 
@@ -63,10 +69,17 @@ class BlockManagementCreate extends Component
         if ($createdBlock) {
             // add the lots of the block
             foreach ($this->newBlock['lots'] as $newLot) {
+                $imageUrl = null;
+
+                if ($image = $newLot['image']) {
+                    $imageUrl = Storage::putFileAs('images/lots', $image, $image->hashName());
+                }
+
                 Lot::create([
                     'block_id' => $createdBlock->id,
                     'lot' => $newLot['lot'],
                     'details' => $newLot['details'],
+                    'image' => $imageUrl
                 ]);
             }
 
@@ -83,7 +96,8 @@ class BlockManagementCreate extends Component
     public function addLot() {
         $this->newBlock['lots'][] = [
             'lot' => '',
-            'details' => ''
+            'details' => '',
+            'image' => ''
         ];
     }
 
