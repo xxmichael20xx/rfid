@@ -203,28 +203,33 @@
                                             style="max-height: 500px;"
                                         >
                                             <div class="carousel-indicators">
+                                                @php $btnsCount = 0; @endphp
                                                 @foreach ($lotsCarousels as $lotsCarouselKey => $lotsCarousel)
                                                     <button
                                                         type="button"
                                                         data-bs-target="#lotCarousels"
                                                         data-bs-slide-to="{{ $lotsCarouselKey }}"
-                                                        class="{{ ($lotsCarouselKey) == 0 ? 'active' : '' }}"
+                                                        class="{{ ($btnsCount) == 0 ? 'active' : '' }}"
                                                         aria-current="true"
                                                         aria-label="Slide {{ $lotsCarouselKey }}"
                                                     ></button>
+                                                    @php $btnsCount = $btnsCount + 1; @endphp
                                                 @endforeach
                                             </div>
                                             <div class="carousel-inner">
+                                                @php $imagesCount = 0; @endphp
                                                 @foreach ($lotsCarousels as $lotsCarouselKey => $lotsCarousel)
-                                                    <div class="carousel-item text-center {{ ($lotsCarouselKey) == 0 ? 'active' : '' }}">
+                                                    <div class="carousel-item text-center {{ ($imagesCount) == 0 ? 'active' : '' }}">
                                                         <img
                                                             src="{{ $lotsCarousel['image'] }}"
-                                                            class="img-fluid"
+                                                            class="img-fluid key-{{ $imagesCount }}"
+                                                            style="max-height: 500px;"
                                                         />
                                                         <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0, 0, 0, .60);">
                                                             <h5 class="text-white">{{ $lotsCarousel['name'] }}</h5>
                                                           </div>
                                                     </div>
+                                                    @php $imagesCount = $imagesCount + 1; @endphp
                                                 @endforeach
                                             </div>
                                             <button class="carousel-control-prev" type="button" data-bs-target="#lotCarousels" data-bs-slide="prev">

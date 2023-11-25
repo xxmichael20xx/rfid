@@ -260,4 +260,19 @@ class ApiHomeOwnerController extends Controller
             'message' => 'Account updated'
         ]);
     }
+
+    public function logoutUser(Request $request)
+    {
+        // get the current user
+        $user = $request->user();
+
+        // logout the user
+        $user->tokens()->delete();
+
+        // return a response
+        return response()->json([
+            'success' => true,
+            'message' => 'Logged out successfully!'
+        ]);
+    }
 }

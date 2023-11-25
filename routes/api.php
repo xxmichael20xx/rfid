@@ -43,7 +43,10 @@ Route::middleware('auth:sanctum')
                 Route::get('get', [ApiHomeOwnerController::class, 'getCurrentUser']);
 
                 // Update user
-                ROute::post('update', [ApiHomeOwnerController::class, 'updateCurrentUser']);
+                Route::post('update', [ApiHomeOwnerController::class, 'updateCurrentUser']);
+
+                // Logout current user
+                Route::post('logout', [ApiHomeOwnerController::class, 'logoutUser']);
             });
 
         /** API for Activities */
