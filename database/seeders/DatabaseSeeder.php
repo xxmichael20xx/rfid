@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             BlockLotSeeder::class,
-            HomeOwnerSeeder::class,
-            ActivitySeeder::class,
+            // HomeOwnerSeeder::class,
+            // ActivitySeeder::class,
             PaymentTypeSeeder::class
         ]);
     }

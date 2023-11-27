@@ -17,7 +17,7 @@ class BlockLotSeeder extends Seeder
      */
     public function run()
     {
-        $letterBlocks = $this->getRandomUniqueLetters();
+        $letterBlocks = range(1, 6);
         $numberBlocks = range(1, 4);
         $blocks = array_merge($letterBlocks, $numberBlocks);
         $addedBlocks = 0;
@@ -27,7 +27,7 @@ class BlockLotSeeder extends Seeder
             if (! Block::where('block', $block)->first()) {
                 // add the blocks
                 $newBlock = Block::create([
-                    'block' => 'Block '.$block
+                    'block' => $block
                 ]);
                 if ($newBlock) {
                     // generate lots betwen 1 and 18
@@ -35,7 +35,7 @@ class BlockLotSeeder extends Seeder
                     foreach ($lots as $lot) {
                         Lot::create([
                             'block_id' => $newBlock->id,
-                            'lot' => 'Lot '.$block.'-'.$lot
+                            'lot' => $lot
                         ]);
                     }
 
