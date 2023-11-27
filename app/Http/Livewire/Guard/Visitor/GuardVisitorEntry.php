@@ -5,23 +5,23 @@ namespace App\Http\Livewire\Guard\Visitor;
 use App\Models\HomeOwner;
 use Livewire\Component;
 
-class GuardHomeownerDetails extends Component
+class GuardVisitorEntry extends Component
 {
     protected $listeners = [
-        'showHomeownerDetails' => 'showHomeownerDetails'
+        'showVisitorEntry' => 'showVisitorEntry'
     ];
 
     public $data;
 
-    public function showHomeownerDetails($params)
+    public function showVisitorEntry($params)
     {
         $this->data = HomeOwner::find($params['id']);
 
-        $this->emit('show.homeowner-details');
+        $this->emit('show.visitor-entry');
     }
 
     public function render()
     {
-        return view('livewire.Guard.Visitor.guard-homeowner-details');
+        return view('livewire.Guard.Visitor.guard-visitor-entry');
     }
 }

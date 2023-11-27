@@ -478,17 +478,19 @@ class PaymentsList extends Component
                     $query->where(function ($query) use ($keyword) {
                         $query->whereHas('biller', function ($query) use ($keyword) {
                             $query->where(function ($query) use ($keyword) {
-                                $query->where(DB::raw("CONCAT(last_name, ', ', first_name, COALESCE(', ', middle_name, ''))"), 'LIKE', $keyword)
-                                    ->orWhere(function ($query) use ($keyword) {
-                                        $query->whereNull('middle_name')
-                                            ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $keyword);
-                                    });
+                                $query->where(DB::raw("CONCAT(last_name, ', ', first_name, ' ', COALESCE(middle_name, ''))"), 'LIKE', $keyword)
+                                      ->orWhere(DB::raw("CONCAT(last_name, ' ', first_name, ' ', COALESCE(middle_name, ''))"), 'LIKE', $keyword)
+                                      ->orWhere(DB::raw("CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name)"), 'LIKE', $keyword)
+                                      ->orWhere(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $keyword)
+                                      ->orWhere('first_name', 'LIKE', $keyword)
+                                      ->orWhere('middle_name', 'LIKE', $keyword)
+                                      ->orWhere('last_name', 'LIKE', $keyword);
                             });
-                        })
-                        ->orWhere('reference', 'LIKE', $keyword);
-                    });
+                        });
+                    })
+                    ->orWhere('reference', 'LIKE', $keyword);
                 });
-            }
+            }            
 
             // Check if type query exists
             if ($type) {

@@ -14,6 +14,31 @@
                             <div class="col-4">
                                 <p class="card-title h5">List of Visitors</p>
                             </div>
+                            <div class="col-8 text-right" wire:ignore>
+                                <div class="row justify-content-end">
+                                    <form
+                                        class="col-4 d-flex flex-column"
+                                        action=""
+                                        method="GET"
+                                    >
+                                        <div class="input-container input-group me-2">
+                                            <input
+                                                type="search"
+                                                name="search"
+                                                id="search"
+                                                class="form-control"
+                                                placeholder="Search..."
+                                                value="{{ request()->get('search') }}"
+                                                required
+                                            >
+                                            <button class="btn btn-secondary" type="submit" id="search-btn">Search</button>
+                                        </div>
+                                        @if (request()->get('search'))
+                                            <a href="{{ route('visitor-monitoring.index') }}" class="text-help mt-2">Clear search/filters</a>
+                                        @endif
+                                    </form>
+                                </div>
+                            </div>
                             <div class="col-12">
                                 <hr class="theme-separator">
                             </div>
@@ -24,7 +49,8 @@
                                             <tr>
                                                 <th class="cell">Visitor</th>
                                                 <th class="cell">For</th>
-                                                <th class="cell">Date Visited</th>
+                                                <th class="cell">Entry date</th>
+                                                <th class="cell">Exit date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -51,11 +77,32 @@
                                                             {{ $visitor->for->last_full_name }}
                                                         </span>
                                                     </td>
-                                                    <td class="cell">{{ Carbon\Carbon::parse($visitor->date_visited)->format('M d, Y @ h:ia') }}</td>
+                                                    <td class="cell">
+                                                        @php
+                                                            $timeIn = $visitor->time_in;
+                                                            $timeOut = $visitor->time_out;
+                                                        @endphp
+                                                        @if ($timeIn)
+                                                            {{ Carbon\Carbon::parse($timeIn)->format('M d, Y @ h:ia') }}
+                                                        @else
+                                                            N/A
+                                                        @endif
+                                                    </td>
+                                                    <td class="cell">
+                                                        @if ($timeOut)
+                                                            {{ Carbon\Carbon::parse($timeOut)->format('M d, Y @ h:ia') }}
+                                                            @if ($visitor->notes)
+                                                                <br>
+                                                                <small class="text-help">Notes: {{ $visitor->notes }}</small>
+                                                            @endif
+                                                        @else
+                                                            N/A
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td class="cell text-center" colspan="3">No result(s)</td>
+                                                    <td class="cell text-center" colspan="4">No result(s)</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>

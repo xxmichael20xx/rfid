@@ -20,6 +20,10 @@ class Visitor extends Model
         'qr_image',
         'date_visited',
         'capture',
+        'time_in',
+        'time_out',
+        'notes',
+        'generated_at',
         'metadata'
     ];
 

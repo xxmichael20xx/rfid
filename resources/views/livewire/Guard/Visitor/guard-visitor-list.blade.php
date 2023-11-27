@@ -55,7 +55,8 @@
                                             <tr>
                                                 <th class="cell">Visitor</th>
                                                 <th class="cell">For</th>
-                                                <th class="cell">Date Visited</th>
+                                                <th class="cell">Entry date</th>
+                                                <th class="cell">Exit date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -83,12 +84,31 @@
                                                         </span>
                                                     </td>
                                                     <td class="cell">
-                                                        {{ Carbon\Carbon::parse($visitor->date_visited)->format('M d, Y @ h:ia') }}
+                                                        @php
+                                                            $timeIn = $visitor->time_in;
+                                                            $timeOut = $visitor->time_out;
+                                                        @endphp
+                                                        @if ($timeIn)
+                                                            {{ Carbon\Carbon::parse($timeIn)->format('M d, Y @ h:ia') }}
+                                                        @else
+                                                            N/A
+                                                        @endif
+                                                    </td>
+                                                    <td class="cell">
+                                                        @if ($timeOut)
+                                                            {{ Carbon\Carbon::parse($timeOut)->format('M d, Y @ h:ia') }}
+                                                            @if ($visitor->notes)
+                                                                <br>
+                                                                <small class="text-help">Notes: {{ $visitor->notes }}</small>
+                                                            @endif
+                                                        @else
+                                                            N/A
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td class="cell text-center" colspan="3">No result(s)</td>
+                                                    <td class="cell text-center" colspan="4">No result(s)</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>

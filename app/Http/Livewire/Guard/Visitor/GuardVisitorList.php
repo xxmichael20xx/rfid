@@ -47,30 +47,31 @@ class GuardVisitorList extends Component
 
     public function mount()
     {
-        $visitorQuery = Visitor::with('for')
-            ->whereNotNull('date_visited');
+        $visitorQuery = Visitor::with('for')->whereNotNull('time_in');
 
-            if ($search = request('search')) {
-                $likeSearch = '%' . $search . '%';
-                $visitorQuery = $visitorQuery->where(function ($query) use ($likeSearch) {
+        if ($search = request('search')) {
+            $likeSearch = '%' . $search . '%';
+            $visitorQuery = $visitorQuery->where(function ($query) use ($likeSearch) {
+                $query->where(function ($query) use ($likeSearch) {
+                    $query->where(DB::raw("CONCAT(last_name, ', ', first_name)"), 'LIKE', $likeSearch)
+                        ->orWhere(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $likeSearch);
+                })
+                ->orWhereHas('for', function ($query) use ($likeSearch) {
                     $query->where(function ($query) use ($likeSearch) {
-                        $query->where(DB::raw("CONCAT(last_name, ', ', first_name)"), 'LIKE', $likeSearch)
-                            ->orWhere(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $likeSearch);
-                    })
-                    ->orWhereHas('for', function ($query) use ($likeSearch) {
-                        $query->where(function ($query) use ($likeSearch) {
-                            $query->where(DB::raw("CONCAT(last_name, ', ', first_name, COALESCE(', ', middle_name, ''))"), 'LIKE', $likeSearch)
-                                ->orWhere(function ($query) use ($likeSearch) {
-                                    $query->whereNull('middle_name')
-                                        ->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $likeSearch);
-                                });
-                        });
+                        $query->where(DB::raw("CONCAT(last_name, ', ', first_name, ' ', COALESCE(middle_name, ''))"), 'LIKE', $likeSearch)
+                                ->orWhere(DB::raw("CONCAT(last_name, ' ', first_name, ' ', COALESCE(middle_name, ''))"), 'LIKE', $likeSearch)
+                                ->orWhere(DB::raw("CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name)"), 'LIKE', $likeSearch)
+                                ->orWhere(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', $likeSearch)
+                                ->orWhere('first_name', 'LIKE', $likeSearch)
+                                ->orWhere('middle_name', 'LIKE', $likeSearch)
+                                ->orWhere('last_name', 'LIKE', $likeSearch);
                     });
                 });
-            }
+            });
+        }
 
         $this->visitors = $visitorQuery
-            ->orderByDesc('date_visited')
+            ->orderByDesc('time_in')
             ->get();
 
         $this->homeOwners = HomeOwner::orderBy('last_name', 'ASC')->get();

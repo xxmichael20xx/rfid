@@ -1,12 +1,12 @@
 <div>
     @if($data)
-        <div class="modal fade" id="showHomeowherDetailsModal" tabindex="-1" aria-labelledby="showHomeowherDetailsModalLabel" aria-hidden="true">
+        <div class="modal fade" id="showVisitorEntryModal" tabindex="-1" aria-labelledby="showVisitorEntryModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog--md">
                 <div class="modal-content">
                         <div class="modal-body">
                             <div class="row mb-4">
                                 <div class="col text-center">
-                                    <h2 class="card-title">Visitor Entry Recorded!</h2>
+                                    <h2 class="card-title text-dark">Visitor Entry Recorded!</h2>
                                 </div>
                             </div>
 
@@ -66,9 +66,9 @@
     <script>
         $(document).ready(function() {
             /** Define event to display the modal */
-            Livewire.on('show.homeowner-details', function() {
-                const showHomeowherDetailsModal = new bootstrap.Modal('#showHomeowherDetailsModal', {})
-                showHomeowherDetailsModal.show()
+            Livewire.on('show.visitor-entry', function() {
+                const showVisitorEntryModal = new bootstrap.Modal('#showVisitorEntryModal', {})
+                showVisitorEntryModal.show()
             })
         })
     </script>

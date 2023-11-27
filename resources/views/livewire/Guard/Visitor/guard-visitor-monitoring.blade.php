@@ -20,7 +20,8 @@
         </div>
     </div>
 
-    @livewire('guard.visitor.guard-homeowner-details')
+    @livewire('guard.visitor.guard-visitor-entry')
+    @livewire('guard.visitor.guard-visitor-exit')
 
     @section('scripts')
         <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -62,6 +63,12 @@
                     qrLoading.close()
 
                     setTimeout(() => {
+                        Swal.fire({
+                            icon: e.icon,
+                            title: e.title,
+                            text: e.message
+                        })
+
                         hasQrScanned = false
                         html5QrcodeScanner = new Html5QrcodeScanner(
                             "qrScanner",

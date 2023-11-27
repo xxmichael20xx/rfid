@@ -16,6 +16,10 @@ class QRService
         $codeName = 'qr_code_' . $timestamp . '.png';
         $codeUrl = 'https://chart.googleapis.com/chart?chs=250x250&cht=qr&chl=' . $codeToken;
 
+        $visitorData->update([
+            'generated_at' => now()
+        ]);
+
         // Generate the URL for the QR code using the Google Charts API
         return [$codeName, $codeUrl];
     }
