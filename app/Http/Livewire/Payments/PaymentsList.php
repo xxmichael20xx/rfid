@@ -425,12 +425,20 @@ class PaymentsList extends Component
         // Set the value of paymentModes
         $this->paymentModes = ['Cash', 'Bank Transfer', 'GCash'];
 
-        $this->homeOwnerBlockLots = $this->homeOwners->first()->block_lot_items;
+        if ($this->homeOwners->count() > 0) {
+            $defaultHomeOwnerId = $this->homeOwners->first()->id;
+            $defaultBlockLot = $this->homeOwners->first()->block_lot_items->first()['id'];
+            $this->homeOwnerBlockLots = $this->homeOwners->first()->block_lot_items;
+        } else {
+            $defaultHomeOwnerId = null;
+            $defaultBlockLot = [];
+            $this->homeOwnerBlockLots = [];
+        }
     
         // Set the fields of the form
         $this->form = [
-            'home_owner_id' => $this->homeOwners->first()->id,
-            'block_lot' => $this->homeOwners->first()->block_lot_items->first()['id'],
+            'home_owner_id' => $defaultHomeOwnerId,
+            'block_lot' => $defaultBlockLot,
             'type_id' => $this->paymentTypes->first()->id,
             'mode' => 'Cash',
             'amount' => $this->paymentTypes->first()->amount,

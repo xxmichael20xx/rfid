@@ -359,7 +359,7 @@
                                         @forelse ($homeOwnerBlockLots as $homeOwnerBlockLot)
                                             <option value="{{ $homeOwnerBlockLot['id'] }}">{{ $homeOwnerBlockLot['block_lot'] }}</option>
                                         @empty
-                                            <option value="" disabled>No available payment</option>
+                                            <option value="" disabled>No block & lot</option>
                                         @endforelse
                                     </select>
 
