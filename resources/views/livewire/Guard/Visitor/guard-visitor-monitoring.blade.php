@@ -63,7 +63,7 @@
                     qrLoading.close()
 
                     setTimeout(() => {
-                        if (e.title) {
+                        if (typeof e.title !== 'undefined') {
                             Swal.fire({
                                 icon: e.icon,
                                 title: e.title,
