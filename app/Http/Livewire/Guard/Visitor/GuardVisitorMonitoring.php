@@ -39,7 +39,8 @@ class GuardVisitorMonitoring extends Component
             $this->emit('guard.qr-processed', [
                 'icon' => 'warning',
                 'title' => 'Invalid',
-                'message' => 'QR Code is invalid'
+                'message' => 'QR Code is invalid',
+                'type' => 'notif'
             ]);
         } else {
             // check if the qr code is created 24-hours ago
@@ -50,7 +51,8 @@ class GuardVisitorMonitoring extends Component
                 $this->emit('guard.qr-processed', [
                     'icon' => 'warning',
                     'title' => 'Expired',
-                    'message' => 'QR Code is invalid'
+                    'message' => 'QR Code is invalid',
+                    'type' => 'notif'
                 ]);
                 return false;
             }
@@ -61,7 +63,8 @@ class GuardVisitorMonitoring extends Component
                 $this->emit('guard.qr-processed', [
                     'icon' => 'warning',
                     'title' => 'Expired',
-                    'message' => 'QR Code is expired'
+                    'message' => 'QR Code is expired',
+                    'type' => 'notif'
                 ]);
                 return false;
             }
@@ -91,10 +94,16 @@ class GuardVisitorMonitoring extends Component
                 $this->emit('guard.qr-processed', [
                     'icon' => 'warning',
                     'title' => 'Expired',
-                    'message' => 'QR Code is expired'
+                    'message' => 'QR Code is expired',
+                    'type' => 'notif'
                 ]);
             } else {
-                $this->emit('guard.qr-processed');
+                $this->emit('guard.qr-processed', [
+                    'icon' => 'warning',
+                    'title' => 'Expired',
+                    'message' => 'QR Code is expired',
+                    'type' => 'refresh'
+                ]);
 
                 // check action is time_in
                 if ($isTimeIn) {

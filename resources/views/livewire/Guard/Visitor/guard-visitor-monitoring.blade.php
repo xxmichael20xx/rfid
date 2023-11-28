@@ -64,7 +64,7 @@
                     qrLoading.close()
 
                     setTimeout(() => {
-                        if (typeof e.title !== 'undefined') {
+                        if (e.type == 'notif') {
                             Swal.fire({
                                 icon: e.icon,
                                 title: e.title,
