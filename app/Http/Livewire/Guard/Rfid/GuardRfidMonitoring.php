@@ -141,7 +141,7 @@ class GuardRfidMonitoring extends Component
             $rfidData = Rfid::withTrashed()->where('rfid', $item->rfid)->first();
 
             // get the vehicle data
-            $vehicle = HomeOwnerVehicle::where('id', $rfidData->vehicle_id)->first();
+            $vehicle = HomeOwnerVehicle::withTrashed()->where('id', $rfidData->vehicle_id)->first();
 
             // get the homeOwner data
             $homeOwner = HomeOwner::withTrashed()->where('id', $vehicle->home_owner_id)->first();
