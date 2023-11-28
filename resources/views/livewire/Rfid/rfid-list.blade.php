@@ -39,7 +39,7 @@
                                                     $isArchived = (bool) $homeOwner->deleted_at;
                                                     $archivedText = 'text-dark';
 
-                                                    $vehicleIsArchived (bool) $vehicleData->deleted_at;
+                                                    $vehicleIsArchived = (bool) $vehicleData->deleted_at;
                                                     $vehicleArchivedText = 'text-dark';
 
                                                     if ($isArchived) {
