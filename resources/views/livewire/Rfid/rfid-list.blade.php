@@ -33,7 +33,7 @@
                                         <tbody>
                                             @forelse ($rfids as $data)
                                                 @php
-                                                    $vehicleData = App\Models\HomeOwnerVehicle::where('id', $data->vehicle_id)->first();
+                                                    $vehicleData = App\Models\HomeOwnerVehicle::withTrashed()->where('id', $data->vehicle_id)->first();
                                                     $homeOwner = App\Models\HomeOwner::withTrashed()->where('id', $vehicleData->home_owner_id)->first();
 
                                                     $isArchived = (bool) $homeOwner->deleted_at;
