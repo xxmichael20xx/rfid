@@ -22,6 +22,6 @@ class Rfid extends Model
 
     public function vehicle()
     {
-        return $this->belongsTo(HomeOwnerVehicle::class, 'vehicle_id', 'id');
+        return $this->belongsTo(HomeOwnerVehicle::class, 'vehicle_id', 'id')->withTrashed();
     }
 }
