@@ -208,7 +208,7 @@ class HomeownerView extends Component
         $this->emit('show.dialog', [
             'icon' => 'success',
             'title' => 'Delete Success',
-            'message' => 'Hehicle has been successfully deleted!',
+            'message' => 'Vehicle has been successfully deleted!',
             'reload' => true
         ]);
     }
