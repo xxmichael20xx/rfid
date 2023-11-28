@@ -39,8 +39,15 @@
                                                     $isArchived = (bool) $homeOwner->deleted_at;
                                                     $archivedText = 'text-dark';
 
+                                                    $vehicleIsArchived (bool) $vehicleData->deleted_at;
+                                                    $vehicleArchivedText = 'text-dark';
+
                                                     if ($isArchived) {
                                                         $archivedText = 'text-danger';
+                                                    }
+
+                                                    if ($vehicleIsArchived) {
+                                                        $vehicleArchivedText = 'text-danger';
                                                     }
                                                 @endphp
                                                 <tr>
@@ -58,7 +65,16 @@
                                                         </span>
                                                     </td>
                                                     <td class="cell">
-                                                        {{ $data->vehicle->car_type }}
+                                                        <span
+                                                            class="{{ $vehicleArchivedText }}"
+                                                            @if ($vehicleIsArchived)
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-placement="top"
+                                                                data-bs-title="This Vehicle is archived"
+                                                            @endif
+                                                        >
+                                                            {{ $data->vehicle->car_type }}
+                                                        </span>
                                                         <br>
                                                         <span class="text-dark fw-bold">{{ $data->vehicle->plate_number }}</span>
                                                     </td>
