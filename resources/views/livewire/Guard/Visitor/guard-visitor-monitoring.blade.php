@@ -63,11 +63,13 @@
                     qrLoading.close()
 
                     setTimeout(() => {
-                        Swal.fire({
-                            icon: e.icon,
-                            title: e.title,
-                            text: e.message
-                        })
+                        if (e.title) {
+                            Swal.fire({
+                                icon: e.icon,
+                                title: e.title,
+                                text: e.message
+                            })
+                        }
 
                         hasQrScanned = false
                         html5QrcodeScanner = new Html5QrcodeScanner(

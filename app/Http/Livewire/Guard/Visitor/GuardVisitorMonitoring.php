@@ -103,6 +103,9 @@ class GuardVisitorMonitoring extends Component
                         'content' => 'You have a visitor with a name of "' . $visitorToken->last_full_name . '"'
                     ]);
 
+                    // emit a new event for the notification
+                    $this->emit('guard.qr-processed');
+
                     $this->emitTo('guard.visitor.guard-visitor-entry', 'showVisitorEntry', ['id' => $visitorToken->home_owner_id]);
                 } else {
                     $this->emitTo('guard.visitor.guard-visitor-exit', 'showVisitorExit', ['id' => $visitorToken->id]);
