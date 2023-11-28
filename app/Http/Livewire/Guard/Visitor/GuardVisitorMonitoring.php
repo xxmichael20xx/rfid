@@ -94,6 +94,8 @@ class GuardVisitorMonitoring extends Component
                     'message' => 'QR Code is expired'
                 ]);
             } else {
+                $this->emit('guard.qr-processed');
+
                 // check action is time_in
                 if ($isTimeIn) {
                     // create new notification
@@ -102,9 +104,6 @@ class GuardVisitorMonitoring extends Component
                         'title' => 'Visitor Entry',
                         'content' => 'You have a visitor with a name of "' . $visitorToken->last_full_name . '"'
                     ]);
-
-                    // emit a new event for the notification
-                    $this->emit('guard.qr-processed');
 
                     $this->emitTo('guard.visitor.guard-visitor-entry', 'showVisitorEntry', ['id' => $visitorToken->home_owner_id]);
                 } else {
