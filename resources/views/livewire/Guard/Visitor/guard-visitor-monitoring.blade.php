@@ -28,9 +28,10 @@
         <script>
             let hasQrScanned = false
             let qrLoading = null
+            let html5QrcodeScanner = null
 
             $(document).ready(function() {
-                let html5QrcodeScanner = new Html5QrcodeScanner(
+                html5QrcodeScanner = new Html5QrcodeScanner(
                     "qrScanner",
                     { fps: 10, qrbox: {width: 350, height: 350} },
                     false
