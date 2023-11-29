@@ -172,7 +172,7 @@ class BlockManagementList extends Component
 
         $editLotImage = data_get($this->editLotForm, 'image');
 
-        if (! str_starts_with($editLotImage, 'images/lots')) {
+        if ($editLotImage && ! str_starts_with($editLotImage, 'images/lots')) {
             $editLotImage = Storage::putFileAs('images/lots', $editLotImage, $editLotImage->hashName());
         }
 
@@ -278,6 +278,16 @@ class BlockManagementList extends Component
             'message' => 'Block has been updated!',
             'reload' => true
         ]);
+    }
+
+    public function removeImageEditForm()
+    {
+        $this->editLotForm['image'] = null;
+    }
+
+    public function removeImageFromLots($key)
+    {
+        $this->lotForm['lots'][$key]['image'] = null;
     }
 
     public function mount()

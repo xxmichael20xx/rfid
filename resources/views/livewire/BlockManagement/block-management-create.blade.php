@@ -125,6 +125,9 @@
                                                     @enderror
                                                 </div>
                                             </div>
+                                            <div class="col-6 d-flex align-items-center">
+                                                <small class="text-dark">Note: Wait for the selected image to appear before submitting the form to avoid issues.</small>
+                                            </div>
                                             @if ($newBlockKey > 0)
                                                 <div class="col-12">
                                                     <p class="text-danger clickable" wire:click="removeLot({{ $newBlockKey }})">

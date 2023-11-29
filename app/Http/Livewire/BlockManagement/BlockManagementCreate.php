@@ -48,6 +48,11 @@ class BlockManagementCreate extends Component
         ];
     }
 
+    public function updatedNewBlockLots($value, $index)
+    {
+        dd($value, $index);
+    }
+
     public function create()
     {
         // validate the form

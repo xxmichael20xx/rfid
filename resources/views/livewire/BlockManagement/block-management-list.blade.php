@@ -209,11 +209,19 @@
                                             accept="image/*"
                                         >
 
+                                        @if ($lotForm['lots'][$lotFormKey]['image'])
+                                            <p class="text-danger clickable" wire:click="removeImageFromLots({{ $lotFormKey }})">
+                                                <i class="fa fa-times"></i> Remove image
+                                            </p>
+                                        @endif
+
                                         @error('lotForm.lots.'.$lotFormKey.'.image')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ str_replace('lot form.', '', $message) }}</strong>
                                             </span>
                                         @enderror
+
+                                        <small class="text-dark">Note: Wait for the selected image to appear before submitting the form to avoid issues.</small>
                                     </div>
 
                                     @if ($lotFormKey > 0)
@@ -306,19 +314,29 @@
                                     />
                                 @endif
                                 <div class="mb-3">
-                                    <label class="form-label">Map</label>
-                                    <input
-                                        type="file"
-                                        class="form-control @error('editLotForm.image') is-invalid @enderror"
-                                        wire:model.lazy="editLotForm.image"
-                                        accept="image/*"
-                                    >
+                                    <div class="input-container">
+                                        <label>Lot Map</label>
+                                        <input
+                                            type="file"
+                                            class="form-control @error('editLotForm.image') is-invalid @enderror"
+                                            wire:model.lazy="editLotForm.image"
+                                            accept="image/*"
+                                        >
 
-                                    @error('editLotForm.image')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('edit lot form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
+                                        @if ($editLotFormImage)
+                                            <p class="text-danger clickable" wire:click="removeImageEditForm">
+                                                <i class="fa fa-times"></i> Remove image
+                                            </p>
+                                        @endif
+    
+                                        @error('editLotForm.image')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ str_replace('edit lot form.', '', $message) }}</strong>
+                                            </span>
+                                        @enderror
+
+                                        <small class="text-dark">Note: Wait for the selected image to appear before submitting the form to avoid issues.</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
