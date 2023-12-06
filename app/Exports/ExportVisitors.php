@@ -18,7 +18,7 @@ class ExportVisitors implements FromCollection, WithHeadings
             $homeOwner = HomeOwner::withTrashed()->where('id', data_get($item, 'home_owner_id'))->first();
             $for = $homeOwner->last_full_name ?? 'N/A';
             $visitor = data_get($item, 'last_full_name');
-            $dateVisited = Carbon::parse(data_get($item, 'date_visited'))->format('M d, Y @ h:ia');
+            $dateVisited = Carbon::parse(data_get($item, 'time_in'))->format('M d, Y @ h:ia');
 
             // Return the processed data to export
             return compact('for', 'visitor', 'dateVisited');

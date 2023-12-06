@@ -10,9 +10,9 @@
                         id="activity-chart-change"
                         name="activity-chart-change"
                         wire:model.lazy="type">
-                        <option value="days" selected>Last 7 Days</option>
-                        <option value="weeks">Last 4 Weeks</option>
-                        <option value="months">Last 4 Months</option>
+                        <option value="weeks" selected>Weeks</option>
+                        <option value="months">Months</option>
+                        <option value="years">Years</option>
                     </select>
                 </div>
                 <canvas width="100%" id="activity-chart" class="p-5 pb-0"></canvas>

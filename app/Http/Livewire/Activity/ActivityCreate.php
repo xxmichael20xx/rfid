@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\HomeOwner;
 use App\Models\Notification;
 use App\Rules\NotPastDate;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
@@ -18,6 +19,7 @@ class ActivityCreate extends Component
         'title' => '',
         'description' => '',
         'location' => '',
+        'start_time' => '',
         'start_date' => '',
         'end_date' => '',
     ];
@@ -32,6 +34,7 @@ class ActivityCreate extends Component
             'form.title' => ['required', Rule::unique('activities', 'title')],
             'form.description' => ['required'],
             'form.location' => ['required'],
+            'form.start_time' => ['required'],
             'form.start_date' => ['required', 'date', new NotPastDate],
             'form.end_date' => ['required', 'date', 'after_or_equal:form.start_date'],
         ];
@@ -73,7 +76,7 @@ class ActivityCreate extends Component
     {
         $homeOwners = HomeOwner::all();
         $title = 'New Activity';
-        $content = 'Activity "'. $newActivity->title .'" will start on '. $newActivity->start_date .' and will end on '. $newActivity->end_date .'!';
+        $content = 'Activity "'. $newActivity->title .'" will start on '. $newActivity->start_date .' @ '. Carbon::parse($newActivity->start_time)->format('h:ia') .' and will end on '. $newActivity->end_date .'!';
         $content .= ' The location is at "'. $newActivity->location .'", See you there!';
 
         $homeOwners->each(function($item) use ($title, $content) {

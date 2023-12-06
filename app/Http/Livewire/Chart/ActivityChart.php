@@ -18,8 +18,9 @@ class ActivityChart extends Component
     public function mount()
     {
         // initialize chart data
-        $this->type = 'days';
+        $this->type = 'weeks'; // Set the default type to weeks
         $this->setData();
+        $this->setColors();
     }
 
     public function change()
@@ -42,54 +43,17 @@ class ActivityChart extends Component
         $this->rows = [];
 
         // check the type and set the data
-        if ($this->type == 'days') {
-            $this->setDays();
-        } elseif ($this->type == 'weeks') {
+        if ($this->type == 'weeks') {
             $this->setWeeks();
-        } else {
+        } elseif ($this->type == 'months') {
             $this->setMonths();
+        } elseif ($this->type == 'years') {
+            $this->setYears();
         }
 
         // Reverse the arrays
         $this->labels = array_reverse($this->labels);
         $this->rows = array_reverse($this->rows);
-    }
-
-    /**
-     * Initialize the data as past `7 days`
-     */
-    public function setDays()
-    {
-        // Loop through the past 7 days
-        for ($i = 0; $i < 7; $i++) {
-            // Calculate the start and end dates for each day's range
-            $today = Carbon::now()->subDays($i);
-            $todayFormat = $today->copy()->format('Y-m-d');
-
-            // Retrieve records for the current day within the date range
-            $records = Activity::whereDate('start_date', $todayFormat)
-                ->orWhereDate('end_date', $todayFormat)
-                ->orWhere(function($query) use($todayFormat) {
-                    $query->where('start_date', '<=', $todayFormat)
-                        ->where('end_date', '>=', $todayFormat);
-                })
-                ->count();
-
-            // Store the data in the array
-            $this->labels[] = $todayFormat;
-            $this->rows[] = $records;
-        }
-
-        $this->title = 'Activities this past 7 days';
-        $this->colors = [
-            'rgba(255, 99, 132, 0.7)',  // Red
-            'rgba(54, 162, 235, 0.7)',  // Blue
-            'rgba(255, 206, 86, 0.7)',  // Yellow
-            'rgba(75, 192, 192, 0.7)',  // Green
-            'rgba(153, 102, 255, 0.7)', // Purple
-            'rgba(255, 159, 64, 0.7)',  // Orange
-            'rgba(100, 100, 100, 0.7)'  // Gray
-        ];
     }
 
     /**
@@ -123,34 +87,24 @@ class ActivityChart extends Component
         }
 
         $this->title = 'Activities this past 4 weeks';
-        $this->colors = [
-            'rgba(54, 162, 235, 0.7)', // Blue
-            'rgba(255, 206, 86, 0.7)', // Yellow
-            'rgba(255, 159, 64, 0.7)', // Orange
-            'rgba(100, 100, 100, 0.7)' // Gray
-        ];
     }
 
     /**
-     * Initialize the data as past `4 months`
+     * Initialize the data as past `12 months`
      */
     public function setMonths()
     {
-        // Get the current date
-        $currentDate = Carbon::now();
+        for ($i = 0; $i < 12; $i++) {
+            // Get the current date
+            $currentDate = Carbon::now()->subMonths($i);
 
-        for ($i = 0; $i < 4; $i++) {
             // Calculate the start and end dates for each month
-            $startDate = $currentDate->copy()->subMonths($i)->startOfMonth();
-            $endDate = $currentDate->copy()->subMonths($i)->endOfMonth();
+            $startDate = $currentDate->copy()->startOfMonth();
+            $endDate = $currentDate->copy()->endOfMonth();
 
             // Retrieve records for the current month
-            $records = Activity::where('start_date', $startDate)
-                ->orWhere('end_date', $endDate)
-                ->orWhere(function($query) use($startDate, $endDate) {
-                    $query->where('start_date', '>=', $startDate)
-                        ->where('end_date', '<=', $endDate);
-                })
+            $records = Activity::where('start_date', '>=', $startDate)
+                ->where('end_date', '<=', $endDate)
                 ->count();
 
             // Store the data in the array
@@ -158,12 +112,54 @@ class ActivityChart extends Component
             $this->rows[] = $records;
         }
 
-        $this->title = 'Activities this past 4 months';
+        $this->title = 'Activities per month';
+    }
+
+    /**
+     * Initialize the data as past `4 years`
+     */
+    public function setYears()
+    {
+        for ($i = 0; $i < 4; $i++) {
+            // Get the current date
+            $currentDate = Carbon::now()->subYears($i);
+
+            // Calculate the start and end dates for each year
+            $startDate = $currentDate->copy()->startOfYear();
+            $endDate = $currentDate->copy()->endOfYear();
+
+            // Retrieve records for the current year
+            $records = Activity::where('start_date', '>=', $startDate)
+                ->where('end_date', '<=', $endDate)
+                ->count();
+
+            // Store the data in the array
+            $this->labels[] = $startDate->format('Y');
+            $this->rows[] = $records;
+        }
+
+        $this->title = 'Activities this past 4 years';
+    }
+
+    /**
+     * Set the colors for the datasets
+     */
+    public function setColors()
+    {
+        // Set colors for up to 12 datasets
         $this->colors = [
             'rgba(255, 99, 132, 0.7)',  // Red
-            'rgba(75, 192, 192, 0.7)',  // Teal
+            'rgba(54, 162, 235, 0.7)',  // Blue
+            'rgba(255, 206, 86, 0.7)',  // Yellow
+            'rgba(75, 192, 192, 0.7)',  // Green
+            'rgba(153, 102, 255, 0.7)', // Purple
+            'rgba(255, 159, 64, 0.7)',  // Orange
+            'rgba(100, 100, 100, 0.7)', // Gray
             'rgba(0, 0, 255, 0.7)',     // Navy
-            'rgba(0, 255, 0, 0.7)'      // Lime
+            'rgba(0, 255, 0, 0.7)',     // Lime
+            'rgba(255, 0, 255, 0.7)',   // Magenta
+            'rgba(255, 255, 0, 0.7)',   // Yellow
+            'rgba(0, 255, 255, 0.7)',   // Cyan
         ];
     }
 

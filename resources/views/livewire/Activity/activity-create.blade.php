@@ -62,6 +62,26 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <div class="input-container mb-3">
+                                            <label for="start_time">Start time<span class="required">*</span></label>
+                                            <input
+                                                id="start_time"
+                                                name="start_time"
+                                                type="time"
+                                                class="form-control @error('form.start_time') is-invalid @enderror"
+                                                wire:model.lazy="form.start_time">
+                
+                                            @error('form.start_time')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ str_replace('form.', '', $message) }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
             
                                 <div class="row mb-3">
                                     <div class="col-6">

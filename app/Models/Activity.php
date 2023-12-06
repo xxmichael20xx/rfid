@@ -19,6 +19,7 @@ class Activity extends Model
         'title',
         'description',
         'location',
+        'start_time',
         'start_date',
         'end_date',
         'metadata'

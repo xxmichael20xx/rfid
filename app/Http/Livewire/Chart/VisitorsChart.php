@@ -5,9 +5,9 @@ namespace App\Http\Livewire\Chart;
 use App\Exports\ExportVisitors;
 use App\Models\Visitor;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Str;
 
 class VisitorsChart extends Component
 {
@@ -35,7 +35,7 @@ class VisitorsChart extends Component
     public function mount($hasExport = false)
     {
         // initialize chart data
-        $this->type = 'days';
+        $this->type = 'weeks'; // Default to weeks
         $this->setData();
 
         $this->hasExport = $hasExport;
@@ -63,50 +63,13 @@ class VisitorsChart extends Component
         shuffle($this->colors);
 
         // check the type and set the data
-        if ($this->type == 'days') {
-            $this->setDays();
-        } elseif ($this->type == 'weeks') {
+        if ($this->type == 'weeks') {
             $this->setWeeks();
-        } else {
+        } elseif ($this->type == 'months') {
             $this->setMonths();
+        } elseif ($this->type == 'years') {
+            $this->setYears();
         }
-    }
-
-    /**
-     * Initialize the data as past `7 days`
-     */
-    public function setDays()
-    {
-        // Get the current date
-        $currentDate = Carbon::now();
-
-        // Loop through the past 7 days
-        for ($i = 0; $i < 7; $i++) {
-            // Calculate the start and end dates for each 1-week interval
-            $startDate = $currentDate->copy()->subDays($i)->startOfDay();
-            $endDate = $startDate->copy()->endOfDay();
-
-            $startDateFormat = $startDate->copy()->format($this->dateFormat);
-            $endDateFormat = $endDate->copy()->format($this->dateFormat);
-
-            // Retrieve records for the current day within the date range
-            $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat])->get();
-            
-            // $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat]);
-            // To check the SQL Query
-            // dd(
-            //     $records->toSql(),
-            //     $records->getBindings()
-            // );
-
-            $this->data = array_merge($this->data, $records->toArray());
-
-            // Store the data in the array
-            $this->labels[] = $startDate->format('M d, Y');
-            $this->rows[] = $records->count();
-        }
-
-        $this->title = 'Visitors this past 7 days';
     }
 
     /**
@@ -126,7 +89,23 @@ class VisitorsChart extends Component
             $endDateFormat = $endDate->copy()->format($this->dateFormat);
 
             // Retrieve records for the current 1-week interval
-            $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat])->get();
+            $records = Visitor::whereBetween('time_in', [$startDateFormat, $endDateFormat])->get();
+            
+            
+            // $records = Visitor::whereBetween('time_in', [$startDateFormat, $endDateFormat]);
+            // To check the SQL Query
+            // dd(
+            //     $records->toSql(),
+            //     $records->getBindings()
+            // );
+
+
+            // $records = Visitor::whereBetween('time_in', [$startDateFormat, $endDateFormat]);
+            // To check the SQL Query
+            // dd(
+            //     $records->toSql(),
+            //     $records->getBindings()
+            // );
 
             $this->data = array_merge($this->data, $records->toArray());
 
@@ -139,14 +118,14 @@ class VisitorsChart extends Component
     }
 
     /**
-     * Initialize the data as past `4 months`
+     * Initialize the data as past `12 months`
      */
     public function setMonths()
     {
         // Get the current date
         $currentDate = Carbon::now();
 
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 11; $i >= 0; $i--) {
             // Calculate the start and end dates for each month
             $startDate = $currentDate->copy()->subMonths($i)->startOfMonth()->startOfDay();
             $endDate = $currentDate->copy()->subMonths($i)->endOfMonth()->endOfDay();
@@ -155,7 +134,7 @@ class VisitorsChart extends Component
             $endDateFormat = $endDate->copy()->format($this->dateFormat);
 
             // Retrieve records for the current month
-            $records = Visitor::whereBetween('date_visited', [$startDateFormat, $endDateFormat])->get();
+            $records = Visitor::whereBetween('time_in', [$startDateFormat, $endDateFormat])->get();
 
             $this->data = array_merge($this->data, $records->toArray());
 
@@ -164,7 +143,36 @@ class VisitorsChart extends Component
             $this->rows[] = $records->count();
         }
 
-        $this->title = 'Visitors this past 4 months';
+        $this->title = 'Visitors per month';
+    }
+
+    /**
+     * Initialize the data as past `4 years`
+     */
+    public function setYears()
+    {
+        // Get the current date
+        $currentDate = Carbon::now();
+
+        for ($i = 3; $i >= 0; $i--) {
+            // Calculate the start and end dates for each year
+            $startDate = $currentDate->copy()->subYears($i)->startOfYear()->startOfDay();
+            $endDate = $currentDate->copy()->subYears($i)->endOfYear()->endOfDay();
+
+            $startDateFormat = $startDate->copy()->format($this->dateFormat);
+            $endDateFormat = $endDate->copy()->format($this->dateFormat);
+
+            // Retrieve records for the current year
+            $records = Visitor::whereBetween('time_in', [$startDateFormat, $endDateFormat])->get();
+
+            $this->data = array_merge($this->data, $records->toArray());
+
+            // Store the data in the array
+            $this->labels[] = $startDate->format('Y');
+            $this->rows[] = $records->count();
+        }
+
+        $this->title = 'Visitors this past 4 years';
     }
 
     public function exportData()

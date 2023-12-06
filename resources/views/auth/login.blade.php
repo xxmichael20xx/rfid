@@ -8,6 +8,28 @@
         height: 100vh;
         min-height: 100%
     }
+
+    #authCarousels {
+        position: relative;
+    }
+
+    #authCarousels::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        z-index: 2;
+    }
+
+    #authCarousels,
+    #authCarousels .carousel-inner,
+    #authCarousels .carousel-item,
+    #authCarousels img {
+        height: 100vh;
+    }
 </style>
 <div class="row g-0 app-auth-wrapper app-login">
     <div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5">
@@ -81,9 +103,32 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-md-5 col-lg-6 h-100 auth-background-col">
-        <div class="auth-background-holder"></div>
-        <div class="auth-background-mask"></div>
+    <div class="col-12 col-md-5 col-lg-6 h-100">
+        @php
+            $bgImages = [
+                asset('images/background/background-2.png'),
+                asset('images/background/background-3.png'),
+                asset('images/background/background-4.png'),
+            ];
+        @endphp
+        <div
+            id="authCarousels"
+            class="carousel slide carousel-fade"
+            data-bs-ride="carousel"
+        >
+            <div class="carousel-inner">
+                @php $imagesCount = 0; @endphp
+                @foreach ($bgImages as $bgImageKey => $bgImage)
+                    <div class="carousel-item text-center {{ ($imagesCount) == 0 ? 'active' : '' }}">
+                        <img
+                            src="{{ $bgImage }}"
+                            class="img-fluid key-{{ $imagesCount }}"
+                        />
+                    </div>
+                    @php $imagesCount = $imagesCount + 1; @endphp
+                @endforeach
+            </div>
+        </div>
     </div>
 </div>
 @endsection

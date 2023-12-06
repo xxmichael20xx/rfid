@@ -264,7 +264,7 @@
                                                             $diffInDays = Carbon\Carbon::now()->diffInDays($dueDate);
                                                             $dueClass = 'text-dark';
 
-                                                            if ($diffInDays <= 3) {
+                                                            if ($diffInDays <= 3 && $data->status != 'paid') {
                                                                 $dueClass = 'text-danger fw-bold';
                                                             }
                                                         @endphp

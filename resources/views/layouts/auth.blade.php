@@ -15,6 +15,9 @@
 
 <body class="app pt-0">
     @yield('content')
+
+    @vite(['resources/js/app.js'])
+    <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
 </body>
-</html> 
+</html>
     

@@ -8,6 +8,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomeOwnerController;
 use App\Http\Livewire\Activity\ActivityCreate;
 use App\Http\Livewire\Activity\ActivityUpdate;
+use App\Http\Livewire\Admin\Report\AdminReportActivity;
+use App\Http\Livewire\Admin\Report\AdminReportExpenses;
+use App\Http\Livewire\Admin\Report\AdminReportPayment;
 use App\Http\Livewire\BlockManagement\BlockManagementList;
 use App\Http\Livewire\BlockManagement\BlockManagementCreate;
 use App\Http\Livewire\Guard\GuardDashboard;
@@ -119,6 +122,18 @@ Route::middleware('auth.admin')
             ->group(function() {
                 Route::get('/', VisitorMonitoring::class)->name('index');
             });
+
+        /** Define Admin Reports */
+        Route::name('admin.reports.')->prefix('reports')->group(function() {
+            /** Activities */
+            Route::get('activity', AdminReportActivity::class)->name('activity');
+
+            /** Expenses */
+            Route::get('expenses', AdminReportExpenses::class)->name('expenses');
+
+            /** Payments */
+            Route::get('payments', AdminReportPayment::class)->name('payments');
+        });
     });
 
 Route::middleware('auth.admin_or_treasurer')

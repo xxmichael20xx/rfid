@@ -529,7 +529,7 @@ class PaymentsList extends Component
             $this->hasSearchFilter = false;
         }
 
-        $this->dueToday = Payment::whereDate('due_date', Carbon::now())->count();
+        $this->dueToday = Payment::whereDate('due_date', Carbon::now())->where('status', '!=', 'paid')->count();
 
         $tempCashOnHand = Payment::where('mode', 'Cash')->where('status', 'paid')->sum('amount');
         $tempRemit = PaymentRemit::sum('amount');

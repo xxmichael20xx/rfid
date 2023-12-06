@@ -6,38 +6,7 @@
     </div>
 
     <div class="row mb-4" wire:ignore>
-        <div class="col-12">
-            <div class="card shadow-lg border-0">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-2 mx-auto">
-                            <p class="card-title h5">Expenses Chat</p>
-                            <select
-                                wire:change="changeChartYear"
-                                class="form-select"
-                                id="payments-expenses-change"
-                                name="payments-expenses-change"
-                                wire:model.lazy="chartData.year">
-                                <option value="" disabled>Filter by year</option>
-                                @php
-                                    $currentYear = date('Y');
-                                    $years = range($currentYear - 3, $currentYear + 2);
-                                @endphp
-                                @foreach ($years as $year)
-                                    <option value="{{ $year }}">{{ $year }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <hr class="theme-separator">
-                        </div>
-                        <div class="col-12">
-                            <canvas width="100%" id="payments-expenses"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @livewire('chart.payment-expense-chart')
     </div>
 
     <div class="row g-4 mb-4">
@@ -267,27 +236,6 @@
                             $(id).click()
                         }
                     })
-                })
-
-                /** Define the chart config */
-                const chart = new Chart(
-                    document.getElementById('payments-expenses'),
-                    {
-                        type: 'bar',
-                        data: {
-                            labels: @json($chartData['labels']),
-                            datasets: [{
-                                label: `{{ $chartData['title'] }}`,
-                                data: @json($chartData['rows']),
-                                backgroundColor: @json($chartData['colors'])
-                            }]
-                        }
-                    }
-                )
-
-                Livewire.on('updateExpensesChart', data => {
-                    chart.data = data
-                    chart.update()
                 })
             })
         </script>

@@ -12,7 +12,7 @@ class GuardDashboard extends Component
     public function mount()
     {
         // set the visitors today
-        $this->visitorsToday = Visitor::whereDate('date_visited', now())->count();
+        $this->visitorsToday = Visitor::whereDate('time_in', now())->count();
     }
 
     public function render()

@@ -25,7 +25,9 @@ class ActivityUpdate extends Component
             ],
             'model.description' => ['required'],
             'model.location' => ['required'],
-            'model.end_date' => ['required', new NotPastDate],
+            'model.start_time' => ['required'],
+            'model.start_date' => ['required', 'date', new NotPastDate],
+            'model.end_date' => ['required', 'date', 'after_or_equal:model.start_date'],
         ];
     }
 

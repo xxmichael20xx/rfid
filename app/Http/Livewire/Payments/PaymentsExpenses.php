@@ -43,11 +43,6 @@ class PaymentsExpenses extends Component
      */
     public $expenseTypes;
 
-    /**
-     * The list of chart data
-     */
-    public $chartData;
-
     public function create()
     {
         // Validate the form
@@ -109,56 +104,6 @@ class PaymentsExpenses extends Component
         ]);
     }
 
-    public function changeChartYear()
-    {
-        // Reset chart data
-        $keys = ['labels', 'rows', 'colors'];
-
-        foreach ($keys as $key) {
-            $this->chartData[$key] = [];
-        }
-
-        $this->filterChartMonths();
-        $this->emit('updateExpensesChart', [
-            'labels' => $this->chartData['labels'],
-            'datasets' => [[
-                'label' => $this->chartData['title'],
-                'data' => $this->chartData['rows'],
-                'backgroundColor' => $this->chartData['colors']
-            ]],
-        ]);
-    }
-
-    public function filterChartMonths()
-    {
-        // Get the current year
-        $currentYear = $this->chartData['year'];
-
-        for ($month = 1; $month <= 12; $month++) {
-            // Define the start and end dates for the current month
-            $startDate = Carbon::create($currentYear, $month, 1)->startOfMonth();
-            $endDate = Carbon::create($currentYear, $month, 1)->endOfMonth();
-
-            // Query your database to fetch data for the current month and get the sum
-            $monthExpenses = PaymentExpense::whereBetween('transaction_date', [$startDate, $endDate])->sum('amount');
-
-            // Store the data in the array
-            $this->chartData['labels'][] = $startDate->format('M Y');
-            $this->chartData['rows'][] = $monthExpenses;
-        }
- 
-        $this->chartData['title'] = sprintf("Expenses all throughout the year: %s", $this->chartData['year']);
-        $this->chartData['colors'] = [
-            'rgba(255, 99, 132, 0.7)',  // Red
-            'rgba(75, 192, 192, 0.7)',  // Teal
-            'rgba(153, 102, 255, 0.7)', // Purple
-            'rgba(255, 159, 64, 0.7)',  // Orange
-            'rgba(0, 128, 0, 0.7)',     // Green
-            'rgba(0, 0, 255, 0.7)',     // Navy
-            'rgba(0, 255, 0, 0.7)'      // Lime
-        ];
-    }
-
     /**
      * Initialize component data
      */
@@ -182,10 +127,6 @@ class PaymentsExpenses extends Component
 
         // Set the expense types
         $this->expenseTypes = $this->expenses->pluck('type')->toArray();
-
-        // Set the cart data
-        $this->chartData['year'] = now()->year;
-        $this->filterChartMonths();
     }
 
     /**

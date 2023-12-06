@@ -11,7 +11,6 @@ use Illuminate\Support\Str;
 
 class RfidChart extends Component
 {
-    
     public $dateFormat = 'm/d/Y';
 
     public $title;
@@ -36,7 +35,7 @@ class RfidChart extends Component
     public function mount($hasExport = false)
     {
         // initialize chart data
-        $this->type = 'days';
+        $this->type = 'weeks'; // Default to weeks
         $this->setData();
 
         $this->hasExport = $hasExport;
@@ -64,43 +63,13 @@ class RfidChart extends Component
         shuffle($this->colors);
 
         // check the type and set the data
-        if ($this->type == 'days') {
-            $this->setDays();
-        } elseif ($this->type == 'weeks') {
+        if ($this->type == 'weeks') {
             $this->setWeeks();
-        } else {
+        } elseif ($this->type == 'months') {
             $this->setMonths();
+        } elseif ($this->type == 'years') {
+            $this->setYears();
         }
-    }
-
-    /**
-     * Initialize the data as past `7 days`
-     */
-    public function setDays()
-    {
-        // Get the current date
-        $currentDate = Carbon::now();
-
-        // Loop through the past 7 days
-        for ($i = 0; $i < 7; $i++) {
-            // Calculate the start and end dates for each 1-week interval
-            $startDate = $currentDate->copy()->subDays($i)->startOfDay();
-            $endDate = $startDate->copy()->endOfDay();
-
-            $startDateFormat = $startDate->copy()->format($this->dateFormat);
-            $endDateFormat = $endDate->copy()->format($this->dateFormat);
-
-            // Retrieve records for the current day within the date range
-            $records = RfidMonitoring::whereBetween('date', [$startDateFormat, $endDateFormat])->get();
-
-            $this->data = array_merge($this->data, $records->toArray());
-
-            // Store the data in the array
-            $this->labels[] = $startDate->format('M d, Y');
-            $this->rows[] = $records->count();
-        }
-
-        $this->title = 'RFID Records this past 7 days';
     }
 
     /**
@@ -133,14 +102,14 @@ class RfidChart extends Component
     }
 
     /**
-     * Initialize the data as past `4 months`
+     * Initialize the data as past `12 months`
      */
     public function setMonths()
     {
         // Get the current date
         $currentDate = Carbon::now();
 
-        for ($i = 0; $i < 4; $i++) {
+        for ($i = 11; $i >= 0; $i--) {
             // Calculate the start and end dates for each month
             $startDate = $currentDate->copy()->subMonths($i)->startOfMonth()->startOfDay();
             $endDate = $currentDate->copy()->subMonths($i)->endOfMonth()->endOfDay();
@@ -158,12 +127,45 @@ class RfidChart extends Component
             $this->rows[] = $records->count();
         }
 
-        $this->title = 'RFID Records this past 4 months';
+        $this->title = 'RFID Records per month';
+    }
+
+    /**
+     * Initialize the data as past `4 years`
+     */
+    public function setYears()
+    {
+        // Get the current date
+        $currentDate = Carbon::now();
+
+        // Get the current year
+        $currentYear = Carbon::now()->year;
+
+        for ($i = 3; $i >= 0; $i--) {
+            // Calculate the start and end dates for each year
+            $startYear = $currentYear - $i;
+            $startDate = $currentDate->copy()->subYears($i)->startOfYear()->startOfDay();
+            $endDate = $currentDate->copy()->subYears($i)->endOfYear()->endOfDay();
+
+            $startDateFormat = $startDate->copy()->format('Y-m-d H:i:s');
+            $endDateFormat = $endDate->copy()->format('Y-m-d H:i:s');
+
+            // Retrieve records for the current year
+            $records = RfidMonitoring::whereBetween('time_in', [$startDateFormat, $endDateFormat])->get();
+
+            $this->data = array_merge($this->data, $records->toArray());
+
+            // Store the data in the array
+            $this->labels[] = $startDate->format('Y');
+            $this->rows[] = $records->count();
+        }
+
+        $this->title = 'RFID Records past 4 years';
     }
 
     public function exportData()
     {
-        $timestamp = now()->format('Y-m-d_Hi'); // Current timestamp in the format: yyyy-mm-dd_HHmm
+        $timestamp = now()->format('Y-m-d_Hi');
         $filename = 'rfid_monitoring_' . $timestamp . '_' . Str::replace(' ', '_', $this->title) . '.xlsx';
 
         return Excel::download(new ExportRfid($this->data), $filename);

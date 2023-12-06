@@ -20,8 +20,8 @@ class AdminController extends Controller
         $totalHomeOwners = HomeOwner::all()->count();
 
         // create a dummy data for visitors
-        $visitors = Visitor::where('date_visited', '<>', null)
-            ->orderBy('date_visited', 'DESC')
+        $visitors = Visitor::where('time_in', '<>', null)
+            ->orderBy('time_in', 'DESC')
             ->limit(10)
             ->get();
 
@@ -38,7 +38,7 @@ class AdminController extends Controller
             ->count();
 
         // get the visitors today
-        $visitorsToday = Visitor::whereDate('date_visited', now())->count();
+        $visitorsToday = Visitor::whereDate('time_in', now())->count();
 
         // returns a view an using compact, it will pass in the variable data to the view
         return view('admin.dashboard', compact('totalHomeOwners', 'visitors', 'activities', 'activitiesToday', 'visitorsToday'));

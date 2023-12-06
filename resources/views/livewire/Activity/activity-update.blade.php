@@ -45,26 +45,6 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="input-container mb-3">
-                                            <label for="end_date">End date<span class="required">*</span></label>
-                                            <input
-                                                id="end_date"
-                                                name="end_date"
-                                                type="date"
-                                                class="form-control @error('model.end_date') is-invalid @enderror"
-                                                wire:model.lazy="model.end_date">
-                
-                                            @error('model.end_date')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ str_replace('model.', '', $message) }}</strong>
-                                                </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-        
-                                <div class="row mb-3">
-                                    <div class="col-6">
-                                        <div class="input-container mb-3">
                                             <label for="location">Location<span class="required">*</span></label>
                                             <input
                                                 id="location"
@@ -76,6 +56,63 @@
                                             @error('model.location')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <div class="input-container mb-3">
+                                            <label for="start_time">Start time<span class="required">*</span></label>
+                                            <input
+                                                id="start_time"
+                                                name="start_time"
+                                                type="time"
+                                                class="form-control @error('model.start_time') is-invalid @enderror"
+                                                wire:model.lazy="model.start_time">
+                
+                                            @error('model.start_time')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ str_replace('form.', '', $message) }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <div class="input-container mb-3">
+                                            <label for="start_date">Start date<span class="required">*</span></label>
+                                            <input
+                                                id="start_date"
+                                                name="start_date"
+                                                type="date"
+                                                class="form-control @error('model.start_date') is-invalid @enderror"
+                                                wire:model.lazy="model.start_date">
+                
+                                            @error('model.start_date')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ str_replace('model.', '', $message) }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="input-container mb-3">
+                                            <label for="end_date">End date<span class="required">*</span></label>
+                                            <input
+                                                id="end_date"
+                                                name="end_date"
+                                                type="date"
+                                                class="form-control @error('model.end_date') is-invalid @enderror"
+                                                wire:model.lazy="model.end_date">
+                
+                                            @error('model.end_date')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ str_replace('model.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
                                         </div>
