@@ -70,10 +70,10 @@
                                                 id="location"
                                                 name="location"
                                                 type="text"
-                                                class="form-control @error('form.location') is-invalid @enderror"
-                                                wire:model.lazy="form.location">
+                                                class="form-control @error('model.location') is-invalid @enderror"
+                                                wire:model.lazy="model.location">
                 
-                                            @error('form.location')
+                                            @error('model.location')
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>
@@ -89,7 +89,7 @@
                                             <textarea
                                                 id="description"
                                                 name="description"
-                                                class="form-control form-control--textarea @error('model.title') is-invalid @enderror"
+                                                class="form-control form-control--textarea @error('model.description') is-invalid @enderror"
                                                 wire:model.lazy="model.description"
                                                 rows="5"></textarea>
                 

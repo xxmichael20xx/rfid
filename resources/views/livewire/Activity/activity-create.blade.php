@@ -38,7 +38,7 @@
                 
                                             @error('form.title')
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
+                                                    <strong>{{ str_replace('form.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
                                         </div>
@@ -56,7 +56,7 @@
                 
                                             @error('form.location')
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
+                                                    <strong>{{ str_replace('form.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
                                         </div>
@@ -114,7 +114,7 @@
                 
                                             @error('form.description')
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
+                                                    <strong>{{ str_replace('form.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
                                         </div>

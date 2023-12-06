@@ -258,6 +258,25 @@
         </div>
     </div>
 
+    @section('styles')
+        <style>
+            .carousel-item .carousel-caption {
+                top: 0;
+                left: 0;
+                right: unset;
+                bottom: unset;
+                width: fit-content;
+                height: fit-content;
+                padding: 2em;
+                border-radius: 5px
+            }
+
+            .carousel-item .carousel-caption h5 {
+                margin: 0;
+            }
+        </style>
+    @endsection
+
     @section('scripts')
         <script>
             window.addEventListener('DOMContentLoaded', () => {
