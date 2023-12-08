@@ -207,11 +207,12 @@
             @this.logVisitoEntry()
 
             setTimeout(() => {
+                $('#html5-qrcode-button-camera-permission').trigger('click')
                 Swal.fire({
                     icon: 'success',
                     title: 'Entry logged'
                 })
-            }, 1500);
+            }, 500);
         }
     </script>
 </div>

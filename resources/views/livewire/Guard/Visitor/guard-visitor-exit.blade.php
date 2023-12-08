@@ -63,7 +63,7 @@
                         icon: 'success',
                         title: 'Exit logged'
                     })
-                }, 1500);
+                }, 500);
             })
         })
     </script>

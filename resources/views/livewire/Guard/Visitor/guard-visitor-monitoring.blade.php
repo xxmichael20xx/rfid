@@ -97,6 +97,7 @@
                             false
                         );
                         html5QrcodeScanner.render(onScanSuccess, onScanFailure)
+                        $('#html5-qrcode-button-camera-permission').trigger('click')
                     }, 1500)
                 })
             })

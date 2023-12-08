@@ -101,16 +101,18 @@
                                                         @endif
                                                     </td>
                                                     <td class="cell">
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-success text-white view-time-in"
-                                                            data-type="Time In"
-                                                            data-date="{{ \Carbon\Carbon::parse($visitor['time_in'])->format('M d, Y') }}"
-                                                            data-time="{{ $visitor['time_in'] }}"
-                                                            data-img="{{ $visitor['capture_in'] }}"
-                                                        >
-                                                            <i class="fa fa-image"></i> Capture
-                                                        </button>
+                                                        @if ($visitor['capture_in'])
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-success text-white view-time-in"
+                                                                data-type="Time In"
+                                                                data-date="{{ \Carbon\Carbon::parse($visitor['time_in'])->format('M d, Y') }}"
+                                                                data-time="{{ $visitor['time_in'] }}"
+                                                                data-img="{{ $visitor['capture_in'] }}"
+                                                            >
+                                                                <i class="fa fa-image"></i> Capture
+                                                            </button>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @empty
