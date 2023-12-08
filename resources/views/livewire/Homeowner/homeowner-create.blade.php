@@ -1,22 +1,21 @@
 <div>
-    <h1 class="app-page-title">Add Home Owner</h1>
-    <div class="row g-4 mb-4">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <div class="col-auto">
-                <a href="{{ route('homeowners.list') }}" class="btn btn-success text-white">
-                    <i class="fa fa-hand-point-left"></i> Go back
-                </a>
+    <form method="POST" wire:submit.prevent="create" class="col-12">
+        @csrf
+        <div class="row g-4 mb-4">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <h1 class="app-page-title">Add Home Owner</h1>
+                <div class="col-auto">
+                    <a href="{{ route('homeowners.list') }}" class="btn btn-success text-white">
+                        <i class="fa fa-hand-point-left"></i> Go back
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row g-4 mb-4">
-        <div class="col-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-body">
-                    <div class="container">
-                        <form method="POST" wire:submit.prevent="create" class="col-12">
-                            @csrf
-
+        <div class="row g-4 mb-4">
+            <div class="col-8">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body">
+                        <div class="container">
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <p class="card-title h5">Profile Details</p>
@@ -168,15 +167,16 @@
                                         />
                                     @endif
                                     <div class="mb-3">
-                                        <label for="profile" class="form-label">Profile</label>
+                                        <label for="profile" class="form-label" id="imageBtnTriggerLabel">Profile</label>
                                         <input
                                             id="profile"
                                             name="profile"
                                             type="file"
-                                            class="form-control @error('form.profile') is-invalid @enderror"
+                                            class="form-control @error('form.profile') is-invalid @enderror d-none"
                                             wire:model.lazy="form.profile"
                                             accept="image/*"
                                         >
+                                        <button type="button" class="btn btn-secondary d-block" id="imageBtnTrigger">Select an image</button>
 
                                         @error('form.profile')
                                             <span class="invalid-feedback" role="alert">
@@ -186,8 +186,15 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="row mt-5 mb-3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row mb-3">
                                 <div class="col-12">
                                     <p class="card-title h5">Account Details</p>
                                     <hr class="theme-separator">
@@ -195,7 +202,7 @@
                             </div>
 
                             <div class="row mb-3">
-                                <div class="col-8">
+                                <div class="col-12">
                                     <div class="input-container" wire:ignore>
                                         <label for="block-lots">Block & Lots</label>
                                         <select
@@ -233,55 +240,16 @@
                                     @endif
                                 </div>
                             </div>
-
-                            <div class="row mt-5 mb-3">
-                                <div class="col-12">
-                                    <p class="card-title h5">Payment Details</p>
-                                    <hr class="theme-separator">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-8">
-                                    <div class="input-container" wire:ignore>
-                                        <label for="payments">Payments</label>
-                                        <select
-                                            id="payments"
-                                            multiple="multiple"
-                                            class="form-control @error('form.payments') is-invalid @enderror"
-                                            wire:model.lazy="form.payments">
-                                            @forelse ($paymentTypes as $key => $paymentType)
-                                                <option value="{{ $paymentType->id }}">{{ $paymentType->type }}</option>
-                                            @empty
-                                                <option value="" disabled>No available payments</option>
-                                            @endforelse
-                                        </select>
-
-                                        @error('form.payments')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ str_replace('form.', '', $message) }}</strong>
-                                            </span>
-                                        @enderror
-
-                                        <small class="text-help">Click the field to display list of available payments</small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-12 d-flex justify-content-end">
-                                    <div>
-                                        <a href="{{ route('homeowners.list') }}" class="btn btn-danger text-white me-2">Cancel</a>
-                                        <button type="submit" class="btn btn-primary text-white">Save</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="col-12">
+                <a href="{{ route('homeowners.list') }}" class="btn btn-danger text-white me-2">Cancel</a>
+                <button type="submit" class="btn btn-primary text-white">Save</button>
+            </div>
         </div>
-    </div>
+    </form>
 
     @section('scripts')
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -330,6 +298,10 @@
                     const id = e.params.data.id
 
                     Livewire.emit('unSelectPayment', id)
+                })
+
+                $(document).on('click', '#imageBtnTrigger', function() {
+                    $('#imageBtnTriggerLabel').trigger('click')
                 })
             })
         </script>

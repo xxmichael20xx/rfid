@@ -1,22 +1,21 @@
 <div>
-    <h1 class="app-page-title">Update Home Owner - {{ $modelFullName }}</h1>
-    <div class="row g-4 mb-4">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <div class="col-auto">
-                <a href="{{ route('homeowners.list') }}" class="btn btn-success text-white">
-                    <i class="fa fa-hand-point-left"></i> Go back
-                </a>
+    <form method="POST" wire:submit.prevent="update" class="col-12">
+        @csrf
+        <div class="row g-4 mb-4">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <h1 class="app-page-title">Update Home Owner - {{ $modelFullName }}</h1>
+                <div class="col-auto">
+                    <a href="{{ route('homeowners.list') }}" class="btn btn-success text-white">
+                        <i class="fa fa-hand-point-left"></i> Go back
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row g-4 mb-4">
-        <div class="col-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-body">
-                    <div class="container">
-                        <form method="POST" wire:submit.prevent="update" class="col-12">
-                            @csrf
-                            
+        <div class="row g-4 mb-4">
+            <div class="col-8">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body">
+                        <div class="container">
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <p class="card-title h5">Profile Details</p>
@@ -227,7 +226,7 @@
                                                         />
                                                         <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0, 0, 0, .60);">
                                                             <h5 class="text-white">{{ $lotsCarousel['name'] }}</h5>
-                                                          </div>
+                                                        </div>
                                                     </div>
                                                     @php $imagesCount = $imagesCount + 1; @endphp
                                                 @endforeach
@@ -244,19 +243,19 @@
                                     </div>
                                 </div>
                             @endif
-        
-                            <div class="row">
-                                <div class="col-12 d-flex justify-content-between">
-                                    <a href="{{ route('homeowners.list') }}" class="btn btn-danger text-white me-2">Cancel</a>
-                                    <button type="submit" class="btn btn-primary text-white">Save</button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="row">
+            <div class="col-12">
+                <a href="{{ route('homeowners.list') }}" class="btn btn-danger text-white me-2">Cancel</a>
+                <button type="submit" class="btn btn-primary text-white">Save</button>
+            </div>
+        </div>
+    </form>
 
     @section('styles')
         <style>

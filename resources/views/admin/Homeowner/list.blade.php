@@ -63,8 +63,8 @@
                                             @forelse ($homeOwners as $data)
                                                 <tr>
                                                     <td class="cell">{{ $data->last_full_name }}</td>
-                                                    <td class="cell">{{ $data->blockLots->count() }}</td>
                                                     <td class="cell">{{ $data->vehicles->count() }}</td>
+                                                    <td class="cell">{{ $data->blockLots->count() }}</td>
                                                     <td class="cell d-flex">
                                                         @livewire('homeowner.homeowner-delete', ['modelId' => $data->id])
 

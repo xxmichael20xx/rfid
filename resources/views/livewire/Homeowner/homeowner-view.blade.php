@@ -1,7 +1,7 @@
 <div>
-    <h1 class="app-page-title">Manage Home Owner Details</h1>
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
+            <h1 class="app-page-title">Manage Home Owner Details</h1>
             <div class="col-auto">
                 <a href="{{ route('homeowners.list') }}" class="btn btn-success text-white">
                     <i class="fa fa-hand-point-left"></i> Go back
