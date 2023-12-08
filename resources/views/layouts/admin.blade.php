@@ -245,6 +245,14 @@
                                 </ul>
                             </div>
                         </li>
+                        <li class="nav-item">
+                            <a
+                                class="nav-link {{ isRouteActive(['login.activities']) }}"
+                                href="{{ route('login.activities') }}">
+								<i class="fa fa-sign-in"></i>
+                                <span class="nav-link-text">Login Activity</span>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>

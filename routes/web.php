@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HomeOwnerController;
 use App\Http\Livewire\Activity\ActivityCreate;
 use App\Http\Livewire\Activity\ActivityUpdate;
+use App\Http\Livewire\Admin\LoginActivity;
 use App\Http\Livewire\Admin\Report\AdminReportActivity;
 use App\Http\Livewire\Admin\Report\AdminReportExpenses;
 use App\Http\Livewire\Admin\Report\AdminReportPayment;
@@ -62,6 +63,9 @@ Route::get('/login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware('auth.admin')->group(function() {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    /** Define login activities */
+    Route::get('/login-activities', LoginActivity::class)->name('login.activities');
 
     /** Define dashboard page */
     Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');

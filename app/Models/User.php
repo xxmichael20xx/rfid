@@ -90,4 +90,9 @@ class User extends Authenticatable
     {
         return $this->role == 'Treasurer';
     }
+
+    public function logins()
+    {
+        return $this->hasMany(LoginActivity::class);
+    }
 }
