@@ -248,7 +248,7 @@
                                 type="button"
                                 class="btn btn-success text-white"
                                 id="newVehicleModalBtn"
-                                wire:click="resetCars"
+                                wire:click="setDefaults"
                             >
                                 <i class="fa fa-plus"></i> Add New
                             </button>
@@ -764,16 +764,16 @@
 
                             <div class="row mb-3">
                                 <div class="col-6">
-                                    <div class="input-container mb-3 d-flex flex-column">
+                                    <div class="input-container mb-3 d-flex flex-column" wire:ignore>
                                         <label for="car_type">Car Type<span class="required">*</span></label>
                                         <select
                                             id="car_type"
                                             class="form-select @error('createVehicleForm.car_type') is-invalid @enderror"
                                             wire:model.lazy="createVehicleForm.car_type"
-                                            wire:change="createChangeCarType">
+                                        >
                                             <option value="" disabled>Select type</option>
-                                            @foreach($carTypes as $carTypeKey => $carType)
-                                                <option value="{{ $carTypeKey }}">{{ $carTypeKey }}</option>
+                                            @foreach ($carTypes as $carTypeValue)
+                                                <option value="{{ $carTypeValue }}">{{ $carTypeValue }}</option>
                                             @endforeach
                                         </select>
 
@@ -785,12 +785,13 @@
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="input-container mb-3 d-flex flex-column">
+                                    <div class="input-container mb-3 d-flex flex-column" wire:ignore>
                                         <label for="car_name">Car Name<span class="required">*</span></label>
                                         <select
                                             id="car_name"
                                             class="form-select @error('createVehicleForm.car_name') is-invalid @enderror"
-                                            wire:model.lazy="createVehicleForm.car_name">
+                                            wire:model.lazy="createVehicleForm.car_name"
+                                        >
                                             <option value="" disabled>Select name</option>
                                             @foreach($carNames as $carNameKey => $carName)
                                                 <option value="{{ $carName }}">{{ $carName }}</option>
@@ -899,17 +900,14 @@
 
                         <div class="row mb-3">
                             <div class="col-6">
-                                <div class="input-container mb-3 d-flex flex-column">
+                                <div class="input-container mb-3 d-flex flex-column" wire:ignore>
                                     <label for="car_type_u">Car Type<span class="required">*</span></label>
                                     <select
                                         id="car_type_u"
                                         class="form-select @error('updateVehicleForm.car_type_u') is-invalid @enderror"
                                         wire:model.lazy="updateVehicleForm.car_type_u"
-                                        wire:change="createChangeCarType">
+                                    >
                                         <option value="" disabled>Select type</option>
-                                        @foreach($carTypes as $carTypeKey => $carType)
-                                            <option value="{{ $carTypeKey }}">{{ $carTypeKey }}</option>
-                                        @endforeach
                                     </select>
 
                                     @error('updateVehicleForm.car_type_u')
@@ -920,16 +918,14 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="input-container mb-3 d-flex flex-column">
+                                <div class="input-container mb-3 d-flex flex-column" wire:ignore>
                                     <label for="car_name_u">Car Name<span class="required">*</span></label>
                                     <select
                                         id="car_name_u"
                                         class="form-select @error('updateVehicleForm.car_name_u') is-invalid @enderror"
-                                        wire:model.lazy="updateVehicleForm.car_name_u">
+                                        wire:model.lazy="updateVehicleForm.car_name_u"
+                                    >
                                         <option value="" disabled>Select name</option>
-                                        @foreach($carNames as $carNameKey => $carName)
-                                            <option value="{{ $carName }}">{{ $carName }}</option>
-                                        @endforeach
                                     </select>
 
                                     @error('updateVehicleForm.car_name_u')
@@ -1086,9 +1082,29 @@
                 });
 
                 /** Add event to trigger update modal */
-                Livewire.on('update.vehicle-prepare', () => {
+                Livewire.on('update.vehicle-prepare', (e) => {
                     const updateVehicleModal = new bootstrap.Modal('#updateVehicleModal', {})
                     updateVehicleModal.show()
+
+                    console.log(e)
+
+                    $('#car_type_u').select2({
+                        dropdownParent: '#updateVehicleModal',
+                        tags: true,
+                        data: Array.from(e.carTypes).map(function(value) {
+                            return { id: value, text: value }
+                        }),
+                        val: e.carType
+                    })
+
+                    $('#car_name_u').select2({
+                        dropdownParent: '#updateVehicleModal',
+                        tags: true,
+                        data: Array.from(e.carNames).map(function(value) {
+                            return { id: value, text: value }
+                        }),
+                        val: e.carName
+                    })
                 })
 
                 /** Initialize select2 */
@@ -1116,6 +1132,68 @@
                 $(document).on('click', '#newVehicleModalBtn', function() {
                     const newVehicleModal = new bootstrap.Modal('#newVehicleModal', {})
                     newVehicleModal.show()
+                })
+
+                /** Initialize select2 for New vehicle modal */
+                $('#car_type').select2({
+                    dropdownParent: '#newVehicleModal',
+                    tags: true
+                })
+
+                $('#car_type').on('select2:select', function(e) {
+                    const id = e.params.data.id
+                    @this.createChangeCarType('create', id)
+                })
+
+                Livewire.on('create.updated-car-names', function(e) {
+                    $('#car_name').select2('destroy')
+                    $('#car_name').empty()
+
+                    // update the car name options
+                    $('#car_name').select2({
+                        dropdownParent: '#newVehicleModal',
+                        tags: true,
+                        data: Array.from(e).map(function(value) {
+                            return { id: value, text: value }
+                        })
+                    })
+                })
+
+                $('#car_name').select2({
+                    dropdownParent: '#newVehicleModal',
+                    tags: true
+                })
+
+                $('#car_name').on('select2:select', function(e) {
+                    const id = e.params.data.id
+
+                    @this.createChangeCarName('create', id)
+                })
+
+                /** Update Car */
+                $('#car_type_u').on('select2:select', function(e) {
+                    const id = e.params.data.id
+                    @this.createChangeCarType('update', id)
+                })
+
+                Livewire.on('update.updated-car-names', function(e) {
+                    $('#car_name_u').select2('destroy')
+                    $('#car_name_u').empty()
+
+                    // update the car name options
+                    $('#car_name_u').select2({
+                        dropdownParent: '#updateVehicleModal',
+                        tags: true,
+                        data: Array.from(e).map(function(value) {
+                            return { id: value, text: value }
+                        })
+                    })
+                })
+
+                $('#car_name_u').on('select2:select', function(e) {
+                    const id = e.params.data.id
+
+                    @this.updateCarNameOnUpdate(id)
                 })
             })
         </script>

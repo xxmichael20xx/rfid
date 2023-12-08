@@ -226,10 +226,28 @@ class HomeownerView extends Component
         ];
 
         // set the cars data from config files
-        $this->carTypes = Config::get('cars.car_types');
-        $this->carNames = data_get($this->carTypes, 'SUV');
+        // $this->carTypes = Config::get('cars.car_types');
+        // $this->carNames = data_get($this->carTypes, 'SUV');
 
-        $this->emit('update.vehicle-prepare');
+        $carTypeRecords = HomeOwnerVehicle::withTrashed()->pluck('car_type')->toArray();
+        $carTypeKeys = array_keys(Config::get('cars.car_types'));
+        $this->carTypes = array_values(array_unique(array_merge($carTypeKeys, $carTypeRecords)));
+
+        $carNameRecords = HomeOwnerVehicle::withTrashed()->where('car_type', $vehicle->car_type)->pluck('car_name')->toArray();
+        $carNames = data_get(Config::get('cars.car_types'), $vehicle->car_type, []);
+        $this->carNames = array_values(array_unique(array_merge($carNames, $carNameRecords)));
+
+        $this->emit('update.vehicle-prepare', [
+            'carType' => $vehicle->car_type,
+            'carName' => $vehicle->car_name,
+            'carTypes' => $this->carTypes,
+            'carNames' => $this->carNames
+        ]);
+    }
+
+    public function updateCarNameOnUpdate($value)
+    {
+        $this->updateVehicleForm['car_name_u'] = $value;
     }
 
     public function updateVehicle()
@@ -366,21 +384,43 @@ class HomeownerView extends Component
      * Update the car names based on
      * selected car type.
      */
-    public function createChangeCarType()
+    public function createChangeCarType($type, $value)
     {
-        $cars = config('cars.car_types');
-        $carType = $this->createVehicleForm['car_type'];
-        $this->carNames = data_get($cars, $carType);
+        $carNameRecords = HomeOwnerVehicle::withTrashed()->where('car_type', $value)->pluck('car_name')->toArray();
+        $carNames = data_get(Config::get('cars.car_types'), $value, []);
+        $this->carNames = array_values(array_unique(array_merge($carNames, $carNameRecords)));
+
+        if ($type == 'create') {
+            $this->createVehicleForm['car_type'] = $value;
+            $this->createVehicleForm['car_name'] = data_get($this->carNames, '0');
+            $this->emit('create.updated-car-names', $this->carNames);
+        } else {
+            $this->updateVehicleForm['car_type_u'] = $value;
+            $this->updateVehicleForm['car_name_u'] = data_get($this->carNames, '0');
+            $this->emit('update.updated-car-names', $this->carNames);
+        }
     }
 
     /**
-     * Reset the cars
+     * Update the value of the car name
      */
-    public function resetCars()
+    public function createChangeCarName($type, $value)
     {
-        // set the cars data from config files
-        $this->carTypes = Config::get('cars.car_types');
-        $this->carNames = data_get($this->carTypes, 'SUV');
+        $this->createVehicleForm['car_name'] = $value;
+    }
+
+    /**
+     * Set the defaults of the car types and names
+     */
+    public function setDefaults()
+    {
+        $carTypeRecords = HomeOwnerVehicle::withTrashed()->pluck('car_type')->toArray();
+        $carTypeKeys = array_keys(Config::get('cars.car_types'));
+        $this->carTypes = array_values(array_unique(array_merge($carTypeKeys, $carTypeRecords)));
+
+        $carNameRecords = HomeOwnerVehicle::withTrashed()->pluck('car_name')->toArray();
+        $carNames = data_get(Config::get('cars.car_types'), 'SUV');
+        $this->carNames = array_values(array_unique(array_merge($carNames, $carNameRecords)));
     }
 
     public function mount($id)
@@ -412,9 +452,8 @@ class HomeownerView extends Component
             'first_name' => ''
         ];
 
-        // set the cars data from config files
-        $this->carTypes = Config::get('cars.car_types');
-        $this->carNames = data_get($this->carTypes, 'SUV');
+        // get car types and names from database
+        $this->setDefaults();
 
         // set the create vehicle form
         $this->createVehicleForm = [
