@@ -38,8 +38,8 @@
                 );
                 html5QrcodeScanner.render(onScanSuccess, onScanFailure)
 
-                testing()
-                function testing() {
+                const search = new URLSearchParams(window.location.search)
+                if (search.has('testing')) {
                     if (! hasQrScanned) {
                         hasQrScanned = true
                         html5QrcodeScanner.clear()
@@ -52,7 +52,7 @@
                             }
                         })
 
-                        Livewire.emit('validateQrCode', '1_1701153752_etKz')
+                        Livewire.emit('validateQrCode', search.get('testing'))
                     }
                 }
 
