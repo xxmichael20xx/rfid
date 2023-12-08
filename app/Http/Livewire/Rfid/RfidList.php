@@ -31,6 +31,8 @@ class RfidList extends Component
         $this->validate([
             'rfidForm.vehicle_id' => ['required'],
             'rfidForm.rfid' => ['required', Rule::unique('rfids', 'rfid')]
+        ], [
+            'rfidForm.rfid.unique' => 'This RFID is already Used'
         ]);
 
         $this->emit('pre.submit-confirmation', $this->rfidForm['rfid']);
