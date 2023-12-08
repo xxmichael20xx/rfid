@@ -143,7 +143,7 @@
                                         <input
                                             id="contact_no"
                                             name="contact_no"
-                                            type="number"
+                                            type="tel"
                                             class="form-control @error('form.contact_no') is-invalid @enderror"
                                             wire:model.lazy="form.contact_no">
 

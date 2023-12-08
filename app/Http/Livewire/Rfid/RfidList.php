@@ -25,7 +25,7 @@ class RfidList extends Component
         'rfid' => ''
     ];
 
-    public function create()
+    public function preSubmit()
     {
         // validate the rfid form
         $this->validate([
@@ -33,6 +33,11 @@ class RfidList extends Component
             'rfidForm.rfid' => ['required', Rule::unique('rfids', 'rfid')]
         ]);
 
+        $this->emit('pre.submit-confirmation', $this->rfidForm['rfid']);
+    }
+
+    public function create()
+    {
         // assign the rfid to a home owner
         Rfid::create($this->rfidForm);
 

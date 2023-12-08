@@ -517,7 +517,7 @@
                                     <input
                                         id="contact_no"
                                         name="contact_no"
-                                        type="number"
+                                        type="tel"
                                         class="form-control @error('createForm.contact_no') is-invalid @enderror"
                                         wire:model.lazy="createForm.contact_no">
 
@@ -683,7 +683,7 @@
                                     <input
                                         id="update_contact_no"
                                         name="contact_no"
-                                        type="number"
+                                        type="tel"
                                         class="form-control @error('updateForm.contact_no') is-invalid @enderror"
                                         wire:model.lazy="updateForm.contact_no">
 

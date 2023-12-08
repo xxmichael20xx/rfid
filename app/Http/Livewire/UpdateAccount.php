@@ -24,7 +24,7 @@ class UpdateAccount extends Component
             'form.current_password' => ['required', new CurrentPassword],
             'form.contact_phone' => [
                 'required',
-                'regex:/^09\d{9}$/',
+                'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/',
                 Rule::unique('users', 'contact_phone')->ignore($userId)
             ],
             'form.contact_email' => [

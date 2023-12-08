@@ -35,7 +35,7 @@ class HomeownerUpdate extends Component
             'model.gender' => ['required'],
             'model.contact_no' => [
                 'required',
-                'regex:/^09\d{9}$/',
+                'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/',
                 Rule::unique('home_owners', 'contact_no')->ignore($this->model['id'])
             ],
             'model.email' => ['nullable', 'email'],

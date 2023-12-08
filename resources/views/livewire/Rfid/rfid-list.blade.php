@@ -114,7 +114,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <form method="POST" wire:submit.prevent="create" class="col-12">
+                            <form method="POST" wire:submit.prevent="preSubmit" class="col-12">
                                 @csrf
         
                                 <div class="row mb-3" wire:ignore>
@@ -215,6 +215,22 @@
                     const id = e.params.data.id
 
                     Livewire.emit('unselectVehicle', id)
+                })
+
+                Livewire.on('pre.submit-confirmation', function(e) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'RFID: ' + e,
+                        text: 'Please confirm the RFID',
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, confirm',
+                        cancelButtonText: 'Cancel'
+                    }).then(function(event) {
+                        if (event.isConfirmed) {
+                            @this.create()
+                        }
+                    })
                 })
             })
         </script>
