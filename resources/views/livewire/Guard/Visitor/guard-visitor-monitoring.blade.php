@@ -2,7 +2,7 @@
     <div class="row g-4 mb-4">
         <div class="col-12">
             <div class="alert alert-success d-flex flex-column w-100 align-items-center" wire:ignore>
-                <span class="display-4 text-dark">Visitors  Monitoring</span>
+                <span class="display-4 text-dark">Visitors Monitoring</span>
                 <span id="datetime" class="display-2 text-dark"></span>
             </div>
         </div>
@@ -84,11 +84,21 @@
             })
 
             function updateDateTime() {
-                const dateTimeElement = document.getElementById('datetime');
-                const now = new Date();
-                const dateTimeString = now.toLocaleString(); // Customize the format as needed
+                const dateTimeElement = document.getElementById('datetime')
+                const now = new Date()
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                    hour12: true
+                };
 
-                dateTimeElement.innerText = dateTimeString;
+                const dateTimeString = now.toLocaleString('en-US', options)
+                dateTimeElement.innerText = dateTimeString
             }
 
             // Initial call to display the date and time

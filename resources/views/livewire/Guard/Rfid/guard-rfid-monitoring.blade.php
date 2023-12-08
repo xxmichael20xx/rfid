@@ -396,11 +396,21 @@
             }
 
             function updateDateTime() {
-                const dateTimeElement = document.getElementById('datetime');
-                const now = new Date();
-                const dateTimeString = now.toLocaleString(); // Customize the format as needed
+                const dateTimeElement = document.getElementById('datetime')
+                const now = new Date()
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                    hour12: true
+                };
 
-                dateTimeElement.innerText = dateTimeString;
+                const dateTimeString = now.toLocaleString('en-US', options)
+                dateTimeElement.innerText = dateTimeString
             }
 
             // Initial call to display the date and time
