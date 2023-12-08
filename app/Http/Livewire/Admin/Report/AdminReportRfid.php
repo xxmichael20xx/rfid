@@ -2,13 +2,13 @@
 
 namespace App\Http\Livewire\Admin\Report;
 
-use App\Exports\ActivityReport;
-use App\Models\Activity;
+use App\Exports\RfidReport;
+use App\Models\RfidMonitoring;
 use Carbon\Carbon;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 
-class AdminReportActivity extends Component
+class AdminReportRfid extends Component
 {
     public $records;
 
@@ -27,25 +27,20 @@ class AdminReportActivity extends Component
 
     public function loadRecords()
     {
-        $this->records = Activity::where('start_date', $this->dateRange[0])
-            ->orWhere('end_date', $this->dateRange[1])
-            ->orWhere(function($query) {
-                $query->where('start_date', '>=', $this->dateRange[0])
-                    ->where('end_date', '<=', $this->dateRange[1]);
-            })->get();
+        $this->records = RfidMonitoring::with(['rfidData.vehicle.homeOwner'])->whereBetween('time_in', $this->dateRange)->get();
     }
 
     public function exportData()
     {
         $timestamp = now()->format('Y-m-d_Hi'); // Current timestamp in the format: yyyy-mm-dd_HHmm
-        $filename = 'report_activities_' . $timestamp . '.xlsx';
+        $filename = 'report_rfid_monitoring_' . $timestamp . '.xlsx';
 
-        return Excel::download(new ActivityReport($this->records), $filename);
+        return Excel::download(new RfidReport($this->records), $filename);
     }
 
     public function render()
     {
-        return view('livewire.admin.report.admin-report-activity')
+        return view('livewire.admin.report.admin-report-rfid')
             ->extends('layouts.' . str(auth()->user()->role)->lower())
             ->section('content');
     }

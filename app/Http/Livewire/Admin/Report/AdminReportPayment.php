@@ -41,7 +41,7 @@ class AdminReportPayment extends Component
     public function render()
     {
         return view('livewire.admin.report.admin-report-payment')
-            ->extends('layouts.admin')
+            ->extends('layouts.' . str(auth()->user()->role)->lower())
             ->section('content');
     }
 }

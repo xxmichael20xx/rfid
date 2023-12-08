@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'auth.admin' => \App\Http\Middleware\AuthAdminChecker::class,
         'auth.guard' => \App\Http\Middleware\AuthGuardChecker::class,
         'auth.admin_or_treasurer' => \App\Http\Middleware\AuthAdmminOrTreasurerChecker::class,
+        'auth.reports' => \App\Http\Middleware\AuthReportsMiddleware::class,
     ];
 }

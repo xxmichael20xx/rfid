@@ -198,7 +198,7 @@
 
                         <li class="nav-item has-submenu">
                             <a
-                                class="nav-link submenu-toggle collapsed {{ isRouteActive(['admin.reports.activity']) }}"
+                                class="nav-link submenu-toggle collapsed {{ isRouteActive(['reports.activity']) }}"
                                 href="#"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#nav-admin-reports"
@@ -215,21 +215,31 @@
                                 </span>
                             </a>
 
-                            <div id="nav-admin-reports" class="submenu nav-admin-reports {{ isRouteShown(['admin.reports.activity', 'admin.reports.expenses', 'admin.reports.payments']) }}" data-bs-parent="#menu-accordion">
+                            <div id="nav-admin-reports" class="submenu nav-admin-reports {{ isRouteShown(['reports.activity', 'reports.expenses', 'reports.payments', 'reports.visitors', 'reports.rfid-monitorings']) }}" data-bs-parent="#menu-accordion">
                                 <ul class="submenu-list list-unstyled ps-4">
                                     <li class="submenu-item">
-                                        <a class="submenu-link text-dark {{ isRouteActive(['admin.reports.activity']) }}" href="{{ route('admin.reports.activity') }}">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['reports.activity']) }}" href="{{ route('reports.activity') }}">
                                             <i class="fa fa-tasks"></i> Activity
                                         </a>
                                     </li>
                                     <li class="submenu-item">
-                                        <a class="submenu-link text-dark {{ isRouteActive(['admin.reports.expenses']) }}" href="{{ route('admin.reports.expenses') }}">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['reports.expenses']) }}" href="{{ route('reports.expenses') }}">
                                             <i class="fa fa-hand-holding-dollar"></i> Expense
                                         </a>
                                     </li>
                                     <li class="submenu-item">
-                                        <a class="submenu-link text-dark {{ isRouteActive(['admin.reports.payments']) }}" href="{{ route('admin.reports.payments') }}">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['reports.payments']) }}" href="{{ route('reports.payments') }}">
                                             <i class="fa fa-money-bill"></i> Payments
+                                        </a>
+                                    </li>
+                                    <li class="submenu-item">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['reports.visitors']) }}" href="{{ route('reports.visitors') }}">
+                                            <i class="fa fa-walking"></i> Visitors
+                                        </a>
+                                    </li>
+                                    <li class="submenu-item">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['reports.rfid-monitorings']) }}" href="{{ route('reports.rfid-monitorings') }}">
+                                            <i class="fa fa-id-card"></i> RFID
                                         </a>
                                     </li>
                                 </ul>

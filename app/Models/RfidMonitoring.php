@@ -42,6 +42,6 @@ class RfidMonitoring extends Model
 
     public function rfidData()
     {
-        return $this->belongsTo(Rfid::class, 'rfid', 'rfid');
+        return $this->belongsTo(Rfid::class, 'rfid', 'rfid')->withTrashed();
     }
 }
