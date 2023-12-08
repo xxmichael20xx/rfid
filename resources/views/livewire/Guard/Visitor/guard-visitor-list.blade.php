@@ -1,7 +1,7 @@
 <div>
     <div class="row g-4 mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="app-page-title">Visitor Monitoring</h1>
+            <h1 class="app-page-title">Visitors Listing</h1>
 
             <div class="col-auto">
                 <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#addRequestModal">
@@ -167,6 +167,36 @@
                                     </select>
 
                                     @error('requestForm.home_owner_id')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('request form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="relation">Relation<span class="required">*</span></label>
+                                    <select
+                                        name="relation"
+                                        id="relation"
+                                        class="form-select"
+                                        wire:model.lazy="requestForm.relation"
+                                    >
+                                        <option value="" selected disabled>Select relation</option>
+                                        <option value="Cousin">Cousin</option>
+                                        <option value="Uncle">Uncle</option>
+                                        <option value="Kapatid">Kapatid</option>
+                                        <option value="Mama">Mama</option>
+                                        <option value="Lola">Lola</option>
+                                        <option value="Lolo">Lolo</option>
+                                        <option value="Papa">Papa</option>
+                                        <option value="Kaanakan">Kaanakan</option>
+                                    </select>
+
+                                    @error('requestForm.relation')
                                     <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('request form.', '', $message) }}</strong>
                                         </span>

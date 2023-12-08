@@ -1,7 +1,7 @@
 <div>
     <div class="row g-4 mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
-            <h1 class="app-page-title">Visitor Monitoring</h1>
+            <h1 class="app-page-title">Visitors Listing</h1>
         </div>
     </div>
 

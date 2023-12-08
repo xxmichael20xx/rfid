@@ -21,15 +21,19 @@ class GuardVisitorList extends Component
         // validate the form
         $this->validate([
             'requestForm.home_owner_id' => ['required'],
+            'requestForm.relation' => ['required'],
             'requestForm.details' => ['required']
         ]);
 
         // send the notification
         $title = 'Visitor Request';
+        $content = $this->requestForm['details'];
+        $content .= '. This request is from your ' . $this->requestForm['relation'];
+
         Notification::create([
             'home_owner_id' => $this->requestForm['home_owner_id'],
             'title' => $title,
-            'content' => $this->requestForm['details']
+            'content' => $content
         ]);
 
         $this->requestForm = [
@@ -78,6 +82,7 @@ class GuardVisitorList extends Component
 
         $this->requestForm = [
             'home_owner_id' => $this->homeOwners->first()->id,
+            'relation' => 'Cousin',
             'details' => '',
         ];
     }
