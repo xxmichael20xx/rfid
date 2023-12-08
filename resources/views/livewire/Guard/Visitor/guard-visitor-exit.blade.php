@@ -57,6 +57,13 @@
             /** Define event to close modal */
             Livewire.on('close.visitor-exit', function() {
                 showVisitorExit.hide()
+
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Exit logged'
+                    })
+                }, 1500);
             })
         })
     </script>

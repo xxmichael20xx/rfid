@@ -52,6 +52,10 @@ class GuardVisitorExit extends Component
         $this->data = Visitor::find($params['id']);
         $this->form['id'] = $params['id'];
 
+        $this->data->update([
+            'time_out' => now(),
+        ]);
+
         $this->emit('show.visitor-exit');
     }
 

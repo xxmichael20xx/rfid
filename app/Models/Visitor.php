@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,6 +25,7 @@ class Visitor extends Model
         'time_out',
         'notes',
         'generated_at',
+        'capture_in',
         'metadata'
     ];
 
@@ -61,5 +63,12 @@ class Visitor extends Model
     public function getLastFullNameAttribute()
     {
         return $this->last_name . ', ' . $this->first_name;
+    }
+
+    protected function captureIn(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value) => asset('uploads/' . $value)
+        );
     }
 }

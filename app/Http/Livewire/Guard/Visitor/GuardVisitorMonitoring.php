@@ -75,13 +75,13 @@ class GuardVisitorMonitoring extends Component
             // check if action is time_in
             if (! $visitorToken->time_in) {
                 $visitorToken->update([
-                    'time_in' => now()
+                    // 'time_in' => now()
                 ]);
 
                 $isTimeIn = true;
             } else if (! $visitorToken->time_out) {
                 $visitorToken->update([
-                    'time_out' => now()
+                    // 'time_out' => now()
                 ]);
 
                 $isTimeOut = true;
@@ -114,7 +114,7 @@ class GuardVisitorMonitoring extends Component
                         'content' => 'You have a visitor with a name of "' . $visitorToken->last_full_name . '"'
                     ]);
 
-                    $this->emitTo('guard.visitor.guard-visitor-entry', 'showVisitorEntry', ['id' => $visitorToken->home_owner_id]);
+                    $this->emitTo('guard.visitor.guard-visitor-entry', 'showVisitorEntry', ['id' => $visitorToken->home_owner_id, 'visitorId' => $visitorToken->id]);
                 } else {
                     $this->emitTo('guard.visitor.guard-visitor-exit', 'showVisitorExit', ['id' => $visitorToken->id]);
                 }

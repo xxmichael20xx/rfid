@@ -38,6 +38,24 @@
                 );
                 html5QrcodeScanner.render(onScanSuccess, onScanFailure)
 
+                testing()
+                function testing() {
+                    if (! hasQrScanned) {
+                        hasQrScanned = true
+                        html5QrcodeScanner.clear()
+                        qrLoading = Swal.fire({
+                            title: 'Processing...',
+                            allowOutsideClick: false,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading()
+                            }
+                        })
+
+                        Livewire.emit('validateQrCode', '1_1701153752_etKz')
+                    }
+                }
+
                 function onScanSuccess(decodedText, decodedResult) {
                     if (! hasQrScanned) {
                         hasQrScanned = true

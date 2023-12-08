@@ -57,6 +57,7 @@
                                                 <th class="cell">For</th>
                                                 <th class="cell">Entry date</th>
                                                 <th class="cell">Exit date</th>
+                                                <th class="cell">Capture</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -105,10 +106,22 @@
                                                             N/A
                                                         @endif
                                                     </td>
+                                                    <td class="cell">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-success text-white view-time-in"
+                                                            data-type="Time In"
+                                                            data-date="{{ \Carbon\Carbon::parse($visitor['time_in'])->format('M d, Y') }}"
+                                                            data-time="{{ $visitor['time_in'] }}"
+                                                            data-img="{{ $visitor['capture_in'] }}"
+                                                        >
+                                                            <i class="fa fa-image"></i> Capture
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td class="cell text-center" colspan="4">No result(s)</td>
+                                                    <td class="cell text-center" colspan="5">No result(s)</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -187,10 +200,30 @@
             </form>
         </div>
     </div>
+    
+    <div class="modal fade" id="previewCaptureModal" tabindex="-1" aria-labelledby="previewCaptureModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog--md">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <img src="" class="img-fluid w-100" id="previewCapture" alt="preview-capture">
+                        <div class="alert alert-success text-center mt-3">
+                            <h3 id="previewCaptureType"></h3>
+                            <h4 class="text-dark text-center mt-2" id="previewCaptureTime"></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @section('scripts')
         <script>
             $(document).ready(function() {
+                let previewCaptureModal = new bootstrap.Modal('#previewCaptureModal', {})
+                let previewCaptureTime = document.getElementById('previewCaptureTime')
+                let previewCaptureType = document.getElementById('previewCaptureType')
+
                 /** Define event listener for request success */
                 Livewire.on('guard.request-success', function(e) {
                     $('#request-btn-close').click()
@@ -200,6 +233,21 @@
                         title: e.title,
                         text: e.message,
                     })
+                })
+    
+                /** Define view capture for time-in and time-out */
+                $(document).on('click', '.view-time-in, .view-time-out', function() {
+                    const type = $(this).data('type')
+                    const image = $(this).data('img')
+                    const date = $(this).data('date')
+                    const time = $(this).data('time')
+                    let icon = `<i class="fa fa-image"></i> Captured`
+    
+                    previewCapture.setAttribute('src', image)
+                    previewCaptureTime.innerHTML = `${date} @ ${time}`
+                    previewCaptureType.innerHTML = `${icon} Image`
+    
+                    previewCaptureModal.show()
                 })
             })
         </script>
