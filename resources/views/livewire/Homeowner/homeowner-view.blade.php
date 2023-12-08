@@ -335,9 +335,6 @@
                     <div class="row mb-3">
                         <div class="col-12 d-flex justify-content-between mb-3">
                             <p class="card-title h5">Visitor Listing</p>
-                            <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#newVisitorQr">
-                                <i class="fa fa-plus"></i> Add New
-                            </button>
                         </div>
                         <hr class="theme-separator">
                     </div>
