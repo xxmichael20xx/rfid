@@ -198,7 +198,7 @@
 
                         <li class="nav-item has-submenu">
                             <a
-                                class="nav-link submenu-toggle collapsed {{ isRouteActive(['reports.activity']) }}"
+                                class="nav-link submenu-toggle collapsed {{ isRouteActive(['reports.activity', 'reports.expenses', 'reports.payments', 'reports.visitors', 'reports.rfid-monitorings']) }}"
                                 href="#"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#nav-admin-reports"

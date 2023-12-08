@@ -13,6 +13,8 @@
     {{-- Styles --}}
     @vite(['resources/sass/app.scss'])
     @livewireStyles
+
+    @yield('styles')
 </head>
 
 <body class="app">
@@ -87,6 +89,41 @@
                             <a class="nav-link {{ isRouteActive(['payments.types']) }}" href="{{ route('payments.types') }}">
                                 <i class="fa fa-cogs"></i> Types
                             </a>
+                        </li>
+
+                        <li class="nav-item has-submenu">
+                            <a
+                                class="nav-link submenu-toggle collapsed {{ isRouteActive(['reports.expenses', 'reports.payments']) }}"
+                                href="#"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#nav-admin-reports"
+                                aria-expanded="false"
+                                aria-controls="nav-settings-menu"
+                            >
+                                <span class="nav-link-text">
+                                    <i class="fa fa-file-export"></i> Reports
+                                </span>
+                                <span class="submenu-arrow">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                                </span>
+                            </a>
+
+                            <div id="nav-admin-reports" class="submenu nav-admin-reports {{ isRouteShown(['reports.expenses', 'reports.payments']) }}" data-bs-parent="#menu-accordion">
+                                <ul class="submenu-list list-unstyled ps-4">
+                                    <li class="submenu-item">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['reports.expenses']) }}" href="{{ route('reports.expenses') }}">
+                                            <i class="fa fa-hand-holding-dollar"></i> Expense
+                                        </a>
+                                    </li>
+                                    <li class="submenu-item">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['reports.payments']) }}" href="{{ route('reports.payments') }}">
+                                            <i class="fa fa-money-bill"></i> Payments
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
                     </ul>
                 </nav>
