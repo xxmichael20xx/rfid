@@ -33,18 +33,16 @@
                             <p class="text-dark"><b>Gener:</b> {{ ucfirst($profile->gender) }}</p>
                         </div>
                         <div class="col-6">
-                            <p class="text-dark"><b>Contact number:</b> {{ $profile->contact_no ?? 'No contact number' }}</p>
+                            <p class="text-dark"><b>Contact number:</b> {{ emptyContact($profile->contact_no) }}</p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6">
                             <p class="text-dark"><b>Date added:</b> {{ $profile->date_joined }}</p>
                         </div>
-                        @if ($profile->notes)
-                            <div class="col-12">
-                                <p class="text-dark"><b>Notes:</b><br>{{ $profile->notes }}</p>
-                            </div>
-                        @endif
+                        <div class="col-6">
+                            <p class="text-dark"><b>Relation:</b> {{ $profile->relation }}</p>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

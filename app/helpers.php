@@ -76,3 +76,16 @@ if (! function_exists('getOrdinalSuffix')) {
         return $number . $type;
     }
 }
+
+if (! function_exists('emptyContact')) {
+    /**
+     * Define a function to display contact no or empty
+     */
+    function emptyContact($contact)
+    {
+        return match ($contact == '' || empty($contact)) {
+            true => 'No contact number',
+            default => $contact,
+        };
+    }
+}

@@ -98,6 +98,7 @@
                                             <th class="cell">Name</th>
                                             <th class="cell">Date of Birth</th>
                                             <th class="cell">Contact No</th>
+                                            <th class="cell">Relation</th>
                                             <th class="cell">Actions</th>
                                         </tr>
                                     </thead>
@@ -106,7 +107,8 @@
                                             <tr>
                                                 <td class="cell">{{ $profile->full_name }}</td>
                                                 <td class="cell">{{ \Carbon\Carbon::parse($profile->date_of_borth)->format('M d, Y') }}</td>
-                                                <td class="cell">{{ $profile->contact_no ?? 'No contact number' }}</td>
+                                                <td class="cell">{{ emptyContact($profile->contact_no) }}</td>
+                                                <td class="cell">{{ $profile->relation ?? 'No added relation' }}</td>
                                                 <td class="cell d-flex">
                                                     <button
                                                         type="button"
@@ -539,20 +541,26 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-12">
+                            <div class="col-4">
                                 <div class="input-container mb-3">
-                                    <label for="notes">Notes</label>
-                                    <textarea
-                                        id="notes"
-                                        name="notes"
-                                        class="form-control form-control--textarea @error('createForm.notes') is-invalid @enderror"
-                                        wire:model.lazy="createForm.notes"
-                                        rows="5"></textarea>
+                                    <label for="relation">Relation<span class="required">*</span></label>
+                                    <select
+                                        name="relation"
+                                        id="relation"
+                                        class="form-select"
+                                        wire:model.lazy="createForm.relation"
+                                    >
+                                        <option value="" disabled>Select relation</option>
+                                        <option value="Cousin">Cousin</option>
+                                        <option value="Kapatid">Kapatid</option>
+                                        <option value="Mama">Mama</option>
+                                        <option value="Papa">Papa</option>
+                                        <option value="Lolo">Lolo</option>
+                                        <option value="Lola">Lola</option>
+                                    </select>
 
-                                    @error('createForm.notes')
+                                    @error('createForm.relation')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('create form.', '', $message) }}</strong>
                                         </span>
@@ -699,20 +707,26 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-12">
+                            <div class="col-4">
                                 <div class="input-container mb-3">
-                                    <label for="update_notes">Notes</label>
-                                    <textarea
-                                        id="update_notes"
-                                        name="notes"
-                                        class="form-control form-control--textarea @error('updateForm.notes') is-invalid @enderror"
-                                        wire:model.lazy="updateForm.notes"
-                                        rows="5"></textarea>
+                                    <label for="update_relation">Relation<span class="required">*</span></label>
+                                    <select
+                                        name="update_relation"
+                                        id="update_relation"
+                                        class="form-select"
+                                        wire:model.lazy="updateForm.relation"
+                                    >
+                                        <option value="" disabled>Select relation</option>
+                                        <option value="Cousin">Cousin</option>
+                                        <option value="Kapatid">Kapatid</option>
+                                        <option value="Mama">Mama</option>
+                                        <option value="Papa">Papa</option>
+                                        <option value="Lolo">Lolo</option>
+                                        <option value="Lola">Lola</option>
+                                    </select>
 
-                                    @error('updateForm.notes')
+                                    @error('updateForm.relation')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('update form.', '', $message) }}</strong>
                                         </span>

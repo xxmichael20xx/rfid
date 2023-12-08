@@ -24,6 +24,7 @@ class Profile extends Model
         'contact_no',
         'date_joined',
         'notes',
+        'relation',
         'metadata'
     ];
 
