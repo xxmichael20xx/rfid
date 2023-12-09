@@ -44,6 +44,7 @@ class VisitorsChart extends Component
     public function change()
     {
         $this->setData();
+
         $this->emit('updateVisitorChart', [
             'labels' => $this->labels,
             'datasets' => [[
@@ -82,7 +83,7 @@ class VisitorsChart extends Component
 
         for ($i = 0; $i < 4; $i++) {
             // Calculate the start and end dates for each 1-week interval
-            $startDate = $currentDate->copy()->subWeeks($i)->startOfDay();
+            $startDate = $currentDate->copy()->subWeeks($i)->startOfWeek()->startOfDay();
             $endDate = $startDate->copy()->endOfWeek()->endOfDay();
 
             $startDateFormat = $startDate->copy()->format($this->dateFormat);
@@ -90,24 +91,8 @@ class VisitorsChart extends Component
 
             // Retrieve records for the current 1-week interval
             $records = Visitor::whereBetween('time_in', [$startDateFormat, $endDateFormat])->get();
-            
-            
-            // $records = Visitor::whereBetween('time_in', [$startDateFormat, $endDateFormat]);
-            // To check the SQL Query
-            // dd(
-            //     $records->toSql(),
-            //     $records->getBindings()
-            // );
 
-
-            // $records = Visitor::whereBetween('time_in', [$startDateFormat, $endDateFormat]);
-            // To check the SQL Query
-            // dd(
-            //     $records->toSql(),
-            //     $records->getBindings()
-            // );
-
-            $this->data = array_merge($this->data, $records->toArray());
+            $this->data[] = $records->toArray();
 
             // Store the data in the array
             $this->labels[] = $startDate->format('M d') . ' - ' . $endDate->format('M d');
@@ -136,7 +121,7 @@ class VisitorsChart extends Component
             // Retrieve records for the current month
             $records = Visitor::whereBetween('time_in', [$startDateFormat, $endDateFormat])->get();
 
-            $this->data = array_merge($this->data, $records->toArray());
+            $this->data[] = $records->toArray();
 
             // Store the data in the array
             $this->labels[] = $startDate->format('M Y');
@@ -165,7 +150,7 @@ class VisitorsChart extends Component
             // Retrieve records for the current year
             $records = Visitor::whereBetween('time_in', [$startDateFormat, $endDateFormat])->get();
 
-            $this->data = array_merge($this->data, $records->toArray());
+            $this->data[] = $records->toArray();
 
             // Store the data in the array
             $this->labels[] = $startDate->format('Y');
