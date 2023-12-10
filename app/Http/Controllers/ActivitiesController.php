@@ -75,10 +75,22 @@ class ActivitiesController extends Controller
 
         $upcomingActivities = Activity::whereDate('start_date', '>', $today)->get();
 
+        // Get the current date and time
+        $now = Carbon::now();
+
+        // Calculate the date and time 48 hours ago
+        $twoDaysAgo = $now->subHours(48);
+
+        // Fetch activities created in the last 48 hours
+        $newActivities = Activity::where('created_at', '>=', $twoDaysAgo)
+            ->where('created_at', '<=', $now)
+            ->get();
+
         return response()->json([
             'status' => true,
             'today' => $activitiesToday,
-            'upcomming' => $upcomingActivities
+            'upcomming' => $upcomingActivities,
+            'new' => $newActivities
         ]);
     }
 
