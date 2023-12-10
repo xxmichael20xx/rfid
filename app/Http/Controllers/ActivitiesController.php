@@ -84,6 +84,7 @@ class ActivitiesController extends Controller
         // Fetch activities created in the last 48 hours
         $newActivities = Activity::where('created_at', '>=', $twoDaysAgo)
             ->where('created_at', '<=', $now)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return response()->json([
