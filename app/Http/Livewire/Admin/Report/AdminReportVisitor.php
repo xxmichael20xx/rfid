@@ -32,8 +32,13 @@ class AdminReportVisitor extends Component
 
     public function exportData()
     {
+        $prefix = match (auth()->user()->role) {
+            'Admin' => 'president_',
+            'Guard' => 'guard_',
+            default => 'treasurer_'
+        };
         $timestamp = now()->format('Y-m-d_Hi'); // Current timestamp in the format: yyyy-mm-dd_HHmm
-        $filename = 'report_visitors_' . $timestamp . '.xlsx';
+        $filename = $prefix . 'report_visitors_' . $timestamp . '.xlsx';
 
         return Excel::download(new VisitorReport($this->records), $filename);
     }
