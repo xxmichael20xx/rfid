@@ -71,9 +71,13 @@ class ActivitiesController extends Controller
             ->orWhereDate('end_date', $today)
             ->orWhere(function($query) use($today) {
                 $query->where('start_date', '<=', $today)->where('end_date', '>=', $today);
-            })->get();
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        $upcomingActivities = Activity::whereDate('start_date', '>', $today)->get();
+        $upcomingActivities = Activity::whereDate('start_date', '>', $today)
+            ->orderBy('created_at', 'desc')    
+            ->get();
 
         // Get the current date and time
         $now = Carbon::now();
