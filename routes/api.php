@@ -47,6 +47,9 @@ Route::middleware('auth:sanctum')
 
                 // Logout current user
                 Route::post('logout', [ApiHomeOwnerController::class, 'logoutUser']);
+
+                // Get payments
+                Route::get('payments', [ApiHomeOwnerController::class, 'payments']);
             });
 
         /** API for Activities */

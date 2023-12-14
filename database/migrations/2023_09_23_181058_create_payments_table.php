@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('home_owner_id');
             $table->foreign('home_owner_id')->references('id')->on('home_owners');
-            $table->unsignedBigInteger('type_id');
+            $table->unsignedBigInteger('type_id')->nullable();
             $table->foreign('type_id')->references('id')->on('payment_types');
-            $table->string('mode')->nullable();
+            $table->string('mode')->nullable()->default('Cash');
             $table->float('amount', 20);
             $table->timestamp('transaction_date')->nullable();
             $table->timestamp('date_paid')->nullable();

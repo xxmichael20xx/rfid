@@ -238,10 +238,10 @@
                                             <tr>
                                                 <th class="cell">Name</th>
                                                 <th class="cell">Block & Lot</th>
-                                                <th class="cell">Association Payment</th>
                                                 <th class="cell">Amount</th>
                                                 <th class="cell">Due Date</th>
                                                 <th class="cell">Status</th>
+                                                <th class="cell">Received By</th>
                                                 <th class="cell">Action</th>
                                             </tr>
                                         </thead>
@@ -250,7 +250,6 @@
                                                 <tr>
                                                     <td class="cell">{{ $data->biller->last_full_name }}</td>
                                                     <td class="cell">{{ $data->block_lot_item }}</td>
-                                                    <td class="cell">{{ $data->paymentType->type }}</td>
                                                     <td class="cell">
                                                         ₱{{ number_format($data->amount, 2) }}
                                                         @if ($data->reference)
@@ -282,6 +281,13 @@
                                                         <div class="badge bg-{{ $badgeClass }}">{{ ucfirst($status) }}</div>
                                                     </td>
                                                     <td class="cell">
+                                                        {{ $data->payment_received_by }}
+
+                                                        @if ($data->payment_received_by !== 'N/A')
+                                                            <small class="text-help m-0 p-0 d-block">{{ \Carbon\Carbon::parse($data->date_paid)->format('M d, Y @ h:i A') }}</small>
+                                                        @endif
+                                                    </td>
+                                                    <td class="cell">
                                                         @if ($data->status !== 'paid')
                                                             <button type="button" class="btn btn-success text-white px-2 manage-payment" data-id="{{ $data->id }}">
                                                                 <i class="fa fa-money-bill"></i> Manage
@@ -294,7 +300,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td class="cell text-center" colspan="7">No result(s)</td>
+                                                    <td class="cell text-center" colspan="8">No result(s)</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -374,62 +380,12 @@
                         <div class="row mb-3">
                             <div class="col-6">
                                 <div class="input-container mb-3">
-                                    <label for="type_id">Association Payment<span class="required">*</span></label>
-                                    <select
-                                        name="type_id"
-                                        id="type_id"
-                                        class="form-select"
-                                        wire:model.lazy="form.type_id"
-                                        wire:change="changeType">
-                                        <option value="" disabled>Select payment</option>
-                                        @forelse ($paymentTypes as $paymentType)
-                                            <option value="{{ $paymentType->id }}">{{ ucfirst($paymentType->type) }}</option>
-                                        @empty
-                                            <option value="" disabled>No available payment</option>
-                                        @endforelse
-                                    </select>
-
-                                    @error('form.type')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="input-container mb-3">
-                                    <label for="mode">Payment Mode</label>
-                                    <select
-                                        name="mode"
-                                        id="mode"
-                                        class="form-select  @error('form.mode') is-invalid @enderror"
-                                        wire:model.lazy="form.mode">
-                                        <option value="" disabled>Select payment mode</option>
-                                        @forelse ($paymentModes as $mode)
-                                            <option value="{{ $mode }}">{{ $mode }}</option>
-                                        @empty
-                                            <option value="" disabled>No available payment mode</option>
-                                        @endforelse
-                                    </select>
-
-                                    @error('form.mode')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <div class="input-container mb-3">
                                     <label for="amount">Amount<span class="required">*</span></label>
                                     <input
                                         id="amount"
                                         name="amount"
                                         type="number"
                                         class="form-control @error('form.amount') is-invalid @enderror"
-                                        readonly
                                         wire:model.lazy="form.amount">
 
                                     @error('form.amount')
@@ -441,58 +397,38 @@
                             </div>
                             <div class="col-6">
                                 <div class="input-container mb-3">
-                                    <label for="due_date">Due date<span class="required">*</span></label>
-                                    <input
-                                        id="due_date"
-                                        name="due_date"
-                                        type="date"
-                                        class="form-control @error('form.due_date') is-invalid @enderror"
-                                        wire:model.lazy="form.due_date">
+                                    <label for="recurring_date">Recurring Date<span class="required">*</span></label>
+                                    <select
+                                        name="recurring_date"
+                                        id="recurring_date"
+                                        class="form-select @error('form.recurring_date') is-invalid @enderror"
+                                        wire:model.lazy="form.recurring_date"
+                                        wire:change="changeRecurringDate">
+                                        <option value="" disabled selected>Select day</option>
+                                        @foreach (range(1, 28) as $day)
+                                            <option value="{{ $day }}">Every {{ getOrdinalSuffix($day) }}</option>
+                                        @endforeach
+                                    </select>
 
-                                    @error('form.due_date')
+                                    @error('form.recurring_date')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ str_replace('form.', '', $message) }}</strong>
                                         </span>
                                     @enderror
+
+                                    @if ($recurringNotes)
+                                        <p class="text-help">Note: {{ $recurringNotes }}</p>
+                                    @endif
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="is_recurring" wire:model.lazy="form.is_recurring">
-                                    <label class="form-check-label text-dark" for="is_recurring">Payment will be recurring</label>
-                                </div>
-                            </div>
-                            @if ($form['is_recurring'] == true)
-                                <div class="col-6">
-                                    <div class="input-container mb-3">
-                                        <label for="recurring_date">Recurring Date<span class="required">*</span></label>
-                                        <select
-                                            name="recurring_date"
-                                            id="recurring_date"
-                                            class="form-select @error('form.recurring_date') is-invalid @enderror"
-                                            wire:model.lazy="form.recurring_date">
-                                            <option value="" disabled selected>Select day</option>
-                                            @foreach (range(1, 28) as $day)
-                                                <option value="{{ $day }}">Every {{ getOrdinalSuffix($day) }}</option>
-                                            @endforeach
-                                        </select>
-
-                                        @error('form.recurring_date')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ str_replace('form.', '', $message) }}</strong>
-                                            </span>
-                                        @enderror
-
-                                        @if ($recurringNotes)
-                                            <p class="text-help">Note: {{ $recurringNotes }}</p>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
                         </div>
                         <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="input-container">
+                                    <label>Payment Mode</label>
+                                    <p class="fw-bold text-dark d-block m-0">Cash</p>
+                                </div>
+                            </div>
                             <div class="col-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="is_paid" wire:model.lazy="form.is_paid">
@@ -561,17 +497,6 @@
                                         readonly>
                                 </div>
                             </div>
-                            <div class="col-6">
-                                <div class="input-container mb-3">
-                                    <label>Association Payment</label>
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        wire:model.lazy="payForm.paymentType"
-                                        readonly>
-                                </div>
-                            </div>
-                            <div class="col-6"></div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-6">
@@ -594,49 +519,23 @@
                             </div>
                             <div class="col-6">
                                 <div class="input-container mb-3">
-                                    <label for="mode">Payment Mode<span class="required">*</span></label>
-                                    <select
-                                        name="mode"
-                                        id="mode"
-                                        class="form-select"
-                                        wire:model.lazy="payForm.mode">
-                                        <option disabled>Select payment mode</option>
-                                        @forelse ($paymentModes as $paymentMode)
-                                            <option value="{{ $paymentMode }}">{{ $paymentMode }}</option>
-                                        @empty
-                                            <option value="" disabled>No available payment mode</option>
-                                        @endforelse
-                                    </select>
-
-                                    @error('payForm.mode')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('pay form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
+                                    <label for="pay_due_date">Due Date</label>
+                                    <input
+                                        id="pay_due_date"
+                                        name="pay_due_date"
+                                        type="text"
+                                        class="form-control"
+                                        readonly
+                                        wire:model.lazy="payForm.due_date">
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="input-container mb-3">
-                                    <label for="reference">
-                                        Reference
-                                        @if (in_array($payForm['mode'], ['Bank Transfer', 'GCash']))
-                                            <span class="required">*</span>
-                                        @endif
-                                    </label>
-                                    <textarea
-                                        id="reference"
-                                        name="reference"
-                                        class="form-control form-control--textarea @error('payForm.reference') is-invalid @enderror"
-                                        wire:model.lazy="payForm.reference"
-                                        rows="5"></textarea>
 
-                                    @error('payForm.reference')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('pay form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <div class="input-container">
+                                    <label>Payment Mode</label>
+                                    <p class="fw-bold text-dark d-block m-0">Cash</p>
                                 </div>
                             </div>
                         </div>

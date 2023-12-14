@@ -25,7 +25,7 @@ class PaymentReminder extends Notification implements ShouldQueue
     public function __construct($payment, $homeOwner)
     {
         $this->homeOwner = $homeOwner;
-        $this->payment = Payment::with('paymentType')->find($payment['id']);
+        $this->payment = Payment::find($payment['id']);
     }
 
     /**
@@ -54,7 +54,6 @@ class PaymentReminder extends Notification implements ShouldQueue
             ->greeting('Hello ' . $notifiable->first_name)
             ->line('We hope this email finds you well. This is a friendly reminder regarding an upcoming payment that is due. Please take a moment to review the details below:')
             ->line(new HtmlString('This is a reminder that your payment is <strong>due in ' . $diffInDays . ' day(s).</strong>'))
-            ->line(new HtmlString('<strong>Description: ' . $this->payment->paymentType->type . '</strong>'))
             ->line(new HtmlString('<strong>Due Date: ' . $dueDate->format('M d, Y') . '</strong>'))
             ->line(new HtmlString('<strong>Due Amount: ₱' . number_format($this->payment->amount, 2) . '</strong>'))
             ->line('To ensure that your account remains in good standing, we kindly request that you make the payment as soon as possible.')

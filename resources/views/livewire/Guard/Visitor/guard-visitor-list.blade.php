@@ -188,12 +188,12 @@
                                         <option value="" selected disabled>Select relation</option>
                                         <option value="Cousin">Cousin</option>
                                         <option value="Uncle">Uncle</option>
-                                        <option value="Kapatid">Kapatid</option>
-                                        <option value="Mama">Mama</option>
-                                        <option value="Lola">Lola</option>
-                                        <option value="Lolo">Lolo</option>
-                                        <option value="Papa">Papa</option>
-                                        <option value="Kaanakan">Kaanakan</option>
+                                        <option value="Sibling">Sibling</option>
+                                        <option value="Mother">Mother</option>
+                                        <option value="Father">Father</option>
+                                        <option value="Grandfather">Grandfather</option>
+                                        <option value="Grandmother">Grandmother</option>
+                                        <option value="Nephew">Nephew</option>
                                     </select>
 
                                     @error('requestForm.relation')

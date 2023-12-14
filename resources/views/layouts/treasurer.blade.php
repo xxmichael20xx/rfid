@@ -85,11 +85,6 @@
                                 <i class="fa fa-money-bill"></i> List
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ isRouteActive(['payments.types']) }}" href="{{ route('payments.types') }}">
-                                <i class="fa fa-cogs"></i> Types
-                            </a>
-                        </li>
 
                         <li class="nav-item has-submenu">
                             <a

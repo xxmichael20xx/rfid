@@ -27,7 +27,8 @@ class Payment extends Model
         'recurring_date',
         'status',
         'metadata',
-        'block_lot_item'
+        'block_lot_item',
+        'received_by',
     ];
 
     /**
@@ -35,6 +36,10 @@ class Payment extends Model
      */
     protected $casts = [
         'metadata' => 'json'
+    ];
+
+    protected $appends = [
+        'payment_received_by',
     ];
 
     public function getBlockLotItemAttribute()
@@ -53,6 +58,15 @@ class Payment extends Model
         return sprintf('Block %s - Lot %s', $block->block, $lot->lot);
     }
 
+    public function getPaymentReceivedByAttribute()
+    {
+        if ($this->received_by == null) {
+            return 'N/A';
+        }
+
+        return User::find($this->received_by)->full_name;
+    }
+
     /**
      * Define model relationships
      */
@@ -69,5 +83,10 @@ class Payment extends Model
     public function blockLot()
     {
         return $this->belongsTo(HomeOwnerBlockLot::class, 'block_lot', 'id');
+    }
+
+    public function receivedBy()
+    {
+        return $this->belongsTo(User::class, 'received_by', 'id');
     }
 }

@@ -88,7 +88,7 @@
                                                 <td class="cell">
                                                     {{ $visitor->last_full_name }}
                                                 </td>
-                                                <td class="cell">{{ Carbon\Carbon::parse($visitor->date_visited)->format('M d, Y @ h:ia') }}</td>
+                                                <td class="cell">{{ Carbon\Carbon::parse($visitor->time_in)->format('M d, Y @ h:ia') }}</td>
                                             </tr>
                                         @empty
                                             <tr>

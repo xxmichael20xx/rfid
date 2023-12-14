@@ -20,7 +20,7 @@ class AdminController extends Controller
         $totalHomeOwners = HomeOwner::all()->count();
 
         // create a dummy data for visitors
-        $visitors = Visitor::where('time_in', '<>', null)
+        $visitors = Visitor::where('time_in', '!=', null)
             ->orderBy('time_in', 'DESC')
             ->limit(10)
             ->get();

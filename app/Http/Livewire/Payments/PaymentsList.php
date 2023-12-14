@@ -122,10 +122,7 @@ class PaymentsList extends Component
         $this->validate([
             'form.home_owner_id' => ['required', Rule::exists('home_owners', 'id')],
             'form.block_lot' => ['required'],
-            'form.type_id' => ['required'],
-            'form.mode' => ['required_if:form.is_paid,1,true,yes,checked'],
             'form.amount' => ['required', 'numeric', 'min:50'],
-            'form.due_date' => ['required', 'date', new NotPastDate],
             'form.reference' => ['nullable'],
             'form.recurring_date' => ['sometimes'],
             'form.is_paid' => ['sometimes']
@@ -134,14 +131,24 @@ class PaymentsList extends Component
             'form.home_owner_id.exists' => 'Invalid selected biller',
         ]);
 
+        // set the due date based on the recurring date
+        $_dueDate = Carbon::now()->addMonth(1)->day(data_get($this->form, 'recurring_date'));
+        data_set($this->form, 'due_date', $_dueDate->format('Y-m-d h:i:s'));
+
         // Check if mark payment as paid
         if ($this->form['is_paid']) {
             $this->form['status'] = 'paid';
             $this->form['date_paid'] = now();
+            $this->form['received_by'] = auth()->user()->id;
         }
 
         // Create new payment
-        Payment::create($this->form);
+        $newPayment = Payment::create($this->form);
+
+        // process recurring
+        if ($this->form['is_paid']) {
+            $this->processRecurringPayment($newPayment);
+        }
 
         // Emit a new event for the notification
         $this->emit('show.dialog', [
@@ -192,8 +199,8 @@ class PaymentsList extends Component
             'id' => $id,
             'billerName' => $payment->biller->last_full_name,
             'blockLot' => $payment->block_lot_item,
-            'paymentType' => $payment->paymentType->type,
             'amount' => $payment->amount,
+            'due_date' => Carbon::parse($payment->due_date)->format('M d, Y @ h:i A'),
             'mode' => empty($payment->mode) ? 'Cash' : $payment->mode,
             'reference' => empty($payment->reference) ? null : $payment->reference,
             'is_paid' => false
@@ -231,7 +238,6 @@ class PaymentsList extends Component
         // Validate the pay form
         $this->validate([
             'payForm.amount' => ['required', 'numeric', 'min:50'],
-            'payForm.mode' => ['required'],
             'payForm.reference' => ['required_if:payForm.mode,Bank Transfer,GCash']
         ]);
 
@@ -269,6 +275,7 @@ class PaymentsList extends Component
 
         if ($paymentProceed) {
             // Update the payment
+            data_set($paymentUpdateData, 'received_by', auth()->user()->id);
             $payment->update($paymentUpdateData);
 
             if ($this->payForm['is_paid']) {
@@ -291,42 +298,32 @@ class PaymentsList extends Component
      */
     public function processRecurringPayment($payment)
     {
-        // Check if the payment is recurring
-        if ($payment->is_recurring) {
-            // Convert the existing 'due_date' and 'recurring_day' to Carbon instances
-            $dueDate = Carbon::parse($payment->due_date);
-            $frequency = $payment->paymentType->frequency;
-            $newDueDate = $dueDate->copy();
+        // Convert the existing 'due_date' and 'recurring_day' to Carbon instances
+        $dueDate = Carbon::parse($payment->due_date);
+        $newDueDate = $dueDate->copy();
 
-            if ($frequency === 'monthly') {
-                // For monthly payments
-                $newDueDate->addMonthsNoOverflow()->day($payment->recurring_date);
-            } elseif ($frequency === 'annually') {
-                // For annually payments
-                $newDueDate->addYear()->day($payment->recurring_date);
+        $newDueDate->addMonthsNoOverflow()->day($payment->recurring_date);
+
+        // Set and modify the payment data
+        $newPaymentData = $payment->toArray();
+        $modifiedData = [
+            'mode' => 'Cash',
+            'transaction_date' => null,
+            'date_paid' => null,
+            'due_date' => $newDueDate->toDateTimeString(),
+            'reference' => null,
+            'status' => 'pending'
+        ];
+
+        // Iterate through the update array and overwrite values in the original array
+        foreach ($modifiedData as $key => $value) {
+            if (array_key_exists($key, $newPaymentData)) {
+                $newPaymentData[$key] = $value;
             }
-
-            // Set and modify the payment data
-            $newPaymentData = $payment->toArray();
-            $modifiedData = [
-                'mode' => null,
-                'transaction_date' => null,
-                'date_paid' => null,
-                'due_date' => $newDueDate->toDateTimeString(),
-                'reference' => null,
-                'status' => 'pending'
-            ];
-
-            // Iterate through the update array and overwrite values in the original array
-            foreach ($modifiedData as $key => $value) {
-                if (array_key_exists($key, $newPaymentData)) {
-                    $newPaymentData[$key] = $value;
-                }
-            }
-
-            // Create new recurring payment
-            Payment::create($newPaymentData);
         }
+
+        // Create new recurring payment
+        Payment::create($newPaymentData);
     }
 
     /**
@@ -340,18 +337,10 @@ class PaymentsList extends Component
         return Excel::download(new PaymentListExport($this->payments), $filename);
     }
 
-    public function changeType()
+    public function changeRecurringDate()
     {
-        $typeId = (int) $this->form['type_id'];
-        $paymentType = PaymentType::find($typeId);
-        $recurringFrequency = $paymentType->frequency;
-        $message = '';
-
-        if ($paymentType->is_recurring) {
-            $message = sprintf("Payment will occur %s", $recurringFrequency);
-        }
-
-        $this->form['amount'] = $paymentType->amount;
+        $recurringDate = $this->form['recurring_date'];
+        $message = sprintf("Payment will occur %s of the month", getOrdinalSuffix($recurringDate));
 
         $this->recurringNotes = $message;
     }
@@ -379,8 +368,7 @@ class PaymentsList extends Component
 
         $title = 'Payment Reminder';
         $amount = number_format($paymentData->amount, 2);
-        $paymentType = $paymentData->paymentType->type;
-        $content = sprintf('Payment `%s` is due on `%s` with an amount of ₱`%s`.', $paymentType, $dueDate->format('M d, Y'), $amount);
+        $content = sprintf('Payment is due on `%s` with an amount of ₱`%s`.', $dueDate->format('M d, Y @ h:i A'), $amount);
 
         // Create new notification
         Notification::create([
@@ -414,7 +402,7 @@ class PaymentsList extends Component
     public function mount()
     {
         // Set the value for the payments
-        $this->payments = Payment::with(['biller', 'paymentType'])->latest()->get();
+        $this->payments = Payment::with(['biller', 'paymentType'])->orderBy('id', 'DESC')->get();
 
         // Set the value of homeOwners
         $this->homeOwners = HomeOwner::orderBy('last_name', 'asc')->get();
@@ -439,15 +427,15 @@ class PaymentsList extends Component
         $this->form = [
             'home_owner_id' => $defaultHomeOwnerId,
             'block_lot' => $defaultBlockLot,
-            'type_id' => $this->paymentTypes->first()->id,
-            'mode' => 'Cash',
-            'amount' => $this->paymentTypes->first()->amount,
+            'amount' => 0,
             'due_date' => Carbon::now()->format('Y-m-d'),
             'reference' => '',
             'is_paid' => false,
             'is_recurring' => false,
             'recurring_date' => null
         ];
+
+        $this->recurringNotes = sprintf("Payment will occur %s of the month", getOrdinalSuffix(1));
 
         // Set the fields of the pay form
         $this->payForm = [

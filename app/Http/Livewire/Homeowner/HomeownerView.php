@@ -11,7 +11,6 @@ use App\Models\Profile;
 use App\Models\Rfid;
 use App\Models\Visitor;
 use App\Rules\NotFutureDate;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -55,6 +54,9 @@ class HomeownerView extends Component
     public $defaultCarType;
     public $defaultCarName;
 
+    public $homeVehicles;
+    public $searchVehicle;
+
     public function create()
     {
         // validate the form
@@ -63,10 +65,12 @@ class HomeownerView extends Component
             'createForm.last_name' => ['required', 'string', 'min:2', 'max:30'],
             'createForm.middle_name' => ['nullable', 'string', 'min:2', 'max:30'],
             'createForm.date_of_birth' => ['required', 'date', new NotFutureDate],
-            'createForm.contact_no' => ['nullable', 'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/', Rule::unique('profiles', 'contact_no')],
+            'createForm.contact_no' => [
+                'nullable',
+                'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/',
+                Rule::unique('profiles', 'contact_no')
+            ],
             'createForm.relation' => ['required']
-        ], [
-            'createForm.contact_no.regex' => 'Contact number format is invalid, valid format is: 09123456789'
         ]);
 
         // create a new profile
@@ -143,8 +147,6 @@ class HomeownerView extends Component
                 Rule::unique('profiles', 'contact_no')->ignore($this->updateForm['id'])
             ],
             'updateForm.relation' => ['required']
-        ], [
-            'updateForm.contact_no.regex' => 'Contact number format is invalid, valid format is: 09123456789'
         ]);
 
         // update the profile
@@ -423,6 +425,11 @@ class HomeownerView extends Component
         $this->carNames = array_values(array_unique(array_merge($carNames, $carNameRecords)));
     }
 
+    public function clearSearchVehicle()
+    {
+        return redirect()->route('homeowners.view', ['id' => $this->data->id]);
+    }
+
     public function mount($id)
     {
         $this->homeOwnerId = $id;
@@ -435,6 +442,20 @@ class HomeownerView extends Component
             'vehicles.rfid',
             'visitors'
         ])->findOrFail($id);
+
+        $this->homeVehicles = $this->data->vehicles;
+
+        if ($this->searchVehicle = request()->input('vehicle-search')) {
+            $searchKeyword = '%'. $this->searchVehicle .'%';
+            $this->homeVehicles = HomeOwnerVehicle::where('home_owner_id', $this->data->id)
+                ->where('plate_number', 'LIKE', $searchKeyword)
+                ->orWhere('car_type', 'LIKE', $searchKeyword)
+                ->orWhere('car_name', 'LIKE', $searchKeyword)
+                ->orWhereHas('rfid', function($query) use ($searchKeyword) {
+                    $query->where('rfid', 'LIKE', $searchKeyword);
+                })
+                ->get();
+        }
 
         foreach (Block::all() as $block) {
             $lots = Lot::where('block_id', $block->id)

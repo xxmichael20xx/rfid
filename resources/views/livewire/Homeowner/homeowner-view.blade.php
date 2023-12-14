@@ -77,7 +77,7 @@
                     <i class="fa fa-users me-2"></i> Family Members
                 </button>
             </h2>
-            <div id="collapseLiftOfFamilyMembers" class="accordion-collapse collapse show" aria-labelledby="headingListOfFamilyMembers" data-bs-parent="#accordionHomeOwner">
+            <div id="collapseLiftOfFamilyMembers" class="accordion-collapse collapse {{ request()->input('vehicle-search') ? '' : 'show' }}" aria-labelledby="headingListOfFamilyMembers" data-bs-parent="#accordionHomeOwner">
                 <div class="accordion-body">
                     <div class="row mb-3">
                         <div class="col-12 d-flex justify-content-between mb-3">
@@ -241,7 +241,7 @@
                     <i class="fa fa-car me-2"></i> Vehicles
                 </button>
             </h2>
-            <div id="collapseVehicles" class="accordion-collapse collapse" aria-labelledby="headingVehicles" data-bs-parent="#accordionHomeOwner">
+            <div id="collapseVehicles" class="accordion-collapse collapse {{ request()->input('vehicle-search') ? 'show' : '' }}" aria-labelledby="headingVehicles" data-bs-parent="#accordionHomeOwner">
                 <div class="accordion-body">
                     <div class="row mb-3">
                         <div class="col-12 d-flex justify-content-between mb-3">
@@ -254,6 +254,32 @@
                             >
                                 <i class="fa fa-plus"></i> Add New
                             </button>
+                        </div>
+
+                        <div class="col-12 text-right mb-2">
+                            <div class="row justify-content-end">
+                                <form
+                                    class="col-3 d-flex flex-column"
+                                    action=""
+                                    method="GET"
+                                >
+                                    <div class="input-container input-group me-2">
+                                        <input
+                                            type="search"
+                                            name="vehicle-search"
+                                            id="vehicle-search"
+                                            class="form-control"
+                                            placeholder="Search..."
+                                            wire:model="searchVehicle"
+                                            required
+                                        >
+                                        <button class="btn btn-secondary" type="submit" id="search-btn">Search</button>
+                                    </div>
+                                    @if ($searchVehicle)
+                                        <a href="#!" class="text-help mt-2" wire:click="clearSearchVehicle">Clear search/filters</a>
+                                    @endif
+                                </form>
+                            </div>
                         </div>
                         <hr class="theme-separator">
                     </div>
@@ -272,7 +298,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($data->vehicles as $vehicle)
+                                        @forelse ($homeVehicles as $vehicle)
                                             @php
                                                 if ($rfid = $vehicle->rfid) {
                                                     $rfid = $rfid->rfid;
@@ -391,6 +417,97 @@
                                                         @endif
                                                     @else
                                                         N/A
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td class="cell text-center" colspan="4">No result(s)</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingPayments">
+                <button
+                    class="accordion-button text-dark"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapsePayments"
+                    aria-expanded="false"
+                    aria-controls="collapsePayments"
+                >
+                    <i class="fa fa-money-bill me-2"></i> Payments
+                </button>
+            </h2>
+            <div id="collapsePayments" class="accordion-collapse collapse" aria-labelledby="headingPayments" data-bs-parent="#accordionHomeOwner">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-12 d-flex justify-content-between mb-3">
+                            <p class="card-title h5">Payments History</p>
+                        </div>
+                        <hr class="theme-separator">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table app-table-hover mb-0 text-left visitors-table">
+                                    <thead class="bg-portal-green">
+                                        <tr>
+                                            <th class="cell">Block & Lot</th>
+                                            <th class="cell">Amount</th>
+                                            <th class="cell">Due Date</th>
+                                            <th class="cell">Status</th>
+                                            <th class="cell">Received By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($data->payments as $homePayment)
+                                            <tr>
+                                                <td class="cell">{{ $homePayment->block_lot_item }}</td>
+                                                <td class="cell">
+                                                    ₱{{ number_format($homePayment->amount, 2) }}
+                                                    @if ($homePayment->reference)
+                                                        <br>
+                                                        Referenece: {{ $homePayment->reference }}
+                                                    @endif
+                                                </td>
+                                                <td class="cell">
+                                                    @php
+                                                        $dueDate = Carbon\Carbon::parse($homePayment->due_date);
+                                                        $diffInDays = Carbon\Carbon::now()->diffInDays($dueDate);
+                                                        $dueClass = 'text-dark';
+
+                                                        if ($diffInDays <= 3 && $homePayment->status != 'paid') {
+                                                            $dueClass = 'text-danger fw-bold';
+                                                        }
+                                                    @endphp
+                                                    <p class="{{ $dueClass }}">{{ Carbon\Carbon::parse($dueDate)->format('M d, Y') }}</p>
+                                                </td>
+                                                <td class="cell">
+                                                    @php
+                                                        $status = $homePayment->status;
+                                                        $badgeClass = 'danger';
+
+                                                        if ($status == 'paid') {
+                                                            $badgeClass = 'success';
+                                                        }
+                                                    @endphp
+                                                    <div class="badge bg-{{ $badgeClass }}">{{ ucfirst($status) }}</div>
+                                                </td>
+                                                <td class="cell">
+                                                    {{ $homePayment->payment_received_by }}
+                                                    
+                                                    @if ($homePayment->payment_received_by !== 'N/A')
+                                                        <small class="text-help m-0 p-0 d-block">{{ \Carbon\Carbon::parse($data->date_paid)->format('M d, Y @ h:i A') }}</small>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -550,11 +667,11 @@
                                     >
                                         <option value="" disabled>Select relation</option>
                                         <option value="Cousin">Cousin</option>
-                                        <option value="Kapatid">Kapatid</option>
-                                        <option value="Mama">Mama</option>
-                                        <option value="Papa">Papa</option>
-                                        <option value="Lolo">Lolo</option>
-                                        <option value="Lola">Lola</option>
+                                        <option value="Sibling">Sibling</option>
+                                        <option value="Mother">Mother</option>
+                                        <option value="Father">Father</option>
+                                        <option value="Grandfather">Grandfather</option>
+                                        <option value="Grandmother">Grandmother</option>
                                     </select>
 
                                     @error('createForm.relation')
@@ -716,11 +833,11 @@
                                     >
                                         <option value="" disabled>Select relation</option>
                                         <option value="Cousin">Cousin</option>
-                                        <option value="Kapatid">Kapatid</option>
-                                        <option value="Mama">Mama</option>
-                                        <option value="Papa">Papa</option>
-                                        <option value="Lolo">Lolo</option>
-                                        <option value="Lola">Lola</option>
+                                        <option value="Sibling">Sibling</option>
+                                        <option value="Mother">Mother</option>
+                                        <option value="Father">Father</option>
+                                        <option value="Grandfather">Grandfather</option>
+                                        <option value="Grandmother">Grandmother</option>
                                     </select>
 
                                     @error('updateForm.relation')
@@ -1206,6 +1323,13 @@
                     @this.updateCarNameOnUpdate(id)
                 })
             })
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const scrollToElementId = new URLSearchParams(window.location.search).get('vehicle-search')
+                if (scrollToElementId) {
+                    document.getElementById('collapseVehicles').scrollIntoView({ behavior: 'smooth' })
+                }
+            });
         </script>
     @endsection
     @section('styles')

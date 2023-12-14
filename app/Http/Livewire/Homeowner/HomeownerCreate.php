@@ -76,7 +76,11 @@ class HomeownerCreate extends Component
             'form.middle_name' => ['string', 'min:2', 'max:30'],
             'form.date_of_birth' => ['required', 'date', new NotFutureDate, new LegalBirthDate],
             'form.block_lots' => [new BlockLots],
-            'form.contact_no' => ['required', 'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/', Rule::unique('home_owners', 'contact_no')],
+            'form.contact_no' => [
+                'required',
+                'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/',
+                Rule::unique('home_owners', 'contact_no')
+            ],
             'form.email' => ['required', 'email', Rule::unique('home_owners', 'email')],
             'form.profile' => ['nullable', 'image'],
             'form.vehicles.*.plate_number' => [

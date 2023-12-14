@@ -275,4 +275,13 @@ class ApiHomeOwnerController extends Controller
             'message' => 'Logged out successfully!'
         ]);
     }
+
+    public function payments(Request $request)
+    {
+        // get the current user
+        $user = $request->user();
+
+        // get the home owner data
+        $homeOwnerId = HomeOwner::with(['payments'])->find($user->home_owner_id);
+    }
 }
