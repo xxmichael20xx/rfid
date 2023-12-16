@@ -150,7 +150,7 @@
                     <div class="modal-body">
                         <div class="row mb-3">
                             <div class="col-12">
-                                <div class="input-container mb-3">
+                                <div class="input-container mb-3 d-flex flex-column">
                                     <label for="home_owner_id">Home Owner<span class="required">*</span></label>
                                     <select
                                         name="home_owner_id"
@@ -177,12 +177,12 @@
                         
                         <div class="row mb-3">
                             <div class="col-12">
-                                <div class="input-container mb-3">
+                                <div class="input-container mb-3 d-flex flex-column" wire:ignore>
                                     <label for="relation">Relation<span class="required">*</span></label>
                                     <select
                                         name="relation"
                                         id="relation"
-                                        class="form-select"
+                                        class="form-select w-100 d-block"
                                         wire:model.lazy="requestForm.relation"
                                     >
                                         <option value="" selected disabled>Select relation</option>
@@ -264,6 +264,8 @@
                         icon: e.icon,
                         title: e.title,
                         text: e.message,
+                    }).then(function() {
+                        window.location.reload()
                     })
                 })
     
@@ -280,6 +282,15 @@
                     previewCaptureType.innerHTML = `${icon} Image`
     
                     previewCaptureModal.show()
+                })
+
+                $('#relation').select2({
+                    dropdownParent: '#addRequestModal',
+                    tags: true,
+                })
+
+                $('#home_owner_id').select2({
+                    dropdownParent: '#addRequestModal'
                 })
             })
         </script>

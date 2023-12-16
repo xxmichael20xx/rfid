@@ -27,7 +27,7 @@ class AdminReportRfid extends Component
 
     public function loadRecords()
     {
-        $this->records = RfidMonitoring::with(['rfidData.vehicle.homeOwner'])->whereBetween('time_in', $this->dateRange)->get();
+        $this->records = RfidMonitoring::with(['rfidData.vehicle.homeOwner'])->whereBetween('created_at', $this->dateRange)->get();
     }
 
     public function exportData()

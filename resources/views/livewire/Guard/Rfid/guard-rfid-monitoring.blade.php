@@ -13,7 +13,7 @@
             <div class="card shadow-lg border-0">
                 <div class="card-body">
                     <div class="container">
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-12">
                                 <div class="alert alert-success text-dark d-flex justify-content-between align-items-center">
                                     <span>
@@ -24,7 +24,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row">
                             <div class="col-12">
                                 <div class="table-responsive">
@@ -320,6 +320,10 @@
                     })
                 })
 
+                Livewire.on('guardUpdateList', function() {
+                    alert('asdf')
+                })
+
                 /** Define approve entry click event */
                 $(document).on('click', '#approve-entry', function() {
                     $('#tapped_id').val('')
@@ -351,10 +355,10 @@
                     Livewire.emit('validateEntry', id)
                 }, 1500)
 
-                inputElement.addEventListener('input', function(event) {
+                /* inputElement.addEventListener('input', function(event) {
                     const id = event.target.value
                     debouncedValidateEntry(id)
-                })
+                }) */
 
                 /** Set interval to focus the rfid field */
                 setInterval(function() {

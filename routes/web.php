@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivitiesController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
@@ -30,6 +31,7 @@ use App\Http\Livewire\Payments\PaymentsTypes;
 use App\Http\Livewire\Profile\ProfileList;
 use App\Http\Livewire\Rfid\RfidList;
 use App\Http\Livewire\Rfid\RfidMonitoring;
+use App\Http\Livewire\RfidPanel;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\Visitor\VisitorMonitoring;
 use Illuminate\Support\Facades\Auth;
@@ -148,15 +150,33 @@ Route::middleware('auth.reports')->name('reports.')->prefix('reports')->group(fu
     /** Activities */
     Route::get('activity', AdminReportActivity::class)->name('activity');
 
+    /** Activities Print */
+    Route::get('print/activities', [AdminReportController::class, 'activities'])->name('print.activities');
+
     /** Expenses */
     Route::get('expenses', AdminReportExpenses::class)->name('expenses');
+
+    /** Expenses Print */
+    Route::get('print/expenses', [AdminReportController::class, 'expenses'])->name('print.expenses');
 
     /** Payments */
     Route::get('payments', AdminReportPayment::class)->name('payments');
 
+    /** Payments Print */
+    Route::get('print/payments', [AdminReportController::class, 'payments'])->name('print.payments');
+
     /** Visitors */
     Route::get('visitors', AdminReportVisitor::class)->name('visitors');
 
+    /** Visitors Print */
+    Route::get('print/visitors', [AdminReportController::class, 'visitors'])->name('print.visitors');
+
     /** RFID Monitoring */
     Route::get('rfid-monitorings', AdminReportRfid::class)->name('rfid-monitorings');
+
+    /** RFID Print */
+    Route::get('print/rfids', [AdminReportController::class, 'rfids'])->name('print.rfids');
 });
+
+/** RFID Panel - Guests */
+Route::get('rfid-panel', RfidPanel::class)->name('rfid.panel');

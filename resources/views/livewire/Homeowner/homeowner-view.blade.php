@@ -657,11 +657,11 @@
                             </div>
 
                             <div class="col-4">
-                                <div class="input-container mb-3">
-                                    <label for="relation">Relation<span class="required">*</span></label>
+                                <div class="input-container mb-3 d-flex flex-column" wire:ignore>
+                                    <label for="new_relation">Relation<span class="required">*</span></label>
                                     <select
                                         name="relation"
-                                        id="relation"
+                                        id="new_relation"
                                         class="form-select"
                                         wire:model.lazy="createForm.relation"
                                     >
@@ -823,7 +823,7 @@
                             </div>
 
                             <div class="col-4">
-                                <div class="input-container mb-3">
+                                <div class="input-container mb-3 d-flex flex-column" wire:ignore>
                                     <label for="update_relation">Relation<span class="required">*</span></label>
                                     <select
                                         name="update_relation"
@@ -1321,6 +1321,14 @@
                     const id = e.params.data.id
 
                     @this.updateCarNameOnUpdate(id)
+                })
+
+                $('#new_relation').select2({
+                    dropdownParent: '#newProfileModal'
+                })
+
+                $('#update_relation').select2({
+                    dropdownParent: '#updateProfileModal'
                 })
             })
 

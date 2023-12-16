@@ -7,7 +7,26 @@
         <div class="col-12 d-flex justify-content-between align-items-center">
             <h1 class="app-page-title">Report - Visitors</h1>
 
-            <button type="button" class="btn btn-success text-white" wire:click="exportData">Generate Report</button>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-primary text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Generate Report
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="#!" wire:click="exportData">
+                            <i class="fa fa-file-excel"></i> CSV
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('reports.print.visitors', [
+                            'range-start' => $dateRange[0],
+                            'range-end' => $dateRange[1],
+                        ]) }}" target="_blank">
+                            <i class="fa fa-print"></i> Print
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 

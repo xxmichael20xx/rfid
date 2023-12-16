@@ -11,13 +11,19 @@
 
     {{-- Styles --}}
     @vite(['resources/sass/app.scss'])
+    @livewireStyles
+
+    @yield('styles')
 </head> 
 
 <body class="app pt-0">
     @yield('content')
 
     @vite(['resources/js/app.js'])
+    @livewireScripts
+
     <script src="{{ asset('assets/js/jquery-3.7.1.min.js') }}"></script>
+    @yield('scripts')
 </body>
 </html>
     
