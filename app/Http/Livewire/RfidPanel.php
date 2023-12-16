@@ -50,7 +50,8 @@ class RfidPanel extends Component
     public function uploadCapture($value)
     {
         // Decode the base64 data
-        $fileData = base64_decode($value);
+        $base64Image = Str::replace('data:image/jpeg;base64,', '', $value);
+        $fileData = base64_decode($base64Image);
 
         // save it to temporary dir first.
         $tmpFilePath = sys_get_temp_dir() . '/' . Str::uuid()->toString();
