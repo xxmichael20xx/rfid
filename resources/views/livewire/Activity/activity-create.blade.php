@@ -81,6 +81,23 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-6">
+                                        <div class="input-container mb-3">
+                                            <label for="end_time">End time<span class="required">*</span></label>
+                                            <input
+                                                id="end_time"
+                                                name="end_time"
+                                                type="time"
+                                                class="form-control @error('form.end_time') is-invalid @enderror"
+                                                wire:model.lazy="form.end_time">
+                
+                                            @error('form.end_time')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ str_replace('form.', '', $message) }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
             
                                 <div class="row mb-3">
@@ -128,7 +145,7 @@
                                             <textarea
                                                 id="description"
                                                 name="description"
-                                                class="form-control form-control--textarea @error('form.title') is-invalid @enderror"
+                                                class="form-control form-control--textarea @error('form.description') is-invalid @enderror"
                                                 wire:model.lazy="form.description"
                                                 rows="5"></textarea>
                 
@@ -137,6 +154,31 @@
                                                     <strong>{{ str_replace('form.', '', $message) }}</strong>
                                                 </span>
                                             @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="input-container mb-2">
+                                            <label for="gallery" id="galleryTriggerLabel">Images</label>
+                                            <input
+                                                id="gallery"
+                                                name="gallery"
+                                                type="file"
+                                                class="form-control @error('form.gallery') is-invalid @enderror d-none"
+                                                wire:model="form.gallery"
+                                                accept="image/*"
+                                                multiple
+                                            >
+                
+                                            @error('form.gallery')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ str_replace('form.', '', $message) }}</strong>
+                                                </span>
+                                            @enderror
+
+                                            <button type="button" class="btn btn-secondary d-block" id="galleryTrigger">Select image(s)</button>
                                         </div>
                                     </div>
                                 </div>
@@ -154,4 +196,14 @@
             </div>
         </div>
     </div>
+
+    @section('scripts')
+        <script>
+            $(document).ready(function() {
+                $(document).on('click', '#galleryTrigger', function() {
+                    $('#galleryTriggerLabel').trigger('click')
+                })
+            })
+        </script>
+    @endsection
 </div>

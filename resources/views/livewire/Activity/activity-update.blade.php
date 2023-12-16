@@ -80,6 +80,23 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    <div class="col-6">
+                                        <div class="input-container mb-3">
+                                            <label for="end_time">End time<span class="required">*</span></label>
+                                            <input
+                                                id="end_time"
+                                                name="end_time"
+                                                type="time"
+                                                class="form-control @error('model.end_time') is-invalid @enderror"
+                                                wire:model.lazy="model.end_time">
+                
+                                            @error('model.end_time')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ str_replace('form.', '', $message) }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
                                 </div>
         
                                 <div class="row mb-3">
@@ -140,6 +157,87 @@
                                 </div>
 
                                 <div class="row">
+                                    <div class="col-12">
+                                        <div class="input-container mb-2">
+                                            <label for="gallery" id="galleryTriggerLabel">Images</label>
+                                            <input
+                                                id="gallery"
+                                                name="gallery"
+                                                type="file"
+                                                class="form-control @error('model.gallery') is-invalid @enderror d-none"
+                                                wire:model="model.gallery"
+                                                accept="image/*"
+                                                multiple
+                                            >
+                
+                                            @error('model.gallery')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+
+                                            <button type="button" class="btn btn-secondary d-block" id="galleryTrigger">Select image(s)</button>
+                                            <small class="text-help">Note: Upon uploading new images, the existing gallery will be deleted!</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (count($model['galleries']) > 0)
+                                    <div class="row mb-3 mt-5">
+                                        <div class="col-12">
+                                            <p class="card-title h5">Gallery</p>
+                                            <hr class="theme-separator">
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div
+                                                id="activityGallery"
+                                                class="carousel slide"
+                                                data-bs-ride="carousel"
+                                                data-bs-infinite="true"
+                                                style="max-height: 500px;"
+                                            >
+                                                <div class="carousel-indicators">
+                                                    @php $btnsCount = 0; @endphp
+                                                    @foreach ($model['galleries'] as $galleryKey => $galleryImage)
+                                                        <button
+                                                            type="button"
+                                                            data-bs-target="#activityGallery"
+                                                            data-bs-slide-to="{{ $galleryKey }}"
+                                                            class="{{ ($btnsCount) == 0 ? 'active' : '' }}"
+                                                            aria-current="true"
+                                                            aria-label="Slide {{ $galleryKey }}"
+                                                        ></button>
+                                                        @php $btnsCount = $btnsCount + 1; @endphp
+                                                    @endforeach
+                                                </div>
+                                                <div class="carousel-inner">
+                                                    @php $imagesCount = 0; @endphp
+                                                    @foreach ($model['galleries'] as $galleryKey => $galleryImage)
+                                                        <div class="carousel-item text-center {{ ($imagesCount) == 0 ? 'active' : '' }}">
+                                                            <img
+                                                                src="{{ $galleryImage['image'] }}"
+                                                                class="img-fluid key-{{ $imagesCount }}"
+                                                                style="max-height: 500px;"
+                                                            />
+                                                        </div>
+                                                        @php $imagesCount = $imagesCount + 1; @endphp
+                                                    @endforeach
+                                                </div>
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#activityGallery" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Previous</span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#activityGallery" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Next</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <div class="row">
                                     <div class="col-12 text-end">
                                         <a href="{{ route('activities.list') }}" class="btn btn-danger text-white">Cancel</a>
                                         <button type="submit" class="btn btn-primary text-white">Update</button>
@@ -152,4 +250,14 @@
             </div>
         </div>
     </div>
+
+    @section('scripts')
+        <script>
+            $(document).ready(function() {
+                $(document).on('click', '#galleryTrigger', function() {
+                    $('#galleryTriggerLabel').trigger('click')
+                })
+            })
+        </script>
+    @endsection
 </div>

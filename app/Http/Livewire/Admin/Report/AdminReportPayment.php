@@ -14,6 +14,8 @@ class AdminReportPayment extends Component
 
     public $dateRange;
 
+    public $filterBy;
+
     public function mount()
     {
         $now = Carbon::now();
@@ -21,13 +23,15 @@ class AdminReportPayment extends Component
             $now->copy()->startOfMonth()->format('Y-m-d'),
             $now->copy()->endOfMonth()->format('Y-m-d')
         ];
+        $this->filterBy = 'all';
 
         $this->loadRecords();
     }
 
     public function loadRecords()
     {
-        $this->records = Payment::whereBetween('due_date', $this->dateRange)->get();
+        $whereIn = $this->filterBy == 'all' ? ['pending', 'paid'] : [$this->filterBy];
+        $this->records = Payment::whereBetween('due_date', $this->dateRange)->whereIn('status', $whereIn)->get();
     }
 
     public function exportData()
@@ -38,7 +42,7 @@ class AdminReportPayment extends Component
             default => 'treasurer_'
         };
         $timestamp = now()->format('Y-m-d_Hi'); // Current timestamp in the format: yyyy-mm-dd_HHmm
-        $filename = $prefix . 'report_payments_' . $timestamp . '.xlsx';
+        $filename = $prefix . 'report_payments_' . $this->filterBy . '_' . $timestamp . '.xlsx';
 
         return Excel::download(new PaymentReport($this->records), $filename);
     }

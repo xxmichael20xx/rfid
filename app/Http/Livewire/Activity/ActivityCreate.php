@@ -3,15 +3,20 @@
 namespace App\Http\Livewire\Activity;
 
 use App\Models\Activity;
+use App\Models\ActivityGallery;
 use App\Models\HomeOwner;
 use App\Models\Notification;
+use App\Rules\EndTimeChecker;
 use App\Rules\NotPastDate;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class ActivityCreate extends Component
 {
+    use WithFileUploads;
+
     /**
      * The model for the home owner form
      */
@@ -20,8 +25,10 @@ class ActivityCreate extends Component
         'description' => '',
         'location' => '',
         'start_time' => '',
+        'end_time' => '',
         'start_date' => '',
         'end_date' => '',
+        'gallery' => []
     ];
 
     /**
@@ -35,8 +42,10 @@ class ActivityCreate extends Component
             'form.description' => ['required'],
             'form.location' => ['required'],
             'form.start_time' => ['required'],
+            'form.end_time' => ['required', new EndTimeChecker($this->form)],
             'form.start_date' => ['required', 'date', new NotPastDate],
             'form.end_date' => ['required', 'date', 'after_or_equal:form.start_date'],
+            'form.gallery.*' => ['nullable', 'image']
         ];
     }
 
@@ -58,6 +67,18 @@ class ActivityCreate extends Component
                 'title' => 'Create Failed',
                 'message' => 'Failed to create new Activity!'
             ]);
+        }
+
+        if (count($this->form['gallery']) > 0) {
+            foreach ($this->form['gallery'] as $key => $image) {
+                $imageName = $image->store('images/activity-gallery');
+
+                // store the image
+                ActivityGallery::create([
+                    'activity_id' => $newActivity->id,
+                    'image' => '/uploads/' . $imageName
+                ]);
+            }
         }
 
         // create new notification to all home owners

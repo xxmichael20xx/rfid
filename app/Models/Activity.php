@@ -20,6 +20,7 @@ class Activity extends Model
         'description',
         'location',
         'start_time',
+        'end_time',
         'start_date',
         'end_date',
         'metadata'
@@ -46,5 +47,10 @@ class Activity extends Model
         } else {
             return Carbon::parse($this->start_date)->format('M d') . ' - '. Carbon::parse($this->end_date)->format('M d, Y');
         }
+    }
+
+    public function galleries()
+    {
+        return $this->hasMany(ActivityGallery::class, 'activity_id', 'id');
     }
 }

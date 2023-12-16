@@ -63,7 +63,7 @@
                                             <a href="{{ route('payments.list') }}" class="text-help mt-2">Clear search/filters</a>
                                         @endif
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-2">
                                         <button
                                             class="btn btn-secondary text-white"
                                             type="button"
@@ -74,9 +74,9 @@
                                             <i class="fa fa-filter"></i> Filters
                                         </button>
 
-                                        <button type="button" class="btn btn-primary text-white" wire:click="exportToCsv">
+                                        {{-- <button type="button" class="btn btn-primary text-white" wire:click="exportToCsv">
                                             <i class="fa fa-cloud-arrow-down"></i> Export to CSV
-                                        </button>
+                                        </button> --}}
 
                                         <div
                                             class="offcanvas offcanvas-end"

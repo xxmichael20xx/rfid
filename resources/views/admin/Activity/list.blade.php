@@ -57,6 +57,7 @@
                                             <th class="cell">Description</th>
                                             <th class="cell">Activity Date</th>
                                             <th class="cell">Start Time</th>
+                                            <th class="cell">End Time</th>
                                             <th class="cell">Actions</th>
                                         </tr>
                                     </thead>
@@ -74,6 +75,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="cell">{{ \Carbon\Carbon::parse($data->start_time)->format('h:ia') }}</td>
+                                                <td class="cell">{{ \Carbon\Carbon::parse($data->end_time)->format('h:ia') }}</td>
                                                 <td class="cell d-flex">
                                                     @livewire('activity.activity-delete', ['modelId' => $data->id])
             

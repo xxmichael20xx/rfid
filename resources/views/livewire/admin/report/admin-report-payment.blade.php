@@ -17,12 +17,22 @@
                 <div class="card-body">
                     <div class="container">
                         <div class="row">
-                            <div class="col-8">
+                            <div class="col-6">
                                 <p class="card-title h5">Payments</p>
                             </div>
-                            <div class="col-4 d-flex justify-content-end" wire:ignore>
-                                <label for="date-range-picker" class="col-form-label me-2">Select range</label>
-                                <input type="text" id="date-range-picker" class="form-control w-auto border-secondary" />
+                            <div class="col-6 d-flex justify-content-end" wire:ignore>
+                                <div class="form-input me-2">
+                                    <label for="date-range-picker" class="col-form-label me-2">Filter by</label>
+                                    <select name="filter-type" id="filter-type" class="form-select" wire:model.lazy="filterBy" wire:change="loadRecords">
+                                        <option value="all">All</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="paid">Paid</option>
+                                    </select>
+                                </div>
+                                <div class="form-input">
+                                    <label for="date-range-picker" class="col-form-label me-2">Select range</label>
+                                    <input type="text" id="date-range-picker" class="form-control w-auto border-secondary" />
+                                </div>
                             </div>
                             <div class="col-12">
                                 <hr class="theme-separator">
@@ -34,10 +44,10 @@
                                             <tr>
                                                 <th class="cell">Name</th>
                                                 <th class="cell">Block & Lot</th>
-                                                <th class="cell">Association Payment</th>
                                                 <th class="cell">Amount</th>
                                                 <th class="cell">Due Date</th>
                                                 <th class="cell">Status</th>
+                                                <th class="cell">Received By</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -45,7 +55,6 @@
                                                 <tr>
                                                     <td class="cell">{{ $record->biller->last_full_name }}</td>
                                                     <td class="cell">{{ $record->block_lot_item }}</td>
-                                                    <td class="cell">{{ $record->paymentType->type }}</td>
                                                     <td class="cell">
                                                         ₱{{ number_format($record->amount, 2) }}
                                                         @if ($record->reference)
@@ -55,15 +64,15 @@
                                                     </td>
                                                     <td class="cell">
                                                         @php
-                                                            $dueDate = \Carbon\Carbon::parse($record->due_date);
-                                                            $diffInDays = \Carbon\Carbon::now()->diffInDays($dueDate);
+                                                            $dueDate = Carbon\Carbon::parse($record->due_date);
+                                                            $diffInDays = Carbon\Carbon::now()->diffInDays($dueDate);
                                                             $dueClass = 'text-dark';
 
                                                             if ($diffInDays <= 3 && $record->status != 'paid') {
                                                                 $dueClass = 'text-danger fw-bold';
                                                             }
                                                         @endphp
-                                                        <p class="{{ $dueClass }}">{{ \Carbon\Carbon::parse($dueDate)->format('M d, Y') }}</p>
+                                                        <p class="{{ $dueClass }}">{{ Carbon\Carbon::parse($dueDate)->format('M d, Y') }}</p>
                                                     </td>
                                                     <td class="cell">
                                                         @php
@@ -76,10 +85,17 @@
                                                         @endphp
                                                         <div class="badge bg-{{ $badgeClass }}">{{ ucfirst($status) }}</div>
                                                     </td>
+                                                    <td class="cell">
+                                                        {{ $record->payment_received_by }}
+
+                                                        @if ($record->payment_received_by !== 'N/A')
+                                                            <small class="text-help m-0 p-0 d-block">{{ \Carbon\Carbon::parse($record->date_paid)->format('M d, Y @ h:i A') }}</small>
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td class="cell text-center" colspan="6">No result(s)</td>
+                                                    <td class="cell text-center" colspan="7">No result(s)</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>

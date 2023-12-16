@@ -17,6 +17,7 @@ use App\Rules\LegalBirthDate;
 use App\Rules\NotFutureDate;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -220,7 +221,7 @@ class HomeownerCreate extends Component
             'email'
         ]);
 
-        $password = 'Password1';
+        $password = Str::random(12);
         data_set($accountData, 'password', bcrypt($password));
         data_set($accountData, 'role', 'User');
         data_set($accountData, 'home_owner_id', data_get($homeOwner, 'id'));

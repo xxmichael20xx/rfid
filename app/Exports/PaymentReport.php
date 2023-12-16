@@ -14,17 +14,21 @@ class PaymentReport implements FromCollection, WithHeadings
     {
         // Set the data to export
         $this->data = collect($data)->map(function($item) {
+            $id = $item->id;
             $biller = $item->biller->last_full_name;
-            $blockLotItem = $item->block_lot_item;
-            $paymentType = $item->paymentType->type;
-            $amount = '₱' . number_format($item->amount, 2);
-            $reference = $item->reference ?? '';
-            $dueDate = Carbon::parse($item->due_date)->format('M d, Y');
-            $status = str($item->status)->title();
-            $datePaid = $item->status == 'paid' ? Carbon::parse($item->date_paid)->format('M d, Y @ h:ia') : '';
+            $amount = number_format($item->amount, 2);
+            $_dueDate = Carbon::parse($item->due_date);
+            $dueDate = $_dueDate->copy()->format('M d, Y @ h:i A');
+            $diffInDays = Carbon::now()->diffInDays($_dueDate);
+            $daysDue = $diffInDays <= 3 ? $diffInDays : 0;
+            $status = ucfirst($item->status);
+            $transactionDate = $item->transaction_date;
+            $reference = $item->reference;
+            $receivedBy = $item->payment_received_by;
+            $datePaid = $item->payment_received_by !== 'N/A' ? Carbon::parse($item->date_paid)->format('M d, Y @ h:i A') : '';
 
             // Return the processed data to export
-            return compact('biller', 'blockLotItem', 'paymentType', 'amount', 'reference', 'dueDate', 'status', 'datePaid');
+            return compact('id', 'biller', 'amount', 'dueDate', 'daysDue', 'status', 'transactionDate', 'reference', 'receivedBy', 'datePaid');
         });
     }
 
@@ -42,14 +46,16 @@ class PaymentReport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
+            'Payment ID',
             'Biller',
-            'Block & Lot',
-            'Payment Type',
             'Amount',
-            'Reference',
             'Due Date',
+            'Days Due',
             'Status',
-            'Date Paid',
+            'Transaction Date',
+            'Reference',
+            'Received By',
+            'Received Date'
         ];
     }
 }
