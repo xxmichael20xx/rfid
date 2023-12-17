@@ -87,6 +87,11 @@ class GuardVisitorList extends Component
         ];
     }
 
+    public function setVisitorFor($value)
+    {
+        $this->requestForm['home_owner_id'] = $value;
+    }
+
     public function render()
     {
         return view('livewire.Guard.Visitor.guard-visitor-list')

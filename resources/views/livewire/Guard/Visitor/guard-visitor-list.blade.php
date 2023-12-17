@@ -292,6 +292,12 @@
                 $('#home_owner_id').select2({
                     dropdownParent: '#addRequestModal'
                 })
+
+                $('#home_owner_id').on('select2:select', function(e) {
+                    const value = e.params.data.id
+
+                    @this.setVisitorFor(value)
+                })
             })
         </script>
     @endsection
