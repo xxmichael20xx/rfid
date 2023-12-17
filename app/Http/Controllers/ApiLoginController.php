@@ -38,4 +38,16 @@ class ApiLoginController extends Controller
             'message' => 'Invalid credentials'
         ], 422);
     }
+
+    public function resetPassword()
+    {
+        $this->validate(request(), [
+            'email' => ['required', 'exists:users,email']
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Email sent'
+        ]);
+    }
 }

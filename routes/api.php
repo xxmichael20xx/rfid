@@ -25,6 +25,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 /** API for Home Owner Login */
 Route::post('user/login', [ApiLoginController::class, 'login']);
 
+/** API for forgot password */
+Route::get('user/reset', [ApiLoginController::class, 'resetPassword']);
+
 /** API for generating and downloading a QR */
 Route::get('download-qr', [QRController::class, 'downloadQr'])->name('download.qr');
 
