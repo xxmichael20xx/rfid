@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -40,6 +41,8 @@ class Payment extends Model
 
     protected $appends = [
         'payment_received_by',
+        'amount_f',
+        'transaction_date_f',
     ];
 
     public function getBlockLotItemAttribute()
@@ -65,6 +68,20 @@ class Payment extends Model
         }
 
         return User::find($this->received_by)->full_name;
+    }
+
+    public function getAmountFAttribute()
+    {
+        return '₱' . number_format($this->amount, 2);
+    }
+
+    public function getTransactiondateFAttribute()
+    {
+        if (! $this->transaction_date) {
+            return 'N/A';
+        }
+
+        return Carbon::parse($this->transaction_date)->format('M d, Y');
     }
 
     /**
