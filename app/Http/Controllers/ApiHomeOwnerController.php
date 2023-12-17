@@ -305,4 +305,18 @@ class ApiHomeOwnerController extends Controller
             'data' => $notification
         ]);
     }
+
+    public function declineRequest(Request $request, $id)
+    {
+        $notification = Notification::find($id);
+
+        $notification->update([
+            'visitor_request_status' => 'declined',
+            'visitor_request_denied_reason' => $request->reason
+        ]);
+
+        return response()->json([
+            'status' => true
+        ]);
+    }
 }
