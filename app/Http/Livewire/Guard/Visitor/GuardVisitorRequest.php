@@ -98,7 +98,7 @@ class GuardVisitorRequest extends Component
 
     public function render()
     {
-        return view('livewire.guard.visitor.guard-visitor-request')
+        return view('livewire.Guard.Visitor.guard-visitor-request')
             ->extends('layouts.guard')
             ->section('content');
     }
