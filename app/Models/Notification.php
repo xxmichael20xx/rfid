@@ -73,10 +73,10 @@ class Notification extends Model
         static::creating(function (Notification $model) {
             $model->sent_by = auth()->user()->id;
             $model->type = match ($model->title) {
-                'New Activity' => 'activity',
-                'Visitor Request' => 'visitor-request',
-                'Visitor Entry' => 'visitor-entry',
-                'Payment Reminder' => 'payment-reminder',
+                'New Activity' => 'Activity',
+                'Visitor Request' => 'Visitor Request',
+                'Visitor Entry' => 'Visitor Entry',
+                'Payment Reminder' => 'Payment Reminder',
                 'default' => 'others'
             };
         });

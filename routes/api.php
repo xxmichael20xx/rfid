@@ -86,6 +86,9 @@ Route::middleware('auth:sanctum')
 
                 // List unread notifications
                 Route::get('unread', [ApiHomeOwnerController::class, 'notificationsUnread']);
+
+                // Get single
+                Route::get('get/{id}', [ApiHomeOwnerController::class, 'getNotification']);
             });
 
         /** API for Officers */

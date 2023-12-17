@@ -152,11 +152,11 @@ class ApiHomeOwnerController extends Controller
             ->get();
 
         // Update all notifications as read
-        Notification::where('home_owner_id', $homeOwnerId)
+        /* Notification::where('home_owner_id', $homeOwnerId)
             ->latest()
             ->update([
                 'is_read' => true
-            ]);
+            ]); */
 
         return response()->json([
             'status' => true,
@@ -294,5 +294,15 @@ class ApiHomeOwnerController extends Controller
     public function resetSuccess()
     {
         return view('reset-success');
+    }
+
+    public function getNotification($id)
+    {
+        $notification = Notification::find($id);
+
+        return response()->json([
+            'status' => true,
+            'data' => $notification
+        ]);
     }
 }
