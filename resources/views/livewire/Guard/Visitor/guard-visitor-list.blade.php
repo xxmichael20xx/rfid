@@ -2,12 +2,6 @@
     <div class="row g-4 mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <h1 class="app-page-title">Visitors Listing</h1>
-
-            <div class="col-auto">
-                <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#addRequestModal">
-                    <i class="fa fa-info-circle"></i> Add Request
-                </button>
-            </div>
         </div>
     </div>
 
@@ -136,102 +130,6 @@
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="addRequestModal" tabindex="-1" aria-labelledby="addRequestModalLabel" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog">
-            <form method="POST" wire:submit.prevent="submitRequest">
-                @csrf
-
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="addRequestModalLabel">Visitor - Request</h1>
-                        <button type="button" class="btn-close" id="request-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="input-container mb-3 d-flex flex-column">
-                                    <label for="home_owner_id">Home Owner<span class="required">*</span></label>
-                                    <select
-                                        name="home_owner_id"
-                                        id="home_owner_id"
-                                        class="form-select"
-                                        wire:model.lazy="requestForm.home_owner_id"
-                                    >
-                                        <option value="" selected disabled>Select home owner</option>
-                                        @forelse ($homeOwners as $data)
-                                            <option value="{{ $data->id }}">{{ $data->last_full_name }}</option>
-                                        @empty
-                                            <option value="" disabled>No available home owner</option>
-                                        @endforelse
-                                    </select>
-
-                                    @error('requestForm.home_owner_id')
-                                    <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('request form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="input-container mb-3 d-flex flex-column" wire:ignore>
-                                    <label for="relation">Relation<span class="required">*</span></label>
-                                    <select
-                                        name="relation"
-                                        id="relation"
-                                        class="form-select w-100 d-block"
-                                        wire:model.lazy="requestForm.relation"
-                                    >
-                                        <option value="" selected disabled>Select relation</option>
-                                        <option value="Cousin">Cousin</option>
-                                        <option value="Uncle">Uncle</option>
-                                        <option value="Sibling">Sibling</option>
-                                        <option value="Mother">Mother</option>
-                                        <option value="Father">Father</option>
-                                        <option value="Grandfather">Grandfather</option>
-                                        <option value="Grandmother">Grandmother</option>
-                                        <option value="Nephew">Nephew</option>
-                                    </select>
-
-                                    @error('requestForm.relation')
-                                    <span class="invalid-feedback" role="alert">
-                                            <strong>{{ str_replace('request form.', '', $message) }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <div class="input-container mb-3">
-                                    <label for="details">Details</label>
-                                    <textarea
-                                        type="text"
-                                        class="form-control form-control--textarea mt-2 @error('requestForm.details') is-invalid @enderror"
-                                        wire:model.lazy="requestForm.details"
-                                        placeholder="Enter request details"></textarea>
-
-                                    @error('requestForm.details')
-                                    <span class="invalid-feedback" role="alert">
-                                                <strong>{{ str_replace('request form.', '', $message) }}</strong>
-                                            </span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary text-white">Send Request</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
     
     <div class="modal fade" id="previewCaptureModal" tabindex="-1" aria-labelledby="previewCaptureModalLabel" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog--md">
@@ -255,19 +153,6 @@
                 let previewCaptureModal = new bootstrap.Modal('#previewCaptureModal', {})
                 let previewCaptureTime = document.getElementById('previewCaptureTime')
                 let previewCaptureType = document.getElementById('previewCaptureType')
-
-                /** Define event listener for request success */
-                Livewire.on('guard.request-success', function(e) {
-                    $('#request-btn-close').click()
-
-                    Swal.fire({
-                        icon: e.icon,
-                        title: e.title,
-                        text: e.message,
-                    }).then(function() {
-                        window.location.reload()
-                    })
-                })
     
                 /** Define view capture for time-in and time-out */
                 $(document).on('click', '.view-time-in, .view-time-out', function() {
@@ -282,21 +167,6 @@
                     previewCaptureType.innerHTML = `${icon} Image`
     
                     previewCaptureModal.show()
-                })
-
-                $('#relation').select2({
-                    dropdownParent: '#addRequestModal',
-                    tags: true,
-                })
-
-                $('#home_owner_id').select2({
-                    dropdownParent: '#addRequestModal'
-                })
-
-                $('#home_owner_id').on('select2:select', function(e) {
-                    const value = e.params.data.id
-
-                    @this.setVisitorFor(value)
                 })
             })
         </script>

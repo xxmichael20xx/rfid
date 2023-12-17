@@ -22,6 +22,7 @@ use App\Http\Livewire\Guard\GuardDashboard;
 use App\Http\Livewire\Guard\Rfid\GuardRfidMonitoring;
 use App\Http\Livewire\Guard\Visitor\GuardVisitorList;
 use App\Http\Livewire\Guard\Visitor\GuardVisitorMonitoring;
+use App\Http\Livewire\Guard\Visitor\GuardVisitorRequest;
 use App\Http\Livewire\Homeowner\HomeownerCreate;
 use App\Http\Livewire\Homeowner\HomeownerUpdate;
 use App\Http\Livewire\Homeowner\HomeownerView;
@@ -142,6 +143,7 @@ Route::middleware('auth.guard')->group(function() {
         Route::name('visitors.')->prefix('visitors')->group(function() {
             Route::get('monitoring', GuardVisitorMonitoring::class)->name('monitoring');
             Route::get('list', GuardVisitorList::class)->name('list');
+            Route::get('requests', GuardVisitorRequest::class)->name('requests');
         });
     });
 });

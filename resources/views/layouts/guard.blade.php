@@ -106,7 +106,7 @@
                                 </span>
 					        </a>
 
-                            <div id="nav-settings-menu" class="submenu nav-settings-menu {{ isRouteShown(['guard.visitors.monitoring', 'guard.visitors.list']) }}" data-bs-parent="#menu-accordion">
+                            <div id="nav-settings-menu" class="submenu nav-settings-menu {{ isRouteShown(['guard.visitors.monitoring', 'guard.visitors.list', 'guard.visitors.requests']) }}" data-bs-parent="#menu-accordion">
 						        <ul class="submenu-list list-unstyled ps-4">
 							        <li class="submenu-item">
                                         <a class="submenu-link text-dark {{ isRouteActive(['guard.visitors.monitoring']) }}" href="{{ route('guard.visitors.monitoring') }}">
@@ -116,6 +116,11 @@
 							        <li class="submenu-item">
                                         <a class="submenu-link text-dark {{ isRouteActive(['guard.visitors.list']) }}" href="{{ route('guard.visitors.list') }}">
                                             <i class="fa fa-list"></i> List
+                                        </a>
+                                    </li>
+							        <li class="submenu-item">
+                                        <a class="submenu-link text-dark {{ isRouteActive(['guard.visitors.requests']) }}" href="{{ route('guard.visitors.requests') }}">
+                                            <i class="fa fa-clipboard"></i> Requests
                                         </a>
                                     </li>
 						        </ul>

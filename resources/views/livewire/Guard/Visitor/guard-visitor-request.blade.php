@@ -1,0 +1,240 @@
+<div>
+    <div class="row g-4 mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h1 class="app-page-title">Visitor Requests</h1>
+
+            <div class="col-auto">
+                <button type="button" class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#addRequestModal">
+                    <i class="fa fa-info-circle"></i> Add Request
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-4">
+                                <p class="card-title h5">List of Requests</p>
+                            </div>
+                            <div class="col-8 text-right" wire:ignore>
+                                <div class="row justify-content-end">
+                                    <form
+                                        class="col-4 d-flex flex-column"
+                                        action=""
+                                        method="GET"
+                                    >
+                                        <div class="input-container input-group me-2">
+                                            <input
+                                                type="search"
+                                                name="search"
+                                                id="search"
+                                                class="form-control"
+                                                placeholder="Search..."
+                                                value="{{ request()->get('search') }}"
+                                                required
+                                            >
+                                            <button class="btn btn-secondary" type="submit" id="search-btn">Search</button>
+                                        </div>
+                                        @if (request()->get('search'))
+                                            <a href="{{ route('guard.visitors.requests') }}" class="text-help mt-2">Clear search/filters</a>
+                                        @endif
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <hr class="theme-separator">
+                            </div>
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table class="table app-table-hover mb-0 text-left visitors-table">
+                                        <thead class="bg-portal-green">
+                                            <tr>
+                                                <th class="cell">Request #</th>
+                                                <th class="cell">For</th>
+                                                <th class="cell">Content</th>
+                                                <th class="cell">Status</th>
+                                                <th class="cell">Declined Reason</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($requests as $request)
+                                                @php
+                                                    $isArchived = (bool) $request->homeOwner->deleted_at;
+                                                    $archivedText = 'text-dark';
+
+                                                    if ($isArchived) {
+                                                        $archivedText = 'text-danger';
+                                                    }
+                                                @endphp
+                                                <tr>
+                                                    <td class="cell">Request #{{ $request->id }}</td>
+                                                    <td class="cell">
+                                                        <span
+                                                            class="fw-bold {{ $archivedText }}"
+                                                            @if ($isArchived)
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-placement="top"
+                                                                data-bs-title="This Home Owner is archived"
+                                                            @endif
+                                                        >
+                                                            {{ $request->homeOwner->last_full_name }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="cell">{{ $request->content }}</td>
+                                                    <td class="cell">{{ ucfirst($request->visitor_request_status) }}</td>
+                                                    <td class="cell">{{ $request->visitor_request_denied_reason }}</td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td class="cell text-center" colspan="5">No result(s)</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addRequestModal" tabindex="-1" aria-labelledby="addRequestModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog">
+            <form method="POST" wire:submit.prevent="submitRequest">
+                @csrf
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="addRequestModalLabel">Visitor - Request</h1>
+                        <button type="button" class="btn-close" id="request-btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container mb-3 d-flex flex-column" wire:ignore>
+                                    <label for="home_owner_id">Home Owner<span class="required">*</span></label>
+                                    <select
+                                        name="home_owner_id"
+                                        id="home_owner_id"
+                                        class="form-select"
+                                        wire:model.lazy="requestForm.home_owner_id"
+                                    >
+                                        <option value="" selected disabled>Select home owner</option>
+                                        @forelse ($homeOwners as $data)
+                                            <option value="{{ $data->id }}">{{ $data->last_full_name }}</option>
+                                        @empty
+                                            <option value="" disabled>No available home owner</option>
+                                        @endforelse
+                                    </select>
+
+                                    @error('requestForm.home_owner_id')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('request form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container mb-3 d-flex flex-column" wire:ignore>
+                                    <label for="relation">Relation<span class="required">*</span></label>
+                                    <select
+                                        name="relation"
+                                        id="relation"
+                                        class="form-select w-100 d-block"
+                                        wire:model.lazy="requestForm.relation"
+                                    >
+                                        <option value="" selected disabled>Select relation</option>
+                                        <option value="Cousin">Cousin</option>
+                                        <option value="Uncle">Uncle</option>
+                                        <option value="Sibling">Sibling</option>
+                                        <option value="Mother">Mother</option>
+                                        <option value="Father">Father</option>
+                                        <option value="Grandfather">Grandfather</option>
+                                        <option value="Grandmother">Grandmother</option>
+                                        <option value="Nephew">Nephew</option>
+                                    </select>
+
+                                    @error('requestForm.relation')
+                                    <span class="invalid-feedback" role="alert">
+                                            <strong>{{ str_replace('request form.', '', $message) }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="input-container mb-3">
+                                    <label for="details">Details</label>
+                                    <textarea
+                                        type="text"
+                                        class="form-control form-control--textarea mt-2 @error('requestForm.details') is-invalid @enderror"
+                                        wire:model.lazy="requestForm.details"
+                                        placeholder="Enter request details"></textarea>
+
+                                    @error('requestForm.details')
+                                    <span class="invalid-feedback" role="alert">
+                                                <strong>{{ str_replace('request form.', '', $message) }}</strong>
+                                            </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary text-white">Send Request</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @section('scripts')
+        <script>
+            $(document).ready(function() {
+                $('#relation').select2({
+                    dropdownParent: '#addRequestModal',
+                    tags: true,
+                })
+
+                $('#home_owner_id').select2({
+                    dropdownParent: '#addRequestModal'
+                })
+
+                $('#home_owner_id').on('select2:select', function(e) {
+                    const value = e.params.data.id
+
+                    @this.setVisitorFor(value)
+                })
+
+                setInterval(function() {
+                    @this.fetchLatest()
+                }, 3000)
+
+                /** Define event listener for request success */
+                Livewire.on('guard.request-success', function(e) {
+                    $('#request-btn-close').click()
+
+                    Swal.fire({
+                        icon: e.icon,
+                        title: e.title,
+                        text: e.message,
+                    }).then(function() {
+                        window.location.reload()
+                    })
+                })
+            })
+        </script>
+    @endsection
+</div>
