@@ -326,9 +326,20 @@
             }
 
             /** Initialize Livewire event listener - show profile update modal */
-            Livewire.on('show.profile-update', () => {
+            Livewire.on('show.profile-update', (e) => {
                 const updateProfileModal = new bootstrap.Modal('#updateProfileModal', {})
                 updateProfileModal.show()
+
+                if (typeof e.relation !== undefined) {
+                    try {
+                        $('#update_relation').select2('destroy')
+                    } catch (error) {
+                        
+                    }
+                    $('#update_relation').select2({
+                        dropdownParent: '#updateProfileModal',
+                    })
+                }
             })
         })
     </script>

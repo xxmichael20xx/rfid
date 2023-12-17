@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('middle_name')->nullable();
             $table->string('date_of_birth');
             $table->string('gender');
-            $table->string('contact_no')->nullable()->unique();
+            $table->string('contact_no')->nullable();
             $table->string('date_joined');
             $table->text('notes')->nullable();
             $table->json('metadata')->nullable();

@@ -1327,8 +1327,16 @@
                     dropdownParent: '#newProfileModal'
                 })
 
-                $('#update_relation').select2({
-                    dropdownParent: '#updateProfileModal'
+                $('#new_relation').on('select2:select', function(e) {
+                    const value = e.params.data.id
+
+                    @this.setNewRelationValue(value)
+                })
+
+                $('#update_relation').on('select2:select', function(e) {
+                    const value = e.params.data.id
+
+                    @this.setUpdateRelationValue(value)
                 })
             })
 

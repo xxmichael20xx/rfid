@@ -128,7 +128,7 @@ class HomeownerView extends Component
             ->only(['id', 'first_name', 'last_name', 'middle_name', 'date_of_birth', 'contact_no', 'relation', 'gender']);
 
         // event an event to show update modal
-        $this->emit('show.profile-update');
+        $this->emit('show.profile-update', ['relation' => $this->updateForm['relation']]);
     }
 
     // update a profile
@@ -428,6 +428,16 @@ class HomeownerView extends Component
     public function clearSearchVehicle()
     {
         return redirect()->route('homeowners.view', ['id' => $this->data->id]);
+    }
+
+    public function setNewRelationValue($value)
+    {
+        $this->createForm['relation'] = $value;
+    }
+
+    public function setUpdateRelationValue($value)
+    {
+        $this->updateForm['relation'] = $value;
     }
 
     public function mount($id)
