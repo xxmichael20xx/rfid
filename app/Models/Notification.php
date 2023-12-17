@@ -22,6 +22,7 @@ class Notification extends Model
         'type',
         'is_visitor_request',
         'visitor_request_status',
+        'visitor_request_denied_reason',
     ];
 
     /**
