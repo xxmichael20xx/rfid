@@ -59,7 +59,7 @@ class ActivityUpdate extends Component
         }
 
         $activity = Activity::find($this->model['id']);
-        $activity->save();
+        $activity->update($this->model);
 
         if ($gallery = data_get($this->model, 'gallery', [])) {
             // delete all gallery images
