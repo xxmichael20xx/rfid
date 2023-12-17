@@ -71,7 +71,7 @@ class Notification extends Model
 
         static::creating(function (Notification $model) {
             $model->sent_by = auth()->user()->id;
-            $model->type = match ($this->title) {
+            $model->type = match ($model->title) {
                 'New Activity' => 'activity',
                 'Visitor Request' => 'visitor-request',
                 'Visitor Entry' => 'visitor-entry',
