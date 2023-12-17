@@ -59,6 +59,7 @@ Route::middleware('auth:sanctum')
                 Route::get('all', [ActivitiesController::class, 'all']);
                 Route::get('today', [ActivitiesController::class, 'today']);
                 Route::get('search/{s}', [ActivitiesController::class, 'search']);
+                Route::get('get/{id}', [ActivitiesController::class, 'get']);
             });
 
         /** API for HomeOwner - Visitor */

@@ -134,4 +134,14 @@ class ActivitiesController extends Controller
             'data' => $activities
         ]);
     }
+
+    public function get($id)
+    {
+        $activity = Activity::with(['galleries'])->find($id);
+
+        return response()->json([
+            'status' => true,
+            'data' => $activity
+        ]);
+    }
 }
