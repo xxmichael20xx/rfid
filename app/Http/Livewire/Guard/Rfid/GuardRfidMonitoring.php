@@ -134,7 +134,7 @@ class GuardRfidMonitoring extends Component
         $this->captureImage = Str::replace('data:image/jpeg;base64,', '', $value);
     }
 
-    protected function fetchLatest()
+    public function fetchLatest()
     {
         $this->monitorings = collect(RfidMonitoring::latest()->get())->map(function($item) {
             // get the rfid data
