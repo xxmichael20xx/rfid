@@ -290,4 +290,9 @@ class ApiHomeOwnerController extends Controller
             'data' => $payments
         ]);
     }
+
+    public function resetSuccess()
+    {
+        return view('reset-success');
+    }
 }

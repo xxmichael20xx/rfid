@@ -21,6 +21,7 @@ class RouteServiceProvider extends ServiceProvider
     public const DASHBOARD = '/dashboard';
     public const GUARD = '/guard/dashboard';
     public const TREASURER = '/payments/expenses';
+    public const USER = '/reset-success';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.

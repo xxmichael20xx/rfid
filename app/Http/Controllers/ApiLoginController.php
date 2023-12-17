@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 
 class ApiLoginController extends Controller
 {
@@ -45,9 +46,14 @@ class ApiLoginController extends Controller
             'email' => ['required', 'exists:users,email']
         ]);
 
+        $status = Password::sendResetLink(
+            request()->only('email')
+        );
+
         return response()->json([
             'success' => true,
-            'message' => 'Email sent'
+            'message' => 'Email sent',
+            'data' => $status
         ]);
     }
 }

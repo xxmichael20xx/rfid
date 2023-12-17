@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActivitiesController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminReportController;
+use App\Http\Controllers\ApiHomeOwnerController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
@@ -180,3 +181,6 @@ Route::middleware('auth.reports')->name('reports.')->prefix('reports')->group(fu
 
 /** RFID Panel - Guests */
 Route::get('rfid-panel', RfidPanel::class)->name('rfid.panel');
+
+/** After forgot password reset */
+Route::get('/reset-success', [ApiHomeOwnerController::class, 'resetSuccess']);
