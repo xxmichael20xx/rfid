@@ -90,6 +90,7 @@ class ActivityUpdate extends Component
     public function mount($id)
     {
         $this->model = Activity::with(['galleries'])->find($id)->toArray();
+        data_set($this->model, 'gallery', []);
         $this->modelTitle = $this->model['title'];
     }
 
