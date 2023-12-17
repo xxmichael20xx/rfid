@@ -326,7 +326,9 @@ class ApiHomeOwnerController extends Controller
         $qrController = new QRController;
 
         $notification = Notification::find($id);
-        $notification->visitor_request_status = 'approved';
+        $notification->update([
+            'visitor_request_status' => 'approved'
+        ]);
 
         return $qrController->downloadAppQr($request);
     }
