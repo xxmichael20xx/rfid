@@ -43,6 +43,7 @@ class Payment extends Model
         'payment_received_by',
         'amount_f',
         'transaction_date_f',
+        'due_date_f',
     ];
 
     public function getBlockLotItemAttribute()
@@ -82,6 +83,11 @@ class Payment extends Model
         }
 
         return Carbon::parse($this->transaction_date)->format('M d, Y');
+    }
+
+    public function getDueDateFAttribute()
+    {
+        return Carbon::parse($this->due_date)->format('M d, Y');
     }
 
     /**
