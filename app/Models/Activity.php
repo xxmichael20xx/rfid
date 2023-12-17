@@ -37,7 +37,8 @@ class Activity extends Model
      * Attributes to be appended
      */
     protected $appends = [
-        'event_date'
+        'event_date',
+        'event_time',
     ];
 
     public function getEventDateAttribute()
@@ -47,6 +48,12 @@ class Activity extends Model
         } else {
             return Carbon::parse($this->start_date)->format('M d') . ' - '. Carbon::parse($this->end_date)->format('M d, Y');
         }
+    }
+
+    public function getEventTimeAttribute()
+    {
+        $timeFormat = 'h:i A';
+        return Carbon::parse($this->start_time)->format($timeFormat) . ' - ' . Carbon::parse($this->end_time)->format($timeFormat);
     }
 
     public function galleries()
