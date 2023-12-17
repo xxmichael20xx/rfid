@@ -389,8 +389,9 @@ class PaymentsList extends Component
     /**
      * Change the block & lots select options
      */
-    public function changeCreatePaymentBiller()
+    public function changeCreatePaymentBiller($value)
     {
+        $this->form['home_owner_id'] = $value;
         $homeOwner = HomeOwner::find($this->form['home_owner_id']);
 
         $this->homeOwnerBlockLots = $homeOwner->block_lot_items;

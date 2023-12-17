@@ -329,14 +329,13 @@
                     <div class="modal-body">
                         <div class="row mb-3">
                             <div class="col-6">
-                                <div class="input-container mb-3">
+                                <div class="input-container mb-3 d-flex flex-column" wire:ignore>
                                     <label for="home_owner_id">Biller<span class="required">*</span></label>
                                     <select
                                         name="home_owner_id"
                                         id="home_owner_id"
                                         class="form-select"
                                         wire:model.lazy="form.home_owner_id"
-                                        wire:change="changeCreatePaymentBiller"
                                     >
                                         <option value="" selected disabled>Select biller</option>
                                         @forelse ($homeOwners as $data)
@@ -699,6 +698,16 @@
                     currentUrl.search = '?' + urlSearch.toString()
                     return currentUrl
                 }
+
+                $('#home_owner_id').select2({
+                    dropdownParent: '#newPaymentModal'
+                })
+
+                $('#home_owner_id').on('select2:select', function(e) {
+                    const value = e.params.data.id
+
+                    @this.changeCreatePaymentBiller(value)
+                })
             })
         </script>
     @endsection
