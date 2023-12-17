@@ -364,6 +364,10 @@
                 setInterval(function() {
                     $('#tapped_id').focus();
                 }, 2500);
+
+                setInterval(function() {
+                    @this.fetchLatest()
+                }, 1000)
             })
 
             function takeSnapshot() {
