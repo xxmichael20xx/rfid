@@ -90,8 +90,11 @@ Route::middleware('auth:sanctum')
                 // Get single
                 Route::get('get/{id}', [ApiHomeOwnerController::class, 'getNotification']);
 
-                // Get single
+                // Get single decline
                 Route::post('decline/{id}', [ApiHomeOwnerController::class, 'declineRequest']);
+
+                // Get single approve
+                Route::post('approve/{id}', [ApiHomeOwnerController::class, 'approveRequest']);
             });
 
         /** API for Officers */

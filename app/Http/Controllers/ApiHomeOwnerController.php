@@ -319,4 +319,12 @@ class ApiHomeOwnerController extends Controller
             'status' => true
         ]);
     }
+
+    public function approveRequest(Request $request, $id)
+    {
+        // save and create
+        $qrController = new QRController;
+
+        return $qrController->downloadAppQr($request);
+    }
 }

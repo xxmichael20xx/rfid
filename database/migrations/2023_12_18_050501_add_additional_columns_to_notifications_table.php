@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('notifications', function (Blueprint $table) {
-            $table->string('visitor_request_denied_reason')->nullable();
+            $table->string('visitor_request_denied_reason')->default('N/A')->nullable();
         });
     }
 
