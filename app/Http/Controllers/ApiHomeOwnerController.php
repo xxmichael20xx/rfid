@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HomeOwner;
 use App\Models\Notification;
+use App\Models\Payment;
 use App\Models\User;
 use App\Models\Visitor;
 use App\Services\QRService;
@@ -282,6 +283,11 @@ class ApiHomeOwnerController extends Controller
         $user = $request->user();
 
         // get the home owner data
-        $homeOwnerId = HomeOwner::with(['payments'])->find($user->home_owner_id);
+        $payments = Payment::where('home_owner_id', $user->home_owner_id)->orderBy('created_at', 'DESC')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $payments
+        ]);
     }
 }
