@@ -325,6 +325,9 @@ class ApiHomeOwnerController extends Controller
         // save and create
         $qrController = new QRController;
 
+        $notification = Notification::find($id);
+        $notification->visitor_request_status = 'approvded';
+
         return $qrController->downloadAppQr($request);
     }
 }
