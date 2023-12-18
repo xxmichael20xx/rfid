@@ -53,7 +53,7 @@ class GuardVisitorRequest extends Component
         $this->requestForm['home_owner_id'] = $value;
     }
 
-    public function fetchLatest()
+    public function fetchLatest($hasEvent = false)
     {
         $requestsQuery = Notification::where('type', 'Visitor Request');
 
@@ -81,6 +81,10 @@ class GuardVisitorRequest extends Component
         $this->requests = $requestsQuery
             ->latest()
             ->get();
+
+        if ($hasEvent) {
+            $this->emit('has.event.refreshed');
+        }
     }
 
     public function mount()

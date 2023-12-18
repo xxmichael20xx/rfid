@@ -219,8 +219,27 @@
                 })
 
                 setInterval(function() {
-                    @this.fetchLatest()
-                }, 3000)
+                    @this.fetchLatest(true)
+                }, 5000)
+
+                Livewire.on('has.event.refreshed', function() {
+                    $('#relation').select2('destroy')
+                    $('#relation').select2({
+                        dropdownParent: '#addRequestModal',
+                        tags: true,
+                    })
+
+                    $('#home_owner_id').select2('destroy')
+                    $('#home_owner_id').select2({
+                        dropdownParent: '#addRequestModal'
+                    })
+
+                    $('#home_owner_id').on('select2:select', function(e) {
+                        const value = e.params.data.id
+
+                        @this.setVisitorFor(value)
+                    })
+                })
 
                 /** Define event listener for request success */
                 Livewire.on('guard.request-success', function(e) {
