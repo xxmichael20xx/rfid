@@ -2,7 +2,7 @@
     <div class="row g-4 mb-4">
         <div class="col-12">
             <div class="alert alert-success d-flex flex-column w-100 align-items-center" wire:ignore>
-                <span class="display-4 text-dark">Visitors Monitoring</span>
+                <span class="display-4 text-dark">Visitors Panel</span>
                 <span id="datetime" class="display-2 text-dark"></span>
             </div>
         </div>

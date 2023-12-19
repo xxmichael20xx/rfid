@@ -1,15 +1,26 @@
-<div>
-    <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
-        <div class="alert alert-primary text-center w-50 pt-5 pb-5" role="alert">
-            <p class="h3 text-dark">Scan your RFID</p>
-            <input
-                type="text"
-                class="form-control py-5 px-3"
-                id="tapped_id"
-                name="tapped_id"
-                style="font-size: 2em;"
-                autofocus
-            >
+<div class="container">
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="alert alert-success d-flex flex-column w-100 align-items-center" wire:ignore>
+                <span class="display-4 text-dark">RFID Panel</span>
+                <span id="datetime" class="display-2 text-dark"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6 mx-auto">
+            <div class="alert alert-primary text-center pt-5 pb-5" role="alert">
+                <p class="h3 text-dark">Scan your RFID</p>
+                <input
+                    type="text"
+                    class="form-control py-5 px-3"
+                    id="tapped_id"
+                    name="tapped_id"
+                    style="font-size: 2em;"
+                    autofocus
+                >
+            </div>
         </div>
     </div>
 
@@ -219,6 +230,30 @@
 
             // Update the date and time every second
             setInterval(updateDateTime, 1000);
+
+            function updateDateTimePanel() {
+                const dateTimeElement = document.getElementById('datetime')
+                const now = new Date()
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                    hour12: true
+                };
+
+                const dateTimeString = now.toLocaleString('en-US', options)
+                dateTimeElement.innerText = dateTimeString
+            }
+
+            // Initial call to display the date and time
+            updateDateTimePanel();
+
+            // Update the date and time every second
+            setInterval(updateDateTimePanel, 1000);
         </script>
     @endsection
 </div>
