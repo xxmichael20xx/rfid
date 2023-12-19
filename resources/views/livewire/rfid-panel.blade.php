@@ -125,6 +125,7 @@
                         showConfirmButton: false,
                         showCancelButton: false,
                         allowOutsideClick: false,
+                        html: `<img src="/uploads/${e.capture}" alt="preview-capture-in" class="img-fluid">`,
                     })
                 })
 
@@ -140,6 +141,7 @@
                         showConfirmButton: false,
                         showCancelButton: false,
                         allowOutsideClick: false,
+                        html: `<img src="/uploads/${e.capture}" alt="preview-capture-out" class="img-fluid">`,
                     })
                 })
             })

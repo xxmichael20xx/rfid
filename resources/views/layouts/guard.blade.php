@@ -108,11 +108,11 @@
 
                             <div id="nav-settings-menu" class="submenu nav-settings-menu {{ isRouteShown(['guard.visitors.monitoring', 'guard.visitors.list', 'guard.visitors.requests']) }}" data-bs-parent="#menu-accordion">
 						        <ul class="submenu-list list-unstyled ps-4">
-							        <li class="submenu-item">
+							        {{-- <li class="submenu-item">
                                         <a class="submenu-link text-dark {{ isRouteActive(['guard.visitors.monitoring']) }}" href="{{ route('guard.visitors.monitoring') }}">
                                             <i class="fa fa-eye"></i> Monitoring
                                         </a>
-                                    </li>
+                                    </li> --}}
 							        <li class="submenu-item">
                                         <a class="submenu-link text-dark {{ isRouteActive(['guard.visitors.list']) }}" href="{{ route('guard.visitors.list') }}">
                                             <i class="fa fa-list"></i> List

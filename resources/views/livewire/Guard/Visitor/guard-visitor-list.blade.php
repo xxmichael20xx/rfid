@@ -110,7 +110,20 @@
                                                                 data-time="{{ $visitor['time_in'] }}"
                                                                 data-img="{{ $visitor['capture_in'] }}"
                                                             >
-                                                                <i class="fa fa-image"></i> Capture
+                                                                <i class="fa fa-image"></i> View Capture In
+                                                            </button>
+                                                        @endif
+
+                                                        @if ($visitor['capture_out'])
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-success text-white view-time-out"
+                                                                data-type="Time Out"
+                                                                data-date="{{ \Carbon\Carbon::parse($visitor['time_out'])->format('M d, Y') }}"
+                                                                data-time="{{ $visitor['time_out'] }}"
+                                                                data-img="{{ $visitor['capture_out'] }}"
+                                                            >
+                                                                <i class="fa fa-image"></i> View Capture Out
                                                             </button>
                                                         @endif
                                                     </td>
@@ -160,7 +173,7 @@
                     const image = $(this).data('img')
                     const date = $(this).data('date')
                     const time = $(this).data('time')
-                    let icon = `<i class="fa fa-image"></i> Captured`
+                    let icon = `<i class="fa fa-image"></i> ${type}`
     
                     previewCapture.setAttribute('src', image)
                     previewCaptureTime.innerHTML = `${date} @ ${time}`

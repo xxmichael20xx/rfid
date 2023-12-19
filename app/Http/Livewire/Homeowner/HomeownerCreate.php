@@ -79,7 +79,7 @@ class HomeownerCreate extends Component
             'form.block_lots' => [new BlockLots],
             'form.contact_no' => [
                 'required',
-                'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/',
+                'regex:/^(\\+639|09)\\d{9}$|^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$/',
                 Rule::unique('home_owners', 'contact_no')
             ],
             'form.email' => ['required', 'email', Rule::unique('home_owners', 'email')],

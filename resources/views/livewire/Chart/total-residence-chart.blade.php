@@ -18,6 +18,13 @@
                             data: @json($rows),
                             backgroundColor: @json($colors)
                         }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
                     }
                 }
             )

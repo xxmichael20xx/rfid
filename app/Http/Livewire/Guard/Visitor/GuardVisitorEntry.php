@@ -45,6 +45,8 @@ class GuardVisitorEntry extends Component
     public function updateCapture($value)
     {
         $this->captureImage = Str::replace('data:image/jpeg;base64,', '', $value);
+
+        $this->logVisitoEntry();
     }
 
     public function uploadCapture()
@@ -94,7 +96,9 @@ class GuardVisitorEntry extends Component
         }
 
         if ($isTimeIn || $isTimeOut) {
-            $this->emit('visitor.entry.success');
+            $this->emit('visitor.entry.success', [
+                'capture' => $captureUrl
+            ]);
         }
     }
 

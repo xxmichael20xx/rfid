@@ -225,7 +225,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="previewCaptureModal" tabindex="-1" aria-labelledby="previewCaptureModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal fade" id="previewCaptureModal" tabindex="-1" aria-labelledby="previewCaptureModalLabel" aria-hidden="true" wire:ignore>
             <div class="modal-dialog modal-dialog--md">
                 <div class="modal-content">
                     <div class="modal-body">

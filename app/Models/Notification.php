@@ -71,7 +71,7 @@ class Notification extends Model
         parent::boot();
 
         static::creating(function (Notification $model) {
-            $model->sent_by = auth()->user()->id;
+            $model->sent_by = auth()->check() ? auth()->user()->id : 1;
             $model->type = match ($model->title) {
                 'New Activity' => 'Activity',
                 'Visitor Request' => 'Visitor Request',

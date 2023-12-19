@@ -9,21 +9,20 @@
             </div>
         </div>
     </div>
-    <div class="row g-4 mb-4">
-        <div class="col-8">
-            <div class="card shadow-lg border-0">
-                <div class="card-body">
-                    <div class="container">
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <p class="card-title h5">Form details</p>
-                                <hr class="theme-separator">
+    <form method="POST" wire:submit.prevent="update" class="col-12">
+        @csrf
+        <div class="row g-4 mb-4">
+            <div class="col-6">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <p class="card-title h5">Form details</p>
+                                    <hr class="theme-separator">
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <form method="POST" wire:submit.prevent="update" class="col-12">
-                                @csrf
-            
+                            <div class="row">
                                 <div class="row mb-3">
                                     <div class="col-6">
                                         <div class="input-container mb-3">
@@ -158,98 +157,128 @@
 
                                 <div class="row">
                                     <div class="col-12">
-                                        <div class="input-container mb-2">
-                                            <label for="gallery" id="galleryTriggerLabel">Images</label>
-                                            <input
-                                                id="gallery"
-                                                name="gallery"
-                                                type="file"
-                                                class="form-control @error('model.gallery') is-invalid @enderror d-none"
-                                                wire:model="model.gallery"
-                                                accept="image/*"
-                                                multiple
-                                            >
-                
-                                            @error('model.gallery')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                            @enderror
+                                        <a href="{{ route('activities.list') }}" class="btn btn-danger text-white">Cancel</a>
+                                        <button type="submit" class="btn btn-primary text-white">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <p class="card-title h5">Gallery</p>
+                                    <hr class="theme-separator">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="input-container mb-2">
+                                        <label for="gallery" id="galleryTriggerLabel">Images</label>
+                                        <input
+                                            id="gallery"
+                                            name="gallery"
+                                            type="file"
+                                            class="form-control @error('model.gallery') is-invalid @enderror d-none"
+                                            wire:model="model.gallery"
+                                            accept="image/*"
+                                            multiple
+                                        >
+            
+                                        @error('model.gallery')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
 
-                                            <button type="button" class="btn btn-secondary d-block" id="galleryTrigger">Select image(s)</button>
-                                            <small class="text-help">Note: Upon uploading new images, the existing gallery will be deleted!</small>
-                                        </div>
+                                        <button type="button" class="btn btn-secondary d-block" id="galleryTrigger">Select image(s)</button>
+                                        <small class="text-help">Note: Upon uploading new images, the existing gallery will be deleted!</small>
                                     </div>
                                 </div>
 
-                                @if (count($model['galleries']) > 0)
-                                    <div class="row mb-3 mt-5">
-                                        <div class="col-12">
-                                            <p class="card-title h5">Gallery</p>
-                                            <hr class="theme-separator">
-                                        </div>
+                                @if ($model['gallery'])
+                                    <div class="col-12 mt-3">
+                                        <p class="h5 mb-0">Selected Images</p>
 
-                                        <div class="col-12">
-                                            <div
-                                                id="activityGallery"
-                                                class="carousel slide"
-                                                data-bs-ride="carousel"
-                                                data-bs-infinite="true"
-                                                style="max-height: 500px;"
-                                            >
-                                                <div class="carousel-indicators">
-                                                    @php $btnsCount = 0; @endphp
-                                                    @foreach ($model['galleries'] as $galleryKey => $galleryImage)
-                                                        <button
-                                                            type="button"
-                                                            data-bs-target="#activityGallery"
-                                                            data-bs-slide-to="{{ $galleryKey }}"
-                                                            class="{{ ($btnsCount) == 0 ? 'active' : '' }}"
-                                                            aria-current="true"
-                                                            aria-label="Slide {{ $galleryKey }}"
-                                                        ></button>
-                                                        @php $btnsCount = $btnsCount + 1; @endphp
-                                                    @endforeach
-                                                </div>
-                                                <div class="carousel-inner">
-                                                    @php $imagesCount = 0; @endphp
-                                                    @foreach ($model['galleries'] as $galleryKey => $galleryImage)
-                                                        <div class="carousel-item text-center {{ ($imagesCount) == 0 ? 'active' : '' }}">
-                                                            <img
-                                                                src="{{ $galleryImage['image'] }}"
-                                                                class="img-fluid key-{{ $imagesCount }}"
-                                                                style="max-height: 500px;"
-                                                            />
-                                                        </div>
-                                                        @php $imagesCount = $imagesCount + 1; @endphp
-                                                    @endforeach
-                                                </div>
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#activityGallery" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                    <span class="visually-hidden">Previous</span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#activityGallery" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                    <span class="visually-hidden">Next</span>
-                                                </button>
-                                            </div>
+                                        <div class="row">
+                                            @foreach ($model['gallery'] as $gallery)
+                                                <img
+                                                    src="{{ $gallery->temporaryUrl() }}"
+                                                    alt="Image Preview"
+                                                    class="img-fluid mb-3 rounded shadow col-6"
+                                                    style="height: 250px;"
+                                                />
+                                            @endforeach
                                         </div>
                                     </div>
                                 @endif
+                            </div>
 
-                                <div class="row">
-                                    <div class="col-12 text-end">
-                                        <a href="{{ route('activities.list') }}" class="btn btn-danger text-white">Cancel</a>
-                                        <button type="submit" class="btn btn-primary text-white">Update</button>
+                            @if (count($model['galleries']) > 0)
+                                <div class="row mb-3 mt-5">
+                                    <div class="col-12">
+                                        <p class="card-title h5">Gallery Images</p>
+                                        <hr class="theme-separator">
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div
+                                            id="activityGallery"
+                                            class="carousel slide"
+                                            data-bs-ride="carousel"
+                                            data-bs-infinite="true"
+                                            style="max-height: 500px;"
+                                        >
+                                            <div class="carousel-indicators">
+                                                @php $btnsCount = 0; @endphp
+                                                @foreach ($model['galleries'] as $galleryKey => $galleryImage)
+                                                    <button
+                                                        type="button"
+                                                        data-bs-target="#activityGallery"
+                                                        data-bs-slide-to="{{ $galleryKey }}"
+                                                        class="{{ ($btnsCount) == 0 ? 'active' : '' }}"
+                                                        aria-current="true"
+                                                        aria-label="Slide {{ $galleryKey }}"
+                                                    ></button>
+                                                    @php $btnsCount = $btnsCount + 1; @endphp
+                                                @endforeach
+                                            </div>
+                                            <div class="carousel-inner">
+                                                @php $imagesCount = 0; @endphp
+                                                @foreach ($model['galleries'] as $galleryKey => $galleryImage)
+                                                    <div class="carousel-item text-center {{ ($imagesCount) == 0 ? 'active' : '' }}">
+                                                        <img
+                                                            src="{{ $galleryImage['image'] }}"
+                                                            class="img-fluid key-{{ $imagesCount }}"
+                                                            style="max-height: 500px;"
+                                                        />
+                                                    </div>
+                                                    @php $imagesCount = $imagesCount + 1; @endphp
+                                                @endforeach
+                                            </div>
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#activityGallery" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" data-bs-target="#activityGallery" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </form>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 
     @section('scripts')
         <script>

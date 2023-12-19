@@ -254,23 +254,21 @@ class PaymentsList extends Component
         $paymentProceed = true;
 
         // If the pay form is marked as paid, then set the paid data
-        if ($this->payForm['is_paid']) {
-            $paymentUpdateData = array_merge($paymentUpdateData, [
-                'transaction_date' => now(),
-                'date_paid' => now(),
-                'status' => 'paid'
+        $paymentUpdateData = array_merge($paymentUpdateData, [
+            'transaction_date' => now(),
+            'date_paid' => now(),
+            'status' => 'paid'
+        ]);
+
+        if ((int) $payment->amount > $this->payForm['amount']) {
+            $paymentProceed = false;
+
+            $this->emit('show.dialog', [
+                'icon' => 'warning',
+                'title' => 'Insufficient Amount',
+                'message' => 'The payment amount is insufficient. Must not be less than ' . number_format($payment->amount),
+                'reload' => false
             ]);
-
-            if ((int) $payment->amount > $this->payForm['amount']) {
-                $paymentProceed = false;
-
-                $this->emit('show.dialog', [
-                    'icon' => 'warning',
-                    'title' => 'Insufficient Amount',
-                    'message' => 'The payment amount is insufficient. Must not be less than ' . number_format($payment->amount),
-                    'reload' => false
-                ]);
-            }
         }
 
         if ($paymentProceed) {
@@ -278,10 +276,8 @@ class PaymentsList extends Component
             data_set($paymentUpdateData, 'received_by', auth()->user()->id);
             $payment->update($paymentUpdateData);
 
-            if ($this->payForm['is_paid']) {
-                // Create new payment if payment is recurring
-                $this->processRecurringPayment($payment);
-            }
+            // Create new payment if payment is recurring
+            $this->processRecurringPayment($payment);
 
             // Emit a new event for the notification
             $this->emit('show.dialog', [
@@ -302,7 +298,7 @@ class PaymentsList extends Component
         $dueDate = Carbon::parse($payment->due_date);
         $newDueDate = $dueDate->copy();
 
-        $newDueDate->addMonthsNoOverflow()->day($payment->recurring_date);
+        $newDueDate->addMonthsNoOverflow()->day(now()->day);
 
         // Set and modify the payment data
         $newPaymentData = $payment->toArray();
@@ -312,7 +308,8 @@ class PaymentsList extends Component
             'date_paid' => null,
             'due_date' => $newDueDate->toDateTimeString(),
             'reference' => null,
-            'status' => 'pending'
+            'status' => 'pending',
+            'received_by' => null
         ];
 
         // Iterate through the update array and overwrite values in the original array
@@ -428,7 +425,7 @@ class PaymentsList extends Component
         $this->form = [
             'home_owner_id' => $defaultHomeOwnerId,
             'block_lot' => $defaultBlockLot,
-            'amount' => 0,
+            'amount' => 800,
             'due_date' => Carbon::now()->format('Y-m-d'),
             'reference' => '',
             'is_paid' => false,
@@ -450,19 +447,19 @@ class PaymentsList extends Component
 
         // Set the search criteria
         $search = request()->get('search');
-        $type = request()->get('type');
+        $status = request()->get('status');
         $mode = request()->get('mode');
         $month = request()->get('month');
         $year = request()->get('year');
 
         $this->filters = [
-            'type' => 'all',
+            'status' => 'all',
             'mode' => 'all',
             'month' => 'all',
             'year' => 'all',
         ];
 
-        if ($search || $type || $mode || $month || $year) {
+        if ($search || $status || $mode || $month || $year) {
             $this->hasSearchFilter = true;
 
             // Initialize the initial query
@@ -490,9 +487,11 @@ class PaymentsList extends Component
             }            
 
             // Check if type query exists
-            if ($type) {
-                $this->filters['type'] = $type;
-                $paymentsQuery->where('type_id', $type);
+            if ($status) {
+                $inStatus = $status == 'all' ? ['pending', 'paid', 'failed'] : [$status];
+
+                $this->filters['status'] = $status;
+                $paymentsQuery->whereIn('status', $inStatus);
             }
 
             // Check if mode query exists

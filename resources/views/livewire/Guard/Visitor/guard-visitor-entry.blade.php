@@ -1,27 +1,23 @@
 <div>
     @if($data)
         <div class="modal fade" id="showVisitorEntryModal" tabindex="-1" aria-labelledby="showVisitorEntryModalLabel" aria-hidden="true" wire:ignore.self>
-            <div class="modal-dialog modal-dialog--lg">
+            <div class="modal-dialog modal-dialog--md">
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col">
-                                <div class="row mb-4">
-                                    <div class="col text-center">
-                                        <h2 class="card-title text-dark">Visitor Entry Recorded!</h2>
+                            <div class="col-12">
+                                <div class="col" wire:ignore>
+                                    <div class="row" id="overlay">
+                                        <div class="col-md-12 captureCanvas text-center">
+                                            <div id="my_camera"></div>
+                                        </div>
                                     </div>
                                 </div>
-    
-                                <div class="row">
-                                    <div class="col-6 mx-auto text-center">
-                                        @if ($data?->profile)
-                                            <img
-                                                src="{{ $data?->profile }}"
-                                                alt="Home-Owner-Avatar"
-                                                class="img-fluid mb-3 rounded shadow"
-                                                style="width: 250px;"
-                                            />
-                                        @endif
+                            </div>
+                            <div class="col-12">
+                                <div class="row mb-4">
+                                    <div class="col-12 text-center">
+                                        <p class="h2 text-center text-dark" id="visitor-panel-today"></p>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -31,97 +27,15 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6">
+                                    <div class="col-6 text-center">
                                         <p class="text-dark"><b>Visitor:</b> {{ $visitor?->full_name }}</p>
                                     </div>
-                                    <div class="col-6">
+                                    <div class="col-6 text-center">
                                         <p class="text-dark"><b>Contact Number:</b> {{ $data?->contact_no }}</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col">
-                                <div class="col" wire:ignore>
-                                    <div class="row">
-                                        <div class="col-md-12 captureCanvas text-center">
-                                            <div id="my_camera"></div>
-                                            <button type="button" onClick="takeSnapshot()" class="btn btn-primary text-white mt-2">
-                                                <i class="fa fa-camera"></i> Take Snapshot
-                                            </button>
-                                        </div>
-                                        <div class="col-md-12 d-none captureValid text-center">
-                                            <div id="results"></div>
-                                            <button class="btn btn-primary text-white mt-2" onclick="approveEntry()">
-                                                <i class="fa fa-save"></i> Save Entry
-                                            </button>
-                                            <button type="button" class="btn btn-secondary text-white mt-2" onclick="restartSnapshot()">
-                                                <i class="fa fa-undo"></i> Retry
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-
-                        @if (count($lotsCarousels) > 0)
-                            <div class="row">
-                                <div class="col-6 mx-auto">
-                                    <div class="row mb-3 mt-5">
-                                        <div class="col-12">
-                                            <p class="card-title h5">Block & Lots Mapping</p>
-                                            <hr class="theme-separator">
-                                        </div>
-    
-                                        <div class="col-12">
-                                            <div
-                                                id="lotCarousels"
-                                                class="carousel slide"
-                                                data-bs-ride="true"
-                                                style="max-height: 500px;"
-                                            >
-                                                <div class="carousel-indicators">
-                                                    @php $btnsCount = 0; @endphp
-                                                    @foreach ($lotsCarousels as $lotsCarouselKey => $lotsCarousel)
-                                                        <button
-                                                            type="button"
-                                                            data-bs-target="#lotCarousels"
-                                                            data-bs-slide-to="{{ $lotsCarouselKey }}"
-                                                            class="{{ ($btnsCount) == 0 ? 'active' : '' }}"
-                                                            aria-current="true"
-                                                            aria-label="Slide {{ $lotsCarouselKey }}"
-                                                        ></button>
-                                                        @php $btnsCount = $btnsCount + 1; @endphp
-                                                    @endforeach
-                                                </div>
-                                                <div class="carousel-inner">
-                                                    @php $imagesCount = 0; @endphp
-                                                    @foreach ($lotsCarousels as $lotsCarouselKey => $lotsCarousel)
-                                                        <div class="carousel-item text-center {{ ($imagesCount) == 0 ? 'active' : '' }}">
-                                                            <img
-                                                                src="{{ $lotsCarousel['image'] }}"
-                                                                class="img-fluid key-{{ $imagesCount }}"
-                                                                style="max-height: 500px;"
-                                                            />
-                                                            <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0, 0, 0, .60);">
-                                                                <h5 class="text-white">{{ $lotsCarousel['name'] }}</h5>
-                                                            </div>
-                                                        </div>
-                                                        @php $imagesCount = $imagesCount + 1; @endphp
-                                                    @endforeach
-                                                </div>
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#lotCarousels" data-bs-slide="prev">
-                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                    <span class="visually-hidden">Previous</span>
-                                                </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#lotCarousels" data-bs-slide="next">
-                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                    <span class="visually-hidden">Next</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -143,6 +57,20 @@
         .carousel-item .carousel-caption h5 {
             margin: 0;
         }
+
+        #overlay .countdown {
+            text-align: center;
+            color: white;
+            background-color: rgba(0, 0, 0, .5);
+            width: fit-content;
+            border-radius: 6px;
+            position: absolute;
+            top: 1em;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3em;
+            padding: .5rem 1rem;
+        }
     </style>
 
     @vite(['resources/js/app.js'])
@@ -161,58 +89,113 @@
                 })
                 showVisitorEntryModal.show()
 
+                // Initial call to display the date and time
+                updateDateTime();
+
+                // Update the date and time every second
+                setInterval(updateDateTime, 1000);
+
+                setTimeout(countdownSnapshot, 1000);
+
                 /** Image captures */
                 setTimeout(function() {
                     restartSnapshot()
                 }, 500);
             })
 
-            Livewire.on('visitor.entry.success', function() {
-                restartSnapshot()
+            Livewire.on('visitor.entry.success', function(e) {
+                // restartSnapshot()
 
                 showVisitorEntryModal.hide()
-            })
-        })
 
-        function takeSnapshot() {
-            const captureCanvas = $('.captureCanvas')
-            const captureValid = $('.captureValid')
-            captureCanvas.addClass('d-none')
-            captureValid.removeClass('d-none')
-
-            Webcam.snap(function(data_uri) {
-                document.getElementById('results').innerHTML = `<img src="${data_uri}" alt="captured-image" class="img-fluid w-100 rounded" />`
-                Webcam.reset()
-
-                @this.updateCapture(data_uri)
-            })
-        }
-
-        function restartSnapshot() {
-            const captureCanvas = $('.captureCanvas')
-            const captureValid = $('.captureValid')
-            captureCanvas.removeClass('d-none')
-            captureValid.addClass('d-none')
-
-            Webcam.set({
-                width: 490,
-                height: 350,
-                image_format: 'jpeg',
-                jpeg_quality: 90
-            })
-            Webcam.attach('#my_camera')
-        }
-
-        function approveEntry() {
-            @this.logVisitoEntry()
-
-            setTimeout(() => {
-                $('#html5-qrcode-button-camera-permission').trigger('click')
                 Swal.fire({
                     icon: 'success',
-                    title: 'Entry logged'
+                    title: 'Welcome to Glenn Ville!',
+                    timer: 5000,
+                    showConfirmButton: false,
+                    showCancelButton: false,
+                    allowOutsideClick: false,
+                    html: `<img src="/uploads/${e.capture}" alt="preview-capture-in" class="img-fluid">`,
                 })
-            }, 500);
-        }
+            })
+
+            function updateDateTime() {
+                const dateTimeElement = document.getElementById('visitor-panel-today')
+                const now = new Date()
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                    hour12: true
+                };
+
+                const dateTimeString = now.toLocaleString('en-US', options)
+                dateTimeElement.innerText = dateTimeString
+            }
+
+            function countdownSnapshot() {
+                let overlayElement = document.getElementById("overlay");
+
+                // Create countdown element
+                let countdownElement = document.createElement("div");
+                countdownElement.className = "countdown";
+                overlayElement.appendChild(countdownElement);
+
+                let countdownValue = 5
+
+                function updateCountdown() {
+                    countdownElement.textContent = countdownValue
+
+                    if (countdownValue <= 0) {
+                        takeSnapshot()
+                    } else {
+                        countdownValue--;
+                        setTimeout(updateCountdown, 1000)
+                    }
+                }
+
+                // Start the countdown
+                updateCountdown();
+            }
+
+            function approveEntry() {
+                @this.logVisitoEntry()
+
+                setTimeout(() => {
+                    $('#html5-qrcode-button-camera-permission').trigger('click')
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Entry logged'
+                    })
+                }, 500);
+            }
+
+            function takeSnapshot() {
+                Webcam.snap(function(data_uri) {
+                    Webcam.reset()
+
+                    @this.updateCapture(data_uri)
+                })
+            }
+
+            function restartSnapshot() {
+                const captureCanvas = $('.captureCanvas')
+                const captureValid = $('.captureValid')
+                captureCanvas.removeClass('d-none')
+                captureValid.addClass('d-none')
+
+                Webcam.set({
+                    width: 490,
+                    height: 350,
+                    image_format: 'jpeg',
+                    jpeg_quality: 90
+                })
+                Webcam.attach('#my_camera')
+            }
+        })
     </script>
 </div>

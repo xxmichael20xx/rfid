@@ -36,6 +36,7 @@ use App\Http\Livewire\Rfid\RfidMonitoring;
 use App\Http\Livewire\RfidPanel;
 use App\Http\Livewire\UserManagement\UserManagement;
 use App\Http\Livewire\Visitor\VisitorMonitoring;
+use App\Http\Livewire\VisitorPanel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -183,6 +184,9 @@ Route::middleware('auth.reports')->name('reports.')->prefix('reports')->group(fu
 
 /** RFID Panel - Guests */
 Route::get('rfid-panel', RfidPanel::class)->name('rfid.panel');
+
+/** Visitor Panel - Guests */
+Route::get('visitor-panel', VisitorPanel::class)->name('visitor.panel');
 
 /** After forgot password reset */
 Route::get('/reset-success', [ApiHomeOwnerController::class, 'resetSuccess']);

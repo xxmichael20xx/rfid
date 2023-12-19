@@ -93,26 +93,25 @@
                                                 <div class="row">
                                                     <div class="col-12 mb-3">
                                                         <div class="input-container" wire:ignore.self>
-                                                            <label for="filter_by_type">Filter by type</label>
+                                                            <label for="filter_by_status">Filter by status</label>
                                                             <select
-                                                                name="filter_by_type"
-                                                                id="filter_by_type"
+                                                                name="filter_by_status"
+                                                                id="filter_by_status"
                                                                 class="form-select fitler-change"
-                                                                wire:model.lazy="filters.type">
+                                                                wire:model.lazy="filters.status">
                                                                 <option value="all" disabled>Select filter</option>
-                                                                @foreach ($paymentTypes as $paymentType)
-                                                                    <option value="{{ $paymentType->id }}">{{ $paymentType->type }}</option>
-                                                                @endforeach
+                                                                <option value="pending">Pending</option>
+                                                                <option value="paid">Paid</option>
                                                             </select>
                                                             @php
                                                                 $resetFilterShow = 'display: none;';
-                                                                if ($filters['type'] !== 'all') {
+                                                                if ($filters['status'] !== 'all') {
                                                                     $resetFilterShow = 'display: block;';
                                                                 }
                                                             @endphp
                                                             <span
                                                                 class="text-help text-success reset-filter fw-bold clickable"
-                                                                data-id="filter_by_type"
+                                                                data-id="filter_by_status"
                                                                 style="{{ $resetFilterShow }}"
                                                             >
                                                                 Reset filter
@@ -288,7 +287,7 @@
                                                         @endif
                                                     </td>
                                                     <td class="cell">
-                                                        @if ($data->status !== 'paid')
+                                                        @if ($data->status !== 'paid' && $data->status !== 'failed')
                                                             <button type="button" class="btn btn-success text-white px-2 manage-payment" data-id="{{ $data->id }}">
                                                                 <i class="fa fa-money-bill"></i> Manage
                                                             </button>
@@ -538,18 +537,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-12">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="pay_form_is_paid" wire:model.lazy="payForm.is_paid">
                                     <label class="form-check-label text-dark" for="pay_form_is_paid">Mark as paid</label>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary text-white">Save</button>
+                        <button type="submit" class="btn btn-primary text-white">Mark as paid</button>
                     </div>
                 </div>
             </form>
@@ -613,12 +612,12 @@
 
                 /** Define click event on filter off-canvas/drawer */
                 $(document).on('click', '#filter-payments', function() {
-                    const type = $('#filter_by_type').val() || 'all'
+                    const status = $('#filter_by_status').val() || 'all'
                     const mode = $('#filter_by_mode').val() || 'all'
                     const month = $('#filter_by_month').val() || 'all'
                     const year = $('#filter_by_year').val() || 'all'
                     const filters = [
-                        {key: 'type', value: type},
+                        {key: 'status', value: status},
                         {key: 'mode', value: mode},
                         {key: 'month', value: month},
                         {key: 'year', value: year},

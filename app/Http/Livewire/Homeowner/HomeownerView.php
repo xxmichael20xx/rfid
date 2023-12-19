@@ -67,7 +67,7 @@ class HomeownerView extends Component
             'createForm.date_of_birth' => ['required', 'date', new NotFutureDate],
             'createForm.contact_no' => [
                 'nullable',
-                'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/',
+                'regex:/^(\\+639|09)\\d{9}$|^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$/',
                 Rule::unique('profiles', 'contact_no')
             ],
             'createForm.relation' => ['required']
@@ -143,7 +143,7 @@ class HomeownerView extends Component
             'updateForm.gender' => ['required'],
             'updateForm.contact_no' => [
                 'nullable',
-                'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/',
+                'regex:/^(\\+639|09)\\d{9}$|^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$/',
                 Rule::unique('profiles', 'contact_no')->ignore($this->updateForm['id'])
             ],
             'updateForm.relation' => ['required']

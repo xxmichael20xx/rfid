@@ -2,7 +2,7 @@
     <div class="card-body">
         <div class="container">
             <div class="row p-5 pt-2 position-relative">
-                @if ($hasExport)
+                {{-- @if ($hasExport)
                     <button
                         type="button"
                         class="btn btn-success text-white w-auto position-absolute top-0 end-0"
@@ -10,7 +10,7 @@
                     >
                         <i class="fa fa-cloud-download"></i> Export
                     </button>
-                @endif
+                @endif --}}
 
                 <label for="visitor-chart-change" class="lead fw-bold mb-2 text-center">Visitors Chart</label>
                 <div class="col-2 mx-auto">

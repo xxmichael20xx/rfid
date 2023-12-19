@@ -47,7 +47,7 @@ class UserManagement extends Component
             'createForm.role' => ['required'],
             'createForm.contact_phone' => [
                 'required',
-                'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/',
+                'regex:/^(\\+639|09)\\d{9}$|^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$/',
                 Rule::unique('users', 'contact_phone')
             ],
             'createForm.contact_email' => ['required', 'email', Rule::unique('users', 'contact_email')],
@@ -124,7 +124,7 @@ class UserManagement extends Component
             'updateForm.role' => ['required'],
             'updateForm.contact_phone' => [
                 'required',
-                'regex:/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/',
+                'regex:/^(\\+639|09)\\d{9}$|^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$/',
                 Rule::unique('users', 'contact_phone')->ignore(data_get($this->updateForm, 'id'))
             ],
             'updateForm.contact_email' => [

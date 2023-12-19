@@ -26,6 +26,7 @@ class Visitor extends Model
         'notes',
         'generated_at',
         'capture_in',
+        'capture_out',
         'metadata'
     ];
 
@@ -69,6 +70,13 @@ class Visitor extends Model
     {
         return Attribute::make(
             get: fn (?string $value) => asset('uploads/' . $value)
+        );
+    }
+
+    protected function captureOut(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value) => $value ? asset('uploads/' . $value) : null
         );
     }
 }

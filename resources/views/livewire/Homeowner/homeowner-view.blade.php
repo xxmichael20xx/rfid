@@ -2,59 +2,68 @@
     <div class="row mb-4">
         <div class="col-12 d-flex justify-content-between align-items-center">
             <h1 class="app-page-title">Manage Home Owner Details</h1>
-            <div class="col-auto">
-                <a href="{{ route('homeowners.list') }}" class="btn btn-success text-white">
-                    <i class="fa fa-hand-point-left"></i> Go back
-                </a>
-                <a href="{{ route('homeowners.update', ['id' => $data->id]) }}" class="btn btn-info text-white p-2 ms-2">
-                    <i class="fa fa-pencil"></i> Update
-                </a>
-            </div>
         </div>
     </div>
     <div class="row mb-4">
-        <div class="col-6">
+        <div class="col-12">
             <div class="card shadow border-0">
                 <div class="card-body">
                     <div class="container">
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                @if ($data->profile)
-                                    <img
-                                        src="{{ $data->profile }}"
-                                        alt="Home-Owner-Avatar"
-                                        class="img-fluid mb-3 rounded shadow"
-                                        style="width: 250px;"
-                                    />
-                                @endif
-                            </div>
-                            <div class="col-12">
-                                <p class="card-title h5">Home Owner: {{ $data->last_full_name }}</p>
-                                <hr class="theme-separator">
-                            </div>
-                        </div>
                         <div class="row">
-                            <div class="col-6 mb-3">
-                                <p class="text-dark"><b>Date of Birth:</b> {{ $data->date_of_birth }}</p>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-6 mx-auto text-center">
+                                        @if ($data->profile)
+                                            <img
+                                                src="{{ $data->profile }}"
+                                                alt="Home-Owner-Avatar"
+                                                class="img-fluid mb-3 rounded shadow"
+                                                style="width: 250px;"
+                                            />
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 mx-auto text-center">
+                                        <p class="card-title h5">Home Owner: {{ $data->last_full_name }}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-6 mb-3">
-                                <p class="text-dark"><b>Age:</b> {{ $data->age }} year(s) old</p>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <p class="text-dark"><b>Gender:</b> {{ ucfirst($data->gender) }}</p>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <p class="text-dark"><b>Email:</b> {{ $data->email ?? 'N/A' }}</p>
-                            </div>
-                            <div class="col-6">
-                                <p class="text-dark"><b>Contact Number:</b> {{ $data->contact_no }}</p>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <p class="text-dark"><b>Member Since:</b> {{ \Carbon\Carbon::parse($data->created_at)->format('M d, Y') }}</p>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-12 text-end">
+                                        <a href="{{ route('homeowners.list') }}" class="btn btn-success text-white">
+                                            <i class="fa fa-hand-point-left"></i> Go back
+                                        </a>
+                                        <a href="{{ route('homeowners.update', ['id' => $data->id]) }}" class="btn btn-info text-white p-2 ms-2">
+                                            <i class="fa fa-pencil"></i> Update
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row mt-5">
+                                    <div class="col-6 mb-3">
+                                        <p class="text-dark"><b>Date of Birth:</b> {{ $data->date_of_birth }}</p>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <p class="text-dark"><b>Age:</b> {{ $data->age }} year(s) old</p>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <p class="text-dark"><b>Gender:</b> {{ ucfirst($data->gender) }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <p class="text-dark"><b>Email:</b> {{ $data->email ?? 'N/A' }}</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p class="text-dark"><b>Contact Number:</b> {{ $data->contact_no }}</p>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <p class="text-dark"><b>Member Since:</b> {{ \Carbon\Carbon::parse($data->created_at)->format('M d, Y') }}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

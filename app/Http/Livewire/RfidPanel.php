@@ -97,7 +97,8 @@ class RfidPanel extends Component
 
             if ($newMonitoring) {
                 $this->emit('rfidPanel.in', [
-                    'name' => $this->homeOwnerName
+                    'name' => $this->homeOwnerName,
+                    'capture' => $captureUrl
                 ]);
             }
         } else {
@@ -107,7 +108,8 @@ class RfidPanel extends Component
             ]);
 
             $this->emit('rfidPanel.out', [
-                'name' => $this->homeOwnerName
+                'name' => $this->homeOwnerName,
+                'capture' => $captureUrl
             ]);
         }
 
@@ -118,11 +120,6 @@ class RfidPanel extends Component
         
         $this->dispatchBrowserEvent('guardUpdateList');
         $this->emitTo('Guard.Rfid.guard-rfid-monitoring', 'testinghehe');
-    }
-
-    public function mount()
-    {
-
     }
 
     public function render()

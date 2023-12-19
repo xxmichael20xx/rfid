@@ -205,7 +205,19 @@
                 })
 
                 /** Initialize the select2 for vehicles and events */
-                $('#vehicle_id').select2()
+                $('#vehicle_id').select2({
+                    matcher: function(params, data) {
+                        let original_matcher = $.fn.select2.defaults.defaults.matcher
+                        let result = original_matcher(params, data)
+
+                        if (result && data.children && result.children && data.children.length != result.children.length
+                            && data.text.toLowerCase().includes(params.term.toLowerCase())) {
+                            result.children = data.children
+                        }
+
+                        return result
+                    }
+                })
                 $('#vehicle_id').on('select2:select', function (e) {
                     const id = e.params.data.id
 
