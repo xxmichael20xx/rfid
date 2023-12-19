@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
 
         $schedule->command('send:payment-reminder');
+        $schedule->command('payment:due');
     }
 
     /**
