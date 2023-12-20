@@ -391,6 +391,11 @@ class PaymentsList extends Component
         $homeOwner = HomeOwner::find($this->form['home_owner_id']);
 
         $this->homeOwnerBlockLots = $homeOwner->block_lot_items;
+
+        $currentBlockLot = $this->form['block_lot'];
+        $newDefaultBlockLot = data_get($this->homeOwnerBlockLots, '0.id', $currentBlockLot);
+
+        data_set($this->form, 'block_lot', $newDefaultBlockLot);
     }
 
     public function preCreateSubmit()
