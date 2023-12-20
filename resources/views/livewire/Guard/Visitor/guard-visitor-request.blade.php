@@ -218,9 +218,9 @@
                     @this.setVisitorFor(value)
                 })
 
-                setInterval(function() {
+                /* setInterval(function() {
                     @this.fetchLatest(true)
-                }, 5000)
+                }, 5000) */
 
                 Livewire.on('has.event.refreshed', function() {
                     $('#relation').select2('destroy')
