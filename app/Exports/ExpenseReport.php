@@ -10,17 +10,24 @@ class ExpenseReport implements FromCollection, WithHeadings
 {
     protected $data;
 
+    public $total;
+
     public function __construct($data)
     {
         // Set the data to export
         $this->data = collect($data)->map(function($item) {
             $type = $item->type;
-            $amount = '₱' . number_format($item->amount, 2);
             $transactionDate = Carbon::parse($item->transaction_date)->format('M d, Y');
+            $amount = '₱' . number_format($item->amount, 2);
+            $this->total = $this->total + $item->amount;
 
             // Return the processed data to export
-            return compact('type', 'amount', 'transactionDate');
+            return compact('type', 'transactionDate', 'amount');
         });
+
+        $this->data[] = [
+            '', '', 'Total: Php ' . $this->total
+        ];
     }
 
     /**
@@ -38,8 +45,8 @@ class ExpenseReport implements FromCollection, WithHeadings
     {
         return [
             'Type',
-            'Amount',
             'Transaction Date',
+            'Amount',
         ];
     }
 }

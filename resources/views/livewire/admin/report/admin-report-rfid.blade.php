@@ -18,7 +18,10 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#!" wire:click="printData">
+                        <a class="dropdown-item" href="{{ route('reports.print.rfids', [
+                            'range-start' => $dateRange[0],
+                            'range-end' => $dateRange[1],
+                        ]) }}" target="_blank">
                             <i class="fa fa-print"></i> Print
                         </a>
                     </li>

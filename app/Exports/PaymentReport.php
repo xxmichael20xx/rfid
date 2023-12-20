@@ -10,6 +10,8 @@ class PaymentReport implements FromCollection, WithHeadings
 {
     protected $data;
 
+    public $total;
+
     public function __construct($data)
     {
         // Set the data to export
@@ -27,9 +29,15 @@ class PaymentReport implements FromCollection, WithHeadings
             $receivedBy = $item->payment_received_by;
             $datePaid = $item->payment_received_by !== 'N/A' ? Carbon::parse($item->date_paid)->format('M d, Y @ h:i A') : '';
 
+            $this->total = $this->total + $item->amount;
+
             // Return the processed data to export
             return compact('id', 'biller', 'amount', 'dueDate', 'daysDue', 'status', 'transactionDate', 'reference', 'receivedBy', 'datePaid');
         });
+
+        $this->data[] = [
+            '', '', '', '', '', '', '', '', '', 'Total: Php ' . $this->total
+        ];
     }
 
     /**

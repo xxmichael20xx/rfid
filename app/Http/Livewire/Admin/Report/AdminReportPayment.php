@@ -47,15 +47,6 @@ class AdminReportPayment extends Component
         return Excel::download(new PaymentReport($this->records), $filename);
     }
 
-    public function printData()
-    {
-        return redirect()->route('reports.print.payments', [
-            'range-start' => $this->dateRange[0],
-            'range-end' => $this->dateRange[1],
-            'filter-by' => $this->filterBy
-        ]);
-    }
-
     public function render()
     {
         return view('livewire.admin.report.admin-report-payment')

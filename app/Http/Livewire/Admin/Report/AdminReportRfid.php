@@ -30,14 +30,6 @@ class AdminReportRfid extends Component
         $this->records = RfidMonitoring::with(['rfidData.vehicle.homeOwner'])->whereBetween('created_at', $this->dateRange)->get();
     }
 
-    public function printData()
-    {
-        return redirect()->route('reports.print.rfids', [
-            'range-start' => $this->dateRange[0],
-            'range-end' => $this->dateRange[1],
-        ]);
-    }
-
     public function exportData()
     {
         $prefix = match (auth()->user()->role) {
