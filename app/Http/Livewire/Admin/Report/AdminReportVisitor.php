@@ -43,6 +43,14 @@ class AdminReportVisitor extends Component
         return Excel::download(new VisitorReport($this->records), $filename);
     }
 
+    public function printData()
+    {
+        return redirect()->route('reports.print.visitors', [
+            'range-start' => $this->dateRange[0],
+            'range-end' => $this->dateRange[1],
+        ]);
+    }
+
     public function render()
     {
         return view('livewire.admin.report.admin-report-visitor')

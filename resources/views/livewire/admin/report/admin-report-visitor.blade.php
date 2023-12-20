@@ -18,10 +18,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="{{ route('reports.print.visitors', [
-                            'range-start' => $dateRange[0],
-                            'range-end' => $dateRange[1],
-                        ]) }}" target="_blank">
+                        <a class="dropdown-item" href="#!" wire:click="printData">
                             <i class="fa fa-print"></i> Print
                         </a>
                     </li>

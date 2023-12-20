@@ -18,10 +18,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="{{ route('reports.print.expenses', [
-                            'range-start' => $dateRange[0],
-                            'range-end' => $dateRange[1],
-                        ]) }}" target="_blank">
+                        <a class="dropdown-item" href="#!" wire:click="printData">
                             <i class="fa fa-print"></i> Print
                         </a>
                     </li>
@@ -52,22 +49,38 @@
                                         <thead class="bg-portal-green">
                                             <tr>
                                                 <th class="cell">Type</th>
-                                                <th class="cell">Amount</th>
                                                 <th class="cell">Transaction Date</th>
+                                                <th class="cell">Amount</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @php
+                                                $total = 0;
+                                            @endphp
                                             @forelse ($records as $record)
                                                 <tr>
                                                     <td class="cell">{{ $record->type }}</td>
-                                                    <td class="cell">₱{{ number_format($record->amount) }}</td>
                                                     <td class="cell">{{ \Carbon\Carbon::parse($record->transaction_date)->format('M d, Y') }}</td>
+                                                    <td class="cell">₱{{ number_format($record->amount) }}</td>
                                                 </tr>
+                                                @php
+                                                    $total = $total + $record->amount;
+                                                @endphp
                                             @empty
                                                 <tr>
                                                     <td class="cell text-center" colspan="3">No result(s)</td>
                                                 </tr>
                                             @endforelse
+
+                                            @if ($records->count() > 0)
+                                                <tr>
+                                                    <td class="cell" colspan="2"></td>
+                                                    <td>
+                                                        <b>Total: </b>
+                                                        <b>₱{{ number_format($total) }}</b>
+                                                    </td>
+                                                </tr>
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>

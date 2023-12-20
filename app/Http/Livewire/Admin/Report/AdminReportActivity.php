@@ -48,6 +48,14 @@ class AdminReportActivity extends Component
         return Excel::download(new ActivityReport($this->records), $filename);
     }
 
+    public function printData()
+    {
+        return redirect()->route('reports.print.activities', [
+            'range-start' => $this->dateRange[0],
+            'range-end' => $this->dateRange[1],
+        ]);
+    }
+
     public function render()
     {
         return view('livewire.admin.report.admin-report-activity')

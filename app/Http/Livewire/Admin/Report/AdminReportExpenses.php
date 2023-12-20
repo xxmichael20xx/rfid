@@ -43,6 +43,14 @@ class AdminReportExpenses extends Component
         return Excel::download(new ExpenseReport($this->records), $filename);
     }
 
+    public function printData()
+    {
+        return redirect()->route('reports.print.expenses', [
+            'range-start' => $this->dateRange[0],
+            'range-end' => $this->dateRange[1],
+        ]);
+    }
+
     public function render()
     {
         return view('livewire.admin.report.admin-report-expenses')
