@@ -317,7 +317,7 @@
 
     <div class="modal fade" id="newPaymentModal" tabindex="-1" aria-labelledby="newPaymentModalLabel" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog--md">
-            <form method="POST" wire:submit.prevent="create">
+            <form method="POST" wire:submit.prevent="preCreateSubmit">
                 @csrf
 
                 <div class="modal-content">
@@ -706,6 +706,22 @@
                     const value = e.params.data.id
 
                     @this.changeCreatePaymentBiller(value)
+                })
+
+                Livewire.on('payment.pre.submit', function(e) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Payment Amount: ' + e.amount,
+                        text: 'Please confirm the Amount',
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, confirm',
+                        cancelButtonText: 'Cancel'
+                    }).then(function(event) {
+                        if (event.isConfirmed) {
+                            @this.create()
+                        }
+                    })
                 })
             })
         </script>

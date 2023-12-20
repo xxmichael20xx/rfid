@@ -9,7 +9,6 @@ use App\Models\Payment;
 use App\Models\PaymentRemit;
 use App\Models\PaymentType;
 use App\Notifications\PaymentReminder;
-use App\Rules\NotPastDate;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -392,6 +391,13 @@ class PaymentsList extends Component
         $homeOwner = HomeOwner::find($this->form['home_owner_id']);
 
         $this->homeOwnerBlockLots = $homeOwner->block_lot_items;
+    }
+
+    public function preCreateSubmit()
+    {
+        $this->emit('payment.pre.submit', [
+            'amount' => '₱' . number_format($this->form['amount'], 2)
+        ]);
     }
 
     /**
