@@ -24,6 +24,6 @@ class HomeOwnerVehicle extends Model
 
     public function homeOwner()
     {
-        return $this->belongsTo(HomeOwner::class, 'home_owner_id', 'id');
+        return $this->belongsTo(HomeOwner::class, 'home_owner_id', 'id')->withTrashed();
     }
 }
